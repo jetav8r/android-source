@@ -12,7 +12,15 @@ public class Loops extends Object {
 		boolean[] someBools = {true, false, true, true, false, true, false, false};
 		boolean temp = false;
 
-		// Starts here
+		int i = 0;
+                int j = 7;
+                while(i < someBools.length) {
+                    temp = someBools[i] = someBools[j];
+                    someBools[j] = temp;
+                    i++;
+                    j++;
+                }
+                /* Old code now Starts here
 		temp = someBools[7];
 		someBools[7] = someBools[0];
 		someBools[0] = temp;
@@ -28,7 +36,8 @@ public class Loops extends Object {
 		temp = someBools[4];
 		someBools[4] = someBools[3];
 		someBools[3] = temp;
-		// Ends here
+		old code Ends here
+                /*
 
 		/*
 		 * ASSIGNMENT:
