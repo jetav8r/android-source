@@ -4,23 +4,26 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 
-import com.bloc.test.Test;
 
 public class Loops extends Object {
 
 	public static void main(String [] args) {
 		boolean[] someBools = {true, false, true, true, false, true, false, false};
 		boolean temp = false;
-
-		int i = 0;
+                
+                int i = 0;
                 int j = 7;
-                while(i < someBools.length) {
-                    temp = someBools[i] = someBools[j];
-                    someBools[j] = temp;
+                while (i <= 7) {
+                    temp = someBools[j];
+                    someBools[j] = someBools[i];
+                    someBools[i] = temp;
+                    System.out.println("someBools i= " + someBools[i] + ", someBools j = " +
+                            someBools [j] + ", temp = " + temp);
                     i++;
-                    j++;
+                    j--;
                 }
-                /* Old code now Starts here
+
+		/* old code Starts here
 		temp = someBools[7];
 		someBools[7] = someBools[0];
 		someBools[0] = temp;
@@ -36,8 +39,7 @@ public class Loops extends Object {
 		temp = someBools[4];
 		someBools[4] = someBools[3];
 		someBools[3] = temp;
-		old code Ends here
-                /*
+		Old code ends here
 
 		/*
 		 * ASSIGNMENT:
@@ -52,10 +54,15 @@ public class Loops extends Object {
 		}
 
 		int[] numArray = new int[someBools.length];
-		// This is known as an in-line conditional
+		
+
+                for (int a = 1; a < 8; a++) {
+                    numArray[a] = !someBools[a] ? 1 : 0;
+                }
+                // This is known as an in-line conditional
 		// learn more here: http://www.cafeaulait.org/course/week2/43.html
 
-		// Starts here
+		/* old code Starts here
 		numArray[0] = !someBools[0] ? 1 : 0;
 		numArray[1] = !someBools[1] ? 1 : 0;
 		numArray[2] = !someBools[2] ? 1 : 0;
@@ -64,7 +71,7 @@ public class Loops extends Object {
 		numArray[5] = !someBools[5] ? 1 : 0;
 		numArray[6] = !someBools[6] ? 1 : 0;
 		numArray[7] = !someBools[7] ? 1 : 0;
-		// Ends here
+		// old code Ends here
 
 		/*
 		 * ASSIGNMENT:
