@@ -2,7 +2,6 @@ package com.bloc.methods;
 
 import java.lang.reflect.Method;
 
-import com.bloc.test.Test;
 
 public class Methods extends Object {
 
@@ -16,7 +15,7 @@ public class Methods extends Object {
 			System.out.println("Looks like your \'" + method.getName() + "\' method has an issue with it.\n");
 		}
 	}
-	// DO NOT MODIFY ABOVE
+	// DO NOT MODIFY ABOVE..
 
 
 	/*
@@ -29,12 +28,11 @@ public class Methods extends Object {
 	 * @return the logical opposite of the original
 	 */
 	public boolean giveMeTheOpposite(boolean original) {
-		/*
-		 * Your work goes here
-		 */
-
-		// You are free to modify the return statement
-		return false;
+                if (original == false) {
+                return true;
+            } else {
+                return false;
+            }
 	}
 
 	/*
@@ -52,9 +50,10 @@ public class Methods extends Object {
 	 * @return nothing
 	 */
 	public void flipTheSign(int[] numbers) {
-		/*
-		 * Your work goes here
-		 */
+            int i = numbers.length;
+            for (int x =0; x <= i; x++) {
+                numbers[x] = numbers[x] * -1;
+            }
 	}
 
 
@@ -80,12 +79,15 @@ public class Methods extends Object {
 	 * @return an array of booleans
 	 */
 	public boolean[] boolsRule(int floor, int[] someNumbers) {
-		/*
-		 * Your work goes here
-		 */
-
-		// You are free to modify the return statement
-		return new boolean [0];
+		
+            int a = someNumbers.length;
+                for (int b = 0; b <= a; b++) {
+                if (someNumbers[b] >= floor) {
+                    boolean answer[b] = true;
+                } else {
+                    boolean answer[b] = false;
+                }
+            return new boolean [b];    
 	}
 
 	/*
@@ -105,11 +107,19 @@ public class Methods extends Object {
 	 * @return an array of length 2: {min, max}
 	 */
 	public int[] getMinAndMax(int[] someNumbers) {
-		/*
-		 * Your work goes here
-		 */
+		int max;
+                int min;
+                int c = someNumbers.length;
+                for (int d = 0; d <= c; d++) {
+                    if (someNumbers[d] > max) {
+                        max = someNumbers[d];
+                    }
+                    if (someNumbers[d] < min) {
+                        min = someNumbers[d];
+                    }
+                }
 
 		// You are free to modify the return statement
-		return new int[2];
+		return new int[c];
 	}
 }
