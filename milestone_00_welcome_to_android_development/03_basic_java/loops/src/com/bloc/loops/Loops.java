@@ -57,7 +57,7 @@ public class Loops extends Object {
 		
 
                 for (int a = 1; a < 8; a++) {
-                    numArray[a] = !someBools[a] ? 1 : 0;
+                    numArray[a] == !someBools[a] ? 1 : 0;
                 }
                 // This is known as an in-line conditional
 		// learn more here: http://www.cafeaulait.org/course/week2/43.html
