@@ -82,7 +82,7 @@ public class Methods extends Object {
 	int [] someNumbers = {12,42,30,44,55};
         int floor = 33;
         public boolean boolsRule(int[] someNumbers) {
-            boolean boolsArray[];
+            boolean boolsArray[] = null;
             for (int b = 0; b < someNumbers.length; b++) {
                 if (someNumbers[b] >= floor) {
                     boolsArray[b] = true;
@@ -90,6 +90,7 @@ public class Methods extends Object {
                     boolsArray[b] = false;
                 }
             }
+            return false;
         }
                 
 
@@ -111,8 +112,8 @@ public class Methods extends Object {
 	 */
                 
         public int[] getMinAndMax(int[] someNumbers) {
-		int max;
-                int min;
+		int max = 7000000;
+                int min = -7000000;
                 for (int d = 0; d < someNumbers.length; d++) {
                     if (someNumbers[d] > max) {
                         max = someNumbers[d];
@@ -121,6 +122,7 @@ public class Methods extends Object {
                         min = someNumbers[d];
                     }
                 }
+            return new int[2];
         }
 
 		// You are free to modify the return statement
