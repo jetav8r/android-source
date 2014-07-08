@@ -1,7 +1,7 @@
 package com.bloc.methods;
 
 import java.lang.reflect.Method;
-
+import com.bloc.test.Test;
 
 public class Methods extends Object {
 
@@ -14,7 +14,8 @@ public class Methods extends Object {
 		} else {
 			System.out.println("Looks like your \'" + method.getName() + "\' method has an issue with it.\n");
 		}
-	}
+            }
+
 	// DO NOT MODIFY ABOVE..
 
 
@@ -51,7 +52,7 @@ public class Methods extends Object {
 	 */
 	public void flipTheSign(int[] numbers) {
             int i = numbers.length;
-            for (int x =0; x <= i; x++) {
+            for (int x =0; x < i; x++) {
                 numbers[x] = numbers[x] * -1;
             }
 	}
@@ -78,17 +79,19 @@ public class Methods extends Object {
 	 * @param someNumbers The array of integers
 	 * @return an array of booleans
 	 */
-	public boolean[] boolsRule(int floor, int[] someNumbers) {
-		
-            int a = someNumbers.length;
-                for (int b = 0; b <= a; b++) {
+	int [] someNumbers = {12,42,30,44,55};
+        int floor = 33;
+        public boolean boolsRule(int[] someNumbers) {
+            boolean boolsArray[];
+            for (int b = 0; b < someNumbers.length; b++) {
                 if (someNumbers[b] >= floor) {
-                    boolean answer[b] = true;
+                    boolsArray[b] = true;
                 } else {
-                    boolean answer[b] = false;
+                    boolsArray[b] = false;
                 }
-            return new boolean [b];    
-	}
+            }
+        }
+                
 
 	/*
 	 * Recover the minimum and maximum value found in an
@@ -106,11 +109,11 @@ public class Methods extends Object {
 	 *		  must be recovered
 	 * @return an array of length 2: {min, max}
 	 */
-	public int[] getMinAndMax(int[] someNumbers) {
+                
+        public int[] getMinAndMax(int[] someNumbers) {
 		int max;
                 int min;
-                int c = someNumbers.length;
-                for (int d = 0; d <= c; d++) {
+                for (int d = 0; d < someNumbers.length; d++) {
                     if (someNumbers[d] > max) {
                         max = someNumbers[d];
                     }
@@ -118,8 +121,8 @@ public class Methods extends Object {
                         min = someNumbers[d];
                     }
                 }
+        }
 
 		// You are free to modify the return statement
-		return new int[c];
-	}
+          
 }
