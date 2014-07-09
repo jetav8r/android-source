@@ -79,10 +79,9 @@ public class Methods extends Object {
 	 * @param someNumbers The array of integers
 	 * @return an array of booleans
 	 */
-	int [] someNumbers = {12,42,30,44,55};
-        int floor = 33;
-        public boolean boolsRule(int[] someNumbers) {
-            boolean boolsArray[] = null;
+
+        public boolean[] boolsRule(int floor, int[] someNumbers) {
+            boolean[] boolsArray = new boolean [someNumbers.length];
             for (int b = 0; b < someNumbers.length; b++) {
                 if (someNumbers[b] >= floor) {
                     boolsArray[b] = true;
@@ -90,7 +89,7 @@ public class Methods extends Object {
                     boolsArray[b] = false;
                 }
             }
-            return false;
+            return boolsArray;
         }
                 
 
@@ -112,17 +111,16 @@ public class Methods extends Object {
 	 */
                 
         public int[] getMinAndMax(int[] someNumbers) {
-		int max = 7000000;
-                int min = -7000000;
-                for (int d = 0; d < someNumbers.length; d++) {
-                    if (someNumbers[d] > max) {
-                        max = someNumbers[d];
-                    }
-                    if (someNumbers[d] < min) {
-                        min = someNumbers[d];
-                    }
+            int[] minAndMax = new int [2];
+            for (int d = 0; d < someNumbers.length; d++) {
+                if (someNumbers[d] > minAndMax[0]) {
+                    minAndMax[0] = someNumbers [d];
                 }
-            return new int[2];
+                if (someNumbers[d] < minAndMax[1]) {
+                    minAndMax[1] = someNumbers [d];
+                }
+            }
+            return minAndMax;
         }
 
 		// You are free to modify the return statement
