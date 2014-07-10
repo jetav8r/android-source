@@ -2,6 +2,7 @@ package com.bloc.methods;
 
 import java.lang.reflect.Method;
 import com.bloc.test.Test;
+import java.util.Arrays;
 
 public class Methods extends Object {
 
@@ -111,12 +112,14 @@ public class Methods extends Object {
 	 */
                 
         public int[] getMinAndMax(int[] someNumbers) {
-            int[] minAndMax = new int [2];
-            for (int d = 0; d < someNumbers.length; d++) {
-                if (someNumbers[d] > minAndMax[0]) {
+            
+            //int[] minAndMax = new int [2];  old initialization
+            int[] minAndMax = {someNumbers[0], someNumbers[0]};
+            for (int d = 1; d < someNumbers.length; d++) {
+                if (someNumbers[d] < minAndMax[0]) {
                     minAndMax[0] = someNumbers [d];
                 }
-                if (someNumbers[d] < minAndMax[1]) {
+                if (someNumbers[d] > minAndMax[1]) {
                     minAndMax[1] = someNumbers [d];
                 }
             }
