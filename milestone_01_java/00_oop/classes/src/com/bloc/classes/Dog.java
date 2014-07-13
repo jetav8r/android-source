@@ -1,5 +1,8 @@
 package com.bloc.classes;
 
+import java.util.Arrays;
+import java.util.List;
+
 class Dog {
     // The length of hair which
     final float HAIR_CUT_LENGTH = 0.15f;
@@ -21,14 +24,30 @@ class Dog {
 	float mWeight;
 	// The color of its coat
 	String mColor;
+        
 
 	// ADD MEMBER VARIABLES HERE IF NECESSARY
-
+        //number of meals that the dog eats
+        int mMeals;
+        //number of play sessions the dog has
+        int mPlays;
+       
+        
+        int getMeals() {
+            return mMeals;
+        }
+        
+        void setMeals() {
+            
+        }
 	/*
 	 * getHairLength
 	 * @return this Dog's hair length
 	 */
 	// ADD YOUR METHOD HERE, NAME MUST MATCH DESCRIPTION
+        float getHairLength() {
+            return mHairLength;
+        }
 
 	/*
 	 * setHairLength
@@ -37,12 +56,18 @@ class Dog {
 	 * @return nothing
 	 */
 	// ADD YOUR METHOD HERE, NAME MUST MATCH DESCRIPTION
+        void setHairLength() {
+            float hairLength = mHairLength;
+        }
 
 	/*
 	 * getGender
 	 * @return this Dog's gender
 	 */
 	// ADD YOUR METHOD HERE, NAME MUST MATCH DESCRIPTION
+        String getGender() {
+            return mGender;
+        }
 
 	/*
 	 * setGender
@@ -51,12 +76,18 @@ class Dog {
 	 * @return nothing
 	 */
 	// ADD YOUR METHOD HERE, NAME MUST MATCH DESCRIPTION
+        void setGender() {
+            String gender = mGender;
+        }
 
 	/*
 	 * getSize
 	 * @return the size of the dog
 	 */
 	// ADD YOUR METHOD HERE, NAME MUST MATCH DESCRIPTION
+        String getSize() {
+            return mSize;
+        }
 
 	/*
 	 * setSize
@@ -65,12 +96,18 @@ class Dog {
 	 * @return nothing
 	 */
 	// ADD YOUR METHOD HERE, NAME MUST MATCH DESCRIPTION
+        void setSize() {
+            String size = mSize;
+        }
 
 	/*
 	 * getAge
 	 * @return this Dog's age
 	 */
 	// ADD YOUR METHOD HERE, NAME MUST MATCH DESCRIPTION
+        int getAge() {
+            return mAge;
+        }
 
 	/*
 	 * setAge
@@ -79,12 +116,18 @@ class Dog {
 	 * @return nothing
 	 */
 	// ADD YOUR METHOD HERE, NAME MUST MATCH DESCRIPTION
+        void setAge() {
+            int age = mAge;            
+        }
 
 	/*
 	 * getWeight
 	 * @return this Dog's weight
 	 */
 	// ADD YOUR METHOD HERE, NAME MUST MATCH DESCRIPTION
+        float getWeight() {
+            return mWeight;
+        }
 
 	/*
 	 * setWeight
@@ -93,12 +136,18 @@ class Dog {
 	 * @return nothing
 	 */
 	// ADD YOUR METHOD HERE, NAME MUST MATCH DESCRIPTION
+        void setWeight() {
+            float weight = mWeight;
+        }
 
 	/*
 	 * getColor
 	 * @return this Dog's color
 	 */
 	// ADD YOUR METHOD HERE, NAME MUST MATCH DESCRIPTION
+        String getColor() {
+            return mColor;
+        }
 
 	/*
 	 * setColor
@@ -107,6 +156,9 @@ class Dog {
 	 * @return nothing
 	 */
 	// ADD YOUR METHOD HERE, NAME MUST MATCH DESCRIPTION
+        void setColor() {
+            String color = mColor;
+        }
 
 	/*
 	 * feed
@@ -117,6 +169,31 @@ class Dog {
 	 * @return nothing
 	 */
 	// ADD YOUR METHOD HERE, NAME MUST MATCH DESCRIPTION
+        void feed () {
+            float newWeight = this.getWeight() + (mMeals * WEIGHT_GAIN);
+            int sizeIncrement = (int) Math.floor(mMeals/3);
+            String[] sizes = new String[] {"tiny", "small", "average", "large"}; 
+            List<String> sizeList = Arrays.asList(sizes);
+            int index = sizeList.indexOf(mSize);
+            int newSize = index + sizeIncrement;
+            if (newSize > 3) {
+                newSize = 3;
+            }
+            switch (newSize) {
+                case 0:
+                    System.out.println("Your dog's current size is tiny");
+                    break;
+                case 1:
+                    System.out.println("Your dog's current size is small");
+                    break;
+                case 2:
+                    System.out.println("Your dog's current size is average");
+                    break;
+                case 3:
+                    System.out.println("Your dog's current size is large");
+                    break;    
+            }
+        } 
 
 	/*
 	 * play
@@ -127,7 +204,35 @@ class Dog {
 	 * @return nothing
 	 */
 	// ADD YOUR METHOD HERE, NAME MUST MATCH DESCRIPTION
-
+        void play () {
+            float newWeight = this.getWeight() - (mPlays * WEIGHT_LOSS);
+            float minWeight = this.MIN_WEIGHT;
+            if (newWeight < minWeight) {
+                newWeight = this.MIN_WEIGHT;
+            }
+            int sizeDecrement = (int) Math.floor(mPlays/6);
+            String[] sizes = new String[] {"tiny", "small", "average", "large"}; 
+            List<String> sizeList = Arrays.asList(sizes);
+            int index = sizeList.indexOf(mSize);
+            int newSize = index - sizeDecrement;
+            if (newSize < 0) {
+                newSize = 0;
+            }
+            switch (newSize) {
+                case 0:
+                    System.out.println("Your dog's current size is tiny");
+                    break;
+                case 1:
+                    System.out.println("Your dog's current size is small");
+                    break;
+                case 2:
+                    System.out.println("Your dog's current size is average");
+                    break;
+                case 3:
+                    System.out.println("Your dog's current size is large");
+                    break;    
+            }
+        }
 	/*
 	 * cutHair
 	 * Side-effect: the Dog's hair length is reduced by HAIR_CUT_LENGTH
@@ -135,5 +240,12 @@ class Dog {
 	 * @return nothing
 	 */
 	// ADD YOUR METHOD HERE, NAME MUST MATCH DESCRIPTION
+        void cutHair () {
+            float newLength = this.getHairLength() - HAIR_CUT_LENGTH;
+            if (newLength < 0) {
+                newLength = 0;
+            }
+        }
+        
 
 }
