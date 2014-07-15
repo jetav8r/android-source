@@ -28,7 +28,10 @@ class Dog {
 	 * getHairLength
 	 * @return this Dog's hair length
 	 */
-	// ADD YOUR METHOD HERE, NAME MUST MATCH DESCRIPTION
+        // ADD YOUR METHOD HERE, NAME MUST MATCH DESCRIPTION
+        float getHairLength() {           
+            return mHairLength;
+        }
 
 	/*
 	 * setHairLength
@@ -37,12 +40,20 @@ class Dog {
 	 * @return nothing
 	 */
 	// ADD YOUR METHOD HERE, NAME MUST MATCH DESCRIPTION
+        
+        void setHairLength(float hairLength) {
+            mHairLength = hairLength;
+        }
 
 	/*
 	 * getGender
 	 * @return this Dog's gender
 	 */
 	// ADD YOUR METHOD HERE, NAME MUST MATCH DESCRIPTION
+        
+        String getGender() {
+            return mGender;
+        }
 
 	/*
 	 * setGender
@@ -51,12 +62,20 @@ class Dog {
 	 * @return nothing
 	 */
 	// ADD YOUR METHOD HERE, NAME MUST MATCH DESCRIPTION
+        
+        void setGender(String gender) {
+            mGender = gender;
+        }
 
 	/*
 	 * getSize
 	 * @return the size of the dog
 	 */
 	// ADD YOUR METHOD HERE, NAME MUST MATCH DESCRIPTION
+        
+        String getSize() {
+            return mSize;
+        }
 
 	/*
 	 * setSize
@@ -65,12 +84,20 @@ class Dog {
 	 * @return nothing
 	 */
 	// ADD YOUR METHOD HERE, NAME MUST MATCH DESCRIPTION
+        
+        void setSize(String size) {
+            mSize = size;
+        }
 
 	/*
 	 * getAge
 	 * @return this Dog's age
 	 */
 	// ADD YOUR METHOD HERE, NAME MUST MATCH DESCRIPTION
+        
+        int getAge() {
+            return mAge;
+        }
 
 	/*
 	 * setAge
@@ -79,12 +106,20 @@ class Dog {
 	 * @return nothing
 	 */
 	// ADD YOUR METHOD HERE, NAME MUST MATCH DESCRIPTION
+        
+        void int setAge(int age){
+            mAge = age;
+        }
 
 	/*
 	 * getWeight
 	 * @return this Dog's weight
 	 */
 	// ADD YOUR METHOD HERE, NAME MUST MATCH DESCRIPTION
+        
+        float getWeight() {
+            return mWeight;
+        }
 
 	/*
 	 * setWeight
@@ -93,12 +128,20 @@ class Dog {
 	 * @return nothing
 	 */
 	// ADD YOUR METHOD HERE, NAME MUST MATCH DESCRIPTION
+        
+        void setWeight(float weight) {
+            mWeight = weight;
+        }
 
 	/*
 	 * getColor
 	 * @return this Dog's color
 	 */
 	// ADD YOUR METHOD HERE, NAME MUST MATCH DESCRIPTION
+        
+        String getColor() {
+            return mColor;
+        }
 
 	/*
 	 * setColor
@@ -107,6 +150,10 @@ class Dog {
 	 * @return nothing
 	 */
 	// ADD YOUR METHOD HERE, NAME MUST MATCH DESCRIPTION
+        
+        String setColor(String color) {
+            mColor = color;
+        }
 
 	/*
 	 * feed
@@ -117,6 +164,42 @@ class Dog {
 	 * @return nothing
 	 */
 	// ADD YOUR METHOD HERE, NAME MUST MATCH DESCRIPTION
+        
+        void feed(String newDogSize) {
+            int meals;
+            int newSize;
+            //added newSize variable, since no weights for dogs were defined
+            //and every 3 meals changed the size of the dog, regardless of actual weight gain
+            float newWeight = mWeight + (WEIGHT_GAIN * meals);
+            switch(mSize) {
+                case "tiny":
+                    int sizeValue = 1;
+                    break;
+                case "small":
+                    int sizeValue = 4;
+                    break;
+                case "average":
+                    int sizeValue = 7;
+                    break;
+                case "large":
+                    int sizeValue = 10;
+                    break;
+                newSize = sizeValue + meals;               
+                }
+            if (newSize < 4) {
+                newDogSize = "tiny";
+                } else {
+                if (newSize < 7 && newSize >= 4) {
+                    newDogSize = "small";
+                } else {
+                    if (newSize <10 && newSize >= 7) {
+                        newDogSize = "average";
+                        } else {
+                        newDogSize = "large";
+                    }
+                }
+            }
+        }
 
 	/*
 	 * play
@@ -127,6 +210,48 @@ class Dog {
 	 * @return nothing
 	 */
 	// ADD YOUR METHOD HERE, NAME MUST MATCH DESCRIPTION
+ 
+        void play(String newDogSize) {
+            int newSize;
+            int plays;
+            //added newSize variable, since no weights for dogs were defined
+            //and every 6 plays changed the size of the dog, regardless of actual weight loss
+            float newWeight = mWeight - (WEIGHT_LOSS * plays);
+            if (newWeight < MIN_WEIGHT) {
+                newWeight = 1.25;
+            }
+            switch(mSize) {
+                case "tiny":
+                    int sizeValue = 1;
+                    break;
+                case "small":
+                    int sizeValue = 7;
+                    break;
+                case "average":
+                    int sizeValue = 13;
+                    break;
+                case "large":
+                    int sizeValue = 19;
+                    break;
+                newSize = sizeValue - plays;               
+                }
+            if (newSize < 7) {
+                newDogSize = "tiny";
+                } else {
+                if (newSize >= 7 && newSize < 13) {
+                    newDogSize = "small";
+                } else {
+                    if (newSize >=13 && newSize < 19) {
+                        newDogSize = "average";
+                        } else {
+                        if (newSize >= 19) {
+                        newDogSize = "large";
+                        }
+                    }
+                }
+            }
+        }        
+        
 
 	/*
 	 * cutHair
@@ -135,5 +260,9 @@ class Dog {
 	 * @return nothing
 	 */
 	// ADD YOUR METHOD HERE, NAME MUST MATCH DESCRIPTION
-
+        
+        void float cutHair(float newHairLength) {
+            float newLength = mHairLength - HAIR_CUT_LENGTH);
+            float newHairLength = (newLength < 0) ? 0 : newLength;
+        }       
 }
