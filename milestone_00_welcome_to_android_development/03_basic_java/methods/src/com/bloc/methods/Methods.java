@@ -51,14 +51,13 @@ public class Methods extends Object {
 	 * 		  sign must be flipped
 	 * @return nothing
 	 */
+        
 	public void flipTheSign(int[] numbers) {
             int i = numbers.length;
             for (int x =0; x < i; x++) {
                 numbers[x] = numbers[x] * -1;
             }
 	}
-
-
 	/*
 	 * This method returns an array of booleans based on
 	 * comparisons made in a given integer array with an
