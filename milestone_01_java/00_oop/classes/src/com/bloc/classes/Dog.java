@@ -31,21 +31,23 @@ class Dog {
         int mMeals;
         //number of play sessions the dog has
         int mPlays;
+        //counter for size increase
+        int mSizeIncrement;
        
         
-        int getMeals() {
+        public int getMeals() {
             return mMeals;
         }
         
-        void setMeals() {
-            
+        public void setMeals(int pMeals) {
+            mMeals = pMeals;
         }
 	/*
 	 * getHairLength
 	 * @return this Dog's hair length
 	 */
 	// ADD YOUR METHOD HERE, NAME MUST MATCH DESCRIPTION
-        float getHairLength() {
+        public float getHairLength() {
             return mHairLength;
         }
 
@@ -56,8 +58,8 @@ class Dog {
 	 * @return nothing
 	 */
 	// ADD YOUR METHOD HERE, NAME MUST MATCH DESCRIPTION
-        void setHairLength() {
-            float hairLength = mHairLength;
+        public void setHairLength(float pHairLength) {
+            mHairLength = pHairLength;
         }
 
 	/*
@@ -65,7 +67,7 @@ class Dog {
 	 * @return this Dog's gender
 	 */
 	// ADD YOUR METHOD HERE, NAME MUST MATCH DESCRIPTION
-        String getGender() {
+        public String getGender() {
             return mGender;
         }
 
@@ -76,8 +78,8 @@ class Dog {
 	 * @return nothing
 	 */
 	// ADD YOUR METHOD HERE, NAME MUST MATCH DESCRIPTION
-        void setGender() {
-            String gender = mGender;
+        public void setGender(String pGender) {
+            mGender = pGender;
         }
 
 	/*
@@ -85,7 +87,7 @@ class Dog {
 	 * @return the size of the dog
 	 */
 	// ADD YOUR METHOD HERE, NAME MUST MATCH DESCRIPTION
-        String getSize() {
+        public String getSize() {
             return mSize;
         }
 
@@ -96,8 +98,8 @@ class Dog {
 	 * @return nothing
 	 */
 	// ADD YOUR METHOD HERE, NAME MUST MATCH DESCRIPTION
-        void setSize() {
-            String size = mSize;
+        public void setSize(String pSize) {
+            mSize = pSize;
         }
 
 	/*
@@ -105,7 +107,7 @@ class Dog {
 	 * @return this Dog's age
 	 */
 	// ADD YOUR METHOD HERE, NAME MUST MATCH DESCRIPTION
-        int getAge() {
+        public int getAge() {
             return mAge;
         }
 
@@ -116,8 +118,8 @@ class Dog {
 	 * @return nothing
 	 */
 	// ADD YOUR METHOD HERE, NAME MUST MATCH DESCRIPTION
-        void setAge() {
-            int age = mAge;            
+        public void setAge(int pAge) {
+            mAge = pAge;            
         }
 
 	/*
@@ -125,7 +127,7 @@ class Dog {
 	 * @return this Dog's weight
 	 */
 	// ADD YOUR METHOD HERE, NAME MUST MATCH DESCRIPTION
-        float getWeight() {
+        public float getWeight() {
             return mWeight;
         }
 
@@ -136,8 +138,8 @@ class Dog {
 	 * @return nothing
 	 */
 	// ADD YOUR METHOD HERE, NAME MUST MATCH DESCRIPTION
-        void setWeight() {
-            float weight = mWeight;
+        public void setWeight(float pWeight) {
+            mWeight = pWeight;
         }
 
 	/*
@@ -145,7 +147,7 @@ class Dog {
 	 * @return this Dog's color
 	 */
 	// ADD YOUR METHOD HERE, NAME MUST MATCH DESCRIPTION
-        String getColor() {
+        public String getColor() {
             return mColor;
         }
 
@@ -156,8 +158,8 @@ class Dog {
 	 * @return nothing
 	 */
 	// ADD YOUR METHOD HERE, NAME MUST MATCH DESCRIPTION
-        void setColor() {
-            String color = mColor;
+        public void setColor(String pColor) {
+            mColor = pColor;
         }
 
 	/*
@@ -169,12 +171,13 @@ class Dog {
 	 * @return nothing
 	 */
 	// ADD YOUR METHOD HERE, NAME MUST MATCH DESCRIPTION
-        void feed () {
-            float newWeight = this.getWeight() + (mMeals * WEIGHT_GAIN);
-            int sizeIncrement = (int) Math.floor(mMeals/3);
+        public void feed () {
+            mWeight = this.getWeight() + WEIGHT_GAIN; //takes current weight and adds .25 each time 
             String[] sizes = new String[] {"tiny", "small", "average", "large"}; 
             List<String> sizeList = Arrays.asList(sizes);
-            int index = sizeList.indexOf(mSize);
+            int index = sizeList.indexOf(mSize); //gets position in array of size of dog
+            mMeals++;
+            int sizeIncrement = (int) Math.floor(mMeals/3);
             int newSize = index + sizeIncrement;
             if (newSize > 3) {
                 newSize = 3;
@@ -204,7 +207,7 @@ class Dog {
 	 * @return nothing
 	 */
 	// ADD YOUR METHOD HERE, NAME MUST MATCH DESCRIPTION
-        void play () {
+        public void play () {
             float newWeight = this.getWeight() - (mPlays * WEIGHT_LOSS);
             float minWeight = this.MIN_WEIGHT;
             if (newWeight < minWeight) {
@@ -240,7 +243,7 @@ class Dog {
 	 * @return nothing
 	 */
 	// ADD YOUR METHOD HERE, NAME MUST MATCH DESCRIPTION
-        void cutHair () {
+        public void cutHair () {
             float newLength = this.getHairLength() - HAIR_CUT_LENGTH;
             if (newLength < 0) {
                 newLength = 0;
