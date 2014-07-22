@@ -1,50 +1,37 @@
 package com.bloc.inherit;
 
-class GoldenRetriever extends Dog {
+import java.util.Arrays;
+import java.util.List;
+
+class GoldenRetriever extends Dog {   
     @Override
-    void play(String newDogSize) {
-            int newSize;
-            int plays;
-            //added newSize variable, since no weights for dogs were defined
-            //and every 6 plays changed the size of the dog, regardless of actual weight loss
-            float newWeight = mWeight - (WEIGHT_LOST_FROM_FEEDING * plays);
-            if (newWeight < MINIMUM_WEIGHT) {
-                newWeight = 1;
-            }
-            switch(mSize) {
-                case "tiny":
-                    int sizeValue = 1;
-                    break;
-                case "small":
-                    int sizeValue = 4;
-                    break;
-                case "average":
-                    int sizeValue = 7;
-                    break;
-                case "large":
-                    int sizeValue = 10;
-                    break;
-                newSize = sizeValue - plays;
-            }
-            if (newSize < 4) {
-                newDogSize = "tiny";
-                } else {
-                if (newSize >= 4 && newSize < 7) {
-                    newDogSize = "small";
-                } else {
-                    if (newSize >=7 && newSize < 10) {
-                        newDogSize = "average";
-                        } else {
-                        if (newSize >= 10) {
-                        newDogSize = "large";
-                        }
-                    }
-                }
-            if (newSize < 1) {
-                newSize = 1;
-            }
-            }
-            }
-    
+    void play () {
+        float newWeight = this.getWeight() - (mPlays * WEIGHT_LOSS);
+        float minWeight = this.MIN_WEIGHT;
+        if (newWeight < minWeight) {
+            newWeight = this.MIN_WEIGHT;
+        }
+        int sizeDecrement = (int) Math.floor(mPlays/3);
+        String[] sizes = new String[] {"tiny", "small", "average", "large"}; 
+        List<String> sizeList = Arrays.asList(sizes);
+        int index = sizeList.indexOf(mSize);
+        int newSize = index - sizeDecrement;
+        if (newSize < 0) {
+            newSize = 0;
+        }
+        switch (newSize) {
+            case 0:
+                System.out.println("Your dog's current size is tiny");
+                break;
+            case 1:
+                System.out.println("Your dog's current size is small");
+                break;
+            case 2:
+                System.out.println("Your dog's current size is average");
+                break;
+            case 3:
+                System.out.println("Your dog's current size is large");
+                break;    
+        }
+    }
 }
-// CLASS DEFINITION GOES HERE

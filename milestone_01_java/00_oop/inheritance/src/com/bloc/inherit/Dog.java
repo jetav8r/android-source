@@ -1,14 +1,17 @@
 package com.bloc.inherit;
 
-abstract class Dog {
-	// Add this amount for each meal
-	final static float WEIGHT_GAINED_FROM_FEEDING = .1f;
-	// Reduce this amount for each play
-	final static float WEIGHT_LOST_FROM_FEEDING = .2f;
-	// Minimum weight (1 pound)
-	final static float MINIMUM_WEIGHT = 1f;
-	// Hair length reduced by this value
-	final static float HAIR_LENGTH_REDUCED_FROM_CUT = .2f;
+import java.util.Arrays;
+import java.util.List;
+
+class Dog {
+    // The length of hair which
+    final float HAIR_CUT_LENGTH = 0.15f;
+    // Minimum weight that any Dog can be
+    final float MIN_WEIGHT = 1.25f;
+	// Amount of weight to gain after eating
+	final float WEIGHT_GAIN = 0.25f;
+	// Amount of weight to lose after playing
+	final float WEIGHT_LOSS = 0.2f;
 	// Hair length
 	float mHairLength;
 	// Gender, either "male" or "female"
@@ -21,21 +24,30 @@ abstract class Dog {
 	float mWeight;
 	// The color of its coat
 	String mColor;
-	// Tracks how many times the dog has been fed
-	int mFeedCounter;
-	// Tracks how many times the dog has played
-	int mPlayCounter;
+        
 
-	/* Abstract Methods */
-
+	// ADD MEMBER VARIABLES HERE IF NECESSARY
+        //number of meals that the dog eats
+        int mMeals;
+        //number of play sessions the dog has
+        int mPlays;
+       
+        
+        int getMeals() {
+            return mMeals;
+        }
+        
+        void setMeals() {
+            
+        }
 	/*
 	 * getHairLength
 	 * @return this Dog's hair length
 	 */
-	float getHairLength() {
-		return mHairLength;
-	}
-
+	// ADD YOUR METHOD HERE, NAME MUST MATCH DESCRIPTION
+        float getHairLength() {
+            return mHairLength;
+        }
 
 	/*
 	 * setHairLength
@@ -43,17 +55,19 @@ abstract class Dog {
 	 * @param hairLength the new length of the hair, a float
 	 * @return nothing
 	 */
-	void setHairLength(float length) {
-		mHairLength = length;
-	}
+	// ADD YOUR METHOD HERE, NAME MUST MATCH DESCRIPTION
+        void setHairLength() {
+            float hairLength = mHairLength;
+        }
 
 	/*
 	 * getGender
 	 * @return this Dog's gender
 	 */
-	String getGender() {
-		return mGender;
-	}
+	// ADD YOUR METHOD HERE, NAME MUST MATCH DESCRIPTION
+        String getGender() {
+            return mGender;
+        }
 
 	/*
 	 * setGender
@@ -61,17 +75,19 @@ abstract class Dog {
 	 * @param gender the new gender of the Dog, a String
 	 * @return nothing
 	 */
-	void setGender(String gender) {
-		mGender = gender;
-	}
+	// ADD YOUR METHOD HERE, NAME MUST MATCH DESCRIPTION
+        void setGender() {
+            String gender = mGender;
+        }
 
 	/*
 	 * getSize
 	 * @return the size of the dog
 	 */
-	String getSize() {
-		return mSize;
-	}
+	// ADD YOUR METHOD HERE, NAME MUST MATCH DESCRIPTION
+        String getSize() {
+            return mSize;
+        }
 
 	/*
 	 * setSize
@@ -79,17 +95,19 @@ abstract class Dog {
 	 * @param size the new size of the Dog, a String
 	 * @return nothing
 	 */
-	void setSize(String size) {
-		mSize = size;
-	}
+	// ADD YOUR METHOD HERE, NAME MUST MATCH DESCRIPTION
+        void setSize() {
+            String size = mSize;
+        }
 
 	/*
 	 * getAge
 	 * @return this Dog's age
 	 */
-	int getAge() {
-		return mAge;
-	}
+	// ADD YOUR METHOD HERE, NAME MUST MATCH DESCRIPTION
+        int getAge() {
+            return mAge;
+        }
 
 	/*
 	 * setAge
@@ -97,35 +115,39 @@ abstract class Dog {
 	 * @param age the new age of the Dog, an int
 	 * @return nothing
 	 */
-	void setAge(int age) {
-		mAge = age;
-	}
+	// ADD YOUR METHOD HERE, NAME MUST MATCH DESCRIPTION
+        void setAge() {
+            int age = mAge;            
+        }
 
 	/*
 	 * getWeight
 	 * @return this Dog's weight
 	 */
-	float getWeight() {
-		return mWeight;
-	}
+	// ADD YOUR METHOD HERE, NAME MUST MATCH DESCRIPTION
+        float getWeight() {
+            return mWeight;
+        }
 
 	/*
 	 * setWeight
 	 * Sets the weight of the Dog
-	 * @param age the new weight of the Dog, a float
+	 * @param weight the new weight of the Dog, a float
 	 * @return nothing
 	 */
-	void setWeight(float weight) {
-		mWeight = weight;
-	}
+	// ADD YOUR METHOD HERE, NAME MUST MATCH DESCRIPTION
+        void setWeight() {
+            float weight = mWeight;
+        }
 
 	/*
 	 * getColor
 	 * @return this Dog's color
 	 */
-	String getColor() {
-		return mColor;
-	}
+	// ADD YOUR METHOD HERE, NAME MUST MATCH DESCRIPTION
+        String getColor() {
+            return mColor;
+        }
 
 	/*
 	 * setColor
@@ -133,117 +155,97 @@ abstract class Dog {
 	 * @param color the new color of the Dog's coat, a String
 	 * @return nothing
 	 */
-	void setColor(String color) {
-		mColor = color;
-	}
+	// ADD YOUR METHOD HERE, NAME MUST MATCH DESCRIPTION
+        void setColor() {
+            String color = mColor;
+        }
 
 	/*
 	 * feed
-	 * Side-effect: 1. The Dog gains weight
-	 * 				2. Every 3 meals, the Dog grows to a larger size, if possible
-	 *				i.e. "tiny" -> "small" -> "average" -> "large"
+	 * Side-effect: 1. The Dog gains weight, specifically WEIGHT_GAIN
+	 *              2. Every 3 meals, the Dog grows to a larger size, if *                 possible
+	 *              i.e. "tiny" (3 meals later ->) "small" (3 meals later ->)
+	 *                   "average" (3 meals later ->) "large"
 	 * @return nothing
 	 */
-	void feed() {
-		mWeight += WEIGHT_GAINED_FROM_FEEDING;
-		// Pre-increment feed counter
-		if (++mFeedCounter == 3) {
-			changeSize(true);
-			mFeedCounter = 0;
-		}
-	}
+	// ADD YOUR METHOD HERE, NAME MUST MATCH DESCRIPTION
+        void feed () {
+            float newWeight = this.getWeight() + (mMeals * WEIGHT_GAIN);
+            int sizeIncrement = (int) Math.floor(mMeals/3);
+            String[] sizes = new String[] {"tiny", "small", "average", "large"}; 
+            List<String> sizeList = Arrays.asList(sizes);
+            int index = sizeList.indexOf(mSize);
+            int newSize = index + sizeIncrement;
+            if (newSize > 3) {
+                newSize = 3;
+            }
+            switch (newSize) {
+                case 0:
+                    System.out.println("Your dog's current size is tiny");
+                    break;
+                case 1:
+                    System.out.println("Your dog's current size is small");
+                    break;
+                case 2:
+                    System.out.println("Your dog's current size is average");
+                    break;
+                case 3:
+                    System.out.println("Your dog's current size is large");
+                    break;    
+            }
+        } 
 
 	/*
 	 * play
-	 * Side-effect: 1. The Dog loses weight
-	 *				2. Every 6 play invocations, the Dog shrinks to a smaller size, if possible
-	 *				i.e. "large" -> "average" -> "small" -> "tiny"
+	 * Side-effect: 1. The Dog loses weight, specifically WEIGHT_LOSS
+	 *				2. Every 6 play invocations, the Dog shrinks to a smaller *                 size, if possible
+	 *				i.e. "large" (6 plays later->) "average" (6 plays later->) *                   "small" -> "tiny"
+     *              3. The Dog cannot shrink to a weight smaller than *                 MIN_WEIGHT
 	 * @return nothing
 	 */
-	void play() {
-		setWeight(getWeight() - WEIGHT_LOST_FROM_FEEDING);
-		if (getWeight() < MINIMUM_WEIGHT) {
-			setWeight(MINIMUM_WEIGHT);
-		}
-		// Pre-increment play counter
-		if (++mPlayCounter == 6) {
-			changeSize(false);
-			mPlayCounter = 0;
-		}
-	}
-
+	// ADD YOUR METHOD HERE, NAME MUST MATCH DESCRIPTION
+        void play () {
+            float newWeight = this.getWeight() - (mPlays * WEIGHT_LOSS);
+            float minWeight = this.MIN_WEIGHT;
+            if (newWeight < minWeight) {
+                newWeight = this.MIN_WEIGHT;
+            }
+            int sizeDecrement = (int) Math.floor(mPlays/6);
+            String[] sizes = new String[] {"tiny", "small", "average", "large"}; 
+            List<String> sizeList = Arrays.asList(sizes);
+            int index = sizeList.indexOf(mSize);
+            int newSize = index - sizeDecrement;
+            if (newSize < 0) {
+                newSize = 0;
+            }
+            switch (newSize) {
+                case 0:
+                    System.out.println("Your dog's current size is tiny");
+                    break;
+                case 1:
+                    System.out.println("Your dog's current size is small");
+                    break;
+                case 2:
+                    System.out.println("Your dog's current size is average");
+                    break;
+                case 3:
+                    System.out.println("Your dog's current size is large");
+                    break;    
+            }
+        }
 	/*
 	 * cutHair
-	 * Side-effect: the Dog's hair length is reduced
+	 * Side-effect: the Dog's hair length is reduced by HAIR_CUT_LENGTH
+     * The Dog's hair cannot be shorter than 0f
 	 * @return nothing
 	 */
-	void cutHair() {
-		setHairLength(getHairLength() - HAIR_LENGTH_REDUCED_FROM_CUT);
-		// Check if we're in the negative hair length a.k.a impossible
-		if (getHairLength() < 0f) {
-			setHairLength(0f);
-		}
-	}
-
-	/*
-	 * final changeSize
-	 * Modify the size of the Dog by 1 move
-	 * @param grow if true, gain a size, shrink otherwise
-	 * @return nothing
-	 */
-	void changeSize(boolean grow) {
-		int sizeIndex = getSizeIndex();
-		sizeIndex = sizeIndex + (grow ? 1 : -1);
-		if (sizeIndex > 3) {
-			sizeIndex = 3;
-		} else if (sizeIndex < 0) {
-			sizeIndex = 0;
-		}
-		setSize(fromSizeIndex(sizeIndex));
-	}
-
-	/*
-	 * getSizeIndex
-	 * A short-cut for calling #getSizeIndex(java.lang.String) with
-	 * the result of #getSize
-	 */
-	int getSizeIndex() {
-		return getSizeIndex(getSize());
-	}
-
-	/*
-	 * getSizeIndex
-	 * @param size the string value representing the size
-	 * @return an index between 0 and 3 in the
-	 * 		   array of {"tiny", "small", "average", "large"}
-	 */
-	int getSizeIndex(String size) {
-		if (size == null) {
-			// Return default "average" when missing size
-			return 2;
-		}
-		switch(size) {
-			case "tiny": return 0;
-			case "small": return 1;
-			case "average": return 2;
-			case "large": return 3;
-			default: return 2;
-		}
-	}
-
-	/*
-	 * fromSizeIndex
-	 * @param index the index into the sizes array
-	 * @return a String, one of {"tiny", "small", "average", "large"}
-	 */
-	String fromSizeIndex(int index) {
-		switch(index) {
-			case 0: return "tiny";
-			case 1: return "small";
-			case 2: return "average";
-			case 3:
-			default: return "large";
-		}
-	}
+	// ADD YOUR METHOD HERE, NAME MUST MATCH DESCRIPTION
+        void cutHair () {
+            float newLength = this.getHairLength() - HAIR_CUT_LENGTH;
+            if (newLength < 0) {
+                newLength = 0;
+            }
+        }
+        
 
 }
