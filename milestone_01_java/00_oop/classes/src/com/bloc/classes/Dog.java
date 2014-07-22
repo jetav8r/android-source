@@ -165,7 +165,8 @@ class Dog {
 	/*
 	 * feed
 	 * Side-effect: 1. The Dog gains weight, specifically WEIGHT_GAIN
-	 *              2. Every 3 meals, the Dog grows to a larger size, if *                 possible
+	 *              2. Every 3 meals, the Dog grows to a larger size, if 
+         *                 possible
 	 *              i.e. "tiny" (3 meals later ->) "small" (3 meals later ->)
 	 *                   "average" (3 meals later ->) "large"
 	 * @return nothing
@@ -208,25 +209,28 @@ class Dog {
 	/*
 	 * play
 	 * Side-effect: 1. The Dog loses weight, specifically WEIGHT_LOSS
-	 *				2. Every 6 play invocations, the Dog shrinks to a smaller *                 size, if possible
-	 *				i.e. "large" (6 plays later->) "average" (6 plays later->) *                   "small" -> "tiny"
-     *              3. The Dog cannot shrink to a weight smaller than *                 MIN_WEIGHT
+	 *		2. Every 6 play invocations, the Dog shrinks to a smaller 
+         *                 size, if possible
+	 *                 i.e. "large" (6 plays later->) "average" (6 plays later->) 
+         *                 "small" -> "tiny"
+         *              3. The Dog cannot shrink to a weight smaller than 
+         *                 MIN_WEIGHT
 	 * @return nothing
 	 */
 	// ADD YOUR METHOD HERE, NAME MUST MATCH DESCRIPTION
         public void play () {
-            float newWeight = this.getWeight() - (mPlays * WEIGHT_LOSS);
-            float minWeight = this.MIN_WEIGHT;
-            if (newWeight < minWeight) {
-                newWeight = this.MIN_WEIGHT;
+            mWeight = this.getWeight() - WEIGHT_LOSS; //takes current weight and subtracts .2 each time
+            if (this.getWeight() < this.MIN_WEIGHT) {
+                mWeight = this.MIN_WEIGHT;
             }
-            int sizeDecrement = (int) Math.floor(mPlays/6);
             String[] sizes = new String[] {"tiny", "small", "average", "large"}; 
             List<String> sizeList = Arrays.asList(sizes);
-            int index = sizeList.indexOf(mSize);
+            int index = sizeList.indexOf(mSize); //gets position in array of size of dog
+            mPlays++;
+            int sizeDecrement = (int) Math.floor(mPlays/6);
             int newSize = index - sizeDecrement;
-            if (newSize < 0) {
-                newSize = 0;
+            if (newSize > 3) {
+                newSize = 3;
             }
             switch (newSize) {
                 case 0:
@@ -246,6 +250,9 @@ class Dog {
                     System.out.println("Your dog's current size is large");
                     break;    
             }
+            System.out.println("index = " + index + " sizeDecrement = " + sizeDecrement +
+                    "newSize = " + newSize +
+                    " mSize = " + mSize + " mMeals = " + mMeals);
         }
 	/*
 	 * cutHair
