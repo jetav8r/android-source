@@ -252,7 +252,7 @@ class Dog {
             }
             System.out.println("index = " + index + " sizeDecrement = " + sizeDecrement +
                     "newSize = " + newSize +
-                    " mSize = " + mSize + " mMeals = " + mMeals);
+                    " mSize = " + mSize + " mPlays = " + mPlays);
         }
 	/*
 	 * cutHair
