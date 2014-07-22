@@ -184,15 +184,19 @@ class Dog {
             }
             switch (newSize) {
                 case 0:
+                    this.mSize = "tiny";
                     System.out.println("Your dog's current size is tiny");
                     break;
                 case 1:
+                    this.mSize = "small";
                     System.out.println("Your dog's current size is small");
                     break;
                 case 2:
+                    this.mSize = "average";
                     System.out.println("Your dog's current size is average");
                     break;
                 case 3:
+                    this.mSize = "large";
                     System.out.println("Your dog's current size is large");
                     break;    
             }
