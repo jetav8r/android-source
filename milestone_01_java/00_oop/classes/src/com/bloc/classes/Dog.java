@@ -200,7 +200,8 @@ class Dog {
                     System.out.println("Your dog's current size is large");
                     break;    
             }
-            System.out.println("index = " +index + " newSize = " + newSize +
+            System.out.println("index = " + index + " sizeIncrement = " + sizeIncrement +
+                    "newSize = " + newSize +
                     " mSize = " + mSize + " mMeals = " + mMeals);
         } 
 
