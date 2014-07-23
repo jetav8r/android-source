@@ -1,5 +1,6 @@
 package com.bloc.loops;
 
+import com.bloc.test.Test;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
@@ -13,7 +14,7 @@ public class Loops extends Object {
                 
                 int i = 0;
                 int j = 7;
-                while (i <= 7) {
+                while (i <= 3) {
                     temp = someBools[j];
                     someBools[j] = someBools[i];
                     someBools[i] = temp;
@@ -56,7 +57,7 @@ public class Loops extends Object {
 		int[] numArray = new int[someBools.length];
 		
 
-                for (int a = 1; a < 8; a++) {
+                for (int a = 0; a < 8; a++) {
                     numArray[a] = !someBools[a] ? 1 : 0;
                 }
                 // This is known as an in-line conditional

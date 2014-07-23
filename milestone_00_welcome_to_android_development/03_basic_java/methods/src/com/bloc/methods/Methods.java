@@ -1,7 +1,8 @@
 package com.bloc.methods;
 
 import java.lang.reflect.Method;
-
+import com.bloc.test.Test;
+import java.util.Arrays;
 
 public class Methods extends Object {
 
@@ -14,7 +15,8 @@ public class Methods extends Object {
 		} else {
 			System.out.println("Looks like your \'" + method.getName() + "\' method has an issue with it.\n");
 		}
-	}
+            }
+
 	// DO NOT MODIFY ABOVE..
 
 
@@ -49,14 +51,13 @@ public class Methods extends Object {
 	 * 		  sign must be flipped
 	 * @return nothing
 	 */
+        
 	public void flipTheSign(int[] numbers) {
             int i = numbers.length;
-            for (int x =0; x <= i; x++) {
+            for (int x =0; x < i; x++) {
                 numbers[x] = numbers[x] * -1;
             }
 	}
-
-
 	/*
 	 * This method returns an array of booleans based on
 	 * comparisons made in a given integer array with an
@@ -78,17 +79,19 @@ public class Methods extends Object {
 	 * @param someNumbers The array of integers
 	 * @return an array of booleans
 	 */
-	public boolean[] boolsRule(int floor, int[] someNumbers) {
-		
-            int a = someNumbers.length;
-                for (int b = 0; b <= a; b++) {
+
+        public boolean[] boolsRule(int floor, int[] someNumbers) {
+            boolean[] boolsArray = new boolean [someNumbers.length];
+            for (int b = 0; b < someNumbers.length; b++) {
                 if (someNumbers[b] >= floor) {
-                    boolean answer[b] = true;
+                    boolsArray[b] = true;
                 } else {
-                    boolean answer[b] = false;
+                    boolsArray[b] = false;
                 }
-            return new boolean [b];    
-	}
+            }
+            return boolsArray;
+        }
+                
 
 	/*
 	 * Recover the minimum and maximum value found in an
@@ -106,20 +109,22 @@ public class Methods extends Object {
 	 *		  must be recovered
 	 * @return an array of length 2: {min, max}
 	 */
-	public int[] getMinAndMax(int[] someNumbers) {
-		int max;
-                int min;
-                int c = someNumbers.length;
-                for (int d = 0; d <= c; d++) {
-                    if (someNumbers[d] > max) {
-                        max = someNumbers[d];
-                    }
-                    if (someNumbers[d] < min) {
-                        min = someNumbers[d];
-                    }
+                
+        public int[] getMinAndMax(int[] someNumbers) {
+            
+            //int[] minAndMax = new int [2];  old initialization
+            int[] minAndMax = {someNumbers[0], someNumbers[0]};
+            for (int d = 1; d < someNumbers.length; d++) {
+                if (someNumbers[d] < minAndMax[0]) {
+                    minAndMax[0] = someNumbers [d];
                 }
+                if (someNumbers[d] > minAndMax[1]) {
+                    minAndMax[1] = someNumbers [d];
+                }
+            }
+            return minAndMax;
+        }
 
 		// You are free to modify the return statement
-		return new int[c];
-	}
+          
 }
