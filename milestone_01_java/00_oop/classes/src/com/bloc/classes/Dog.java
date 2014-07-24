@@ -177,7 +177,9 @@ class Dog {
         List<String> sizeList = Arrays.asList(sizes);
         int index = sizeList.indexOf(mSize); //gets current position in array of size of dog
         mMeals++;
-        System.out.println("pre-evaluation of mMeals and Index = " + index + "mMeals = " + mMeals);
+        /*Used the following to print variables and track program
+         *System.out.println("pre-evaluation of mMeals and Index = " + index + "mMeals = " + mMeals);
+         */
         if (mMeals >= 3) {
             index++;
             mMeals = 0;
@@ -201,8 +203,10 @@ class Dog {
                 System.out.println("Your dog's current size is large");
                 break;    
         }
-        System.out.println("index = " + index + "newSize = " + newSize +
-                " mSize = " + mSize + " mMeals = " + mMeals + " mWeight = " + mWeight);
+        /*Used the following to print variables and track program
+         *System.out.println("index = " + index + "newSize = " + newSize +
+         *   " mSize = " + mSize + " mMeals = " + mMeals + " mWeight = " + mWeight);
+         */
     } 
 
     /*
@@ -223,19 +227,14 @@ class Dog {
         List<String> sizeList = Arrays.asList(sizes);
         int index = sizeList.indexOf(mSize); //gets current position in array of size of dog
         mPlays++;
-        System.out.println("Index = " + index);
+        /* Used to print variable to follow system logic
+         *System.out.println("Index = " + index);
+         */
         if (mPlays >= 6) {
             index--;
             mPlays = 0;
         }
         int newSize = index;
-        //System.out.println("sizeIncrement before evaluation = " + sizeIncrement);
-        //if (sizeIncrement >= 1) {
-        //    sizeIncrement = 0; 
-        //if (this.index > 3) {
-        //    index = 3;
-        //}
-    
         switch (newSize) {
             case 0:
                 this.mSize = "tiny";
@@ -254,8 +253,10 @@ class Dog {
                 System.out.println("Your dog's current size is large");
                 break;    
         }
-        System.out.println("index = " + index + "newSize = " + newSize +
-                " mSize = " + mSize + " mPlays = " + mMeals + " mWeight = " + mWeight);
+        /*Used the following to print variables and track program
+         *System.out.println("index = " + index + "newSize = " + newSize +
+         *       " mSize = " + mSize + " mPlays = " + mMeals + " mWeight = " + mWeight);
+         */
     }
     /*
      * cutHair
