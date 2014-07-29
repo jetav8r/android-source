@@ -2,7 +2,7 @@ package com.bloc.objects;
 
 class Song extends Object {
 	// The ensemble which produced it
-	Ensemble mEnsemble;
+        Ensemble mEnsemble;
 	// Title of the song
 	String mTitle;
 	// The year it was released
@@ -14,6 +14,14 @@ class Song extends Object {
 	 *				 and year of your choosing
 	 */
 	// CONSTRUCTOR CODE GOES HERE
+        Song() {
+            Artist paulMcCartney = new Artist("Paul","McCartney");
+            Artist[] defualt = {paulMcCartney};
+            Ensemble beatles = new Ensemble(defualt);
+            this.mEnsemble = beatles;
+            this.mTitle = "Hey Jude";
+            this.mYearReleased = 1965;
+        }
 
 	/*
 	 * Partial Constructor
@@ -22,6 +30,11 @@ class Song extends Object {
 	 * @param title the song title
 	 */
 	// CONSTRUCTOR CODE GOES HERE
+        Song(Ensemble ensemble, String title) {
+           this(ensemble, title, 0);
+           this.mEnsemble = ensemble;
+           this.mTitle = title;
+        }
 
 	/*
 	 * Full Constructor
@@ -30,4 +43,9 @@ class Song extends Object {
 	 * @param yearReleased the year the song was released
 	 */
 	// CONSTRUCTOR CODE GOES HERE
+        Song (Ensemble ensemble, String title, int yearReleased) {
+            this.mEnsemble = ensemble;
+            this.mTitle = title;
+            this.mYearReleased = yearReleased;
+        }
 }
