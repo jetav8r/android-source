@@ -1,12 +1,16 @@
 package com.bloc.securitypackages.apples;
 
-public class Green extends Apple {
+import com.bloc.securitypackages.Fruit;
+import com.bloc.securitypackages.colors.*;
+
+public class Green extends Fruit {
+    
+    
 
 	public Green() {
 		super(Green.class.getSimpleName(), 230, new LimeGreen(), 0.21d);
 	}
 
-        @Override
 	void bite() {
 		setWeight(getWeight() - 0.02d);
 	}
