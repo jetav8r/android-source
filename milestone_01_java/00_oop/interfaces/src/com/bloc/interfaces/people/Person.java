@@ -1,6 +1,6 @@
 package com.bloc.interfaces.people;
 
-public abstract class Person extends Object {
+public class Person extends Object {
 	// First name
 	private String mFirstName;
 	// Sur name
@@ -15,18 +15,17 @@ public abstract class Person extends Object {
 	private String mEyeColor;
 
 	public Person() {
-
 	}
 
 	public Person(String firstName, String lastName,
 				  String gender, double height, double weight,
 				  String eyeColor) {
-		setFirstName(firstName);
-		setLastName(lastName);
-		setGender(gender);
-		setHeight(height);
-		setWeight(weight);
-		setEyeColor(eyeColor);
+		mFirstName = firstName;
+		mLastName = lastName;
+		mGender = gender;
+		mHeight = height;
+		mWeight = weight;
+		mEyeColor = eyeColor;
 	}
 
 	public String getFirstName() {
@@ -81,22 +80,4 @@ public abstract class Person extends Object {
 	 * Abstract void
 	 methods
 	 */
-
-	public abstract void getInCar();
-
-	public abstract void startEngine();
-
-	public abstract void driveFast();
-
-	public abstract void getInPlane();
-
-	public abstract void jumpFromPlane();
-
-	public abstract void releaseParachute();
-
-	public abstract void putOnShoes();
-
-	public abstract void findAPartner();
-
-	public abstract void salsa();
 }
