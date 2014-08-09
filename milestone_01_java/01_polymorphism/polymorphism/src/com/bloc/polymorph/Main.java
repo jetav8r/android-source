@@ -13,7 +13,22 @@ public class Main extends Object {
 		Tarantula tarantula = new Tarantula();
 
 		// Accomplish the below using polymorphism
-
+                
+                Pet[] pets = new Pet[5];
+                pets[0] = dog;
+                pets[1] = cat;
+                pets[2] = bird;
+                pets[3] = snake;
+                pets[4] = tarantula;
+            for (int i = 0; i < pets.length; i++) {
+                pets[i].feed();
+                pets[i].wash();
+                pets[i].exercise();
+                // code below to see what was in array
+                //System.out.println("Pets in array = " + pets[i]);
+            }
+            //Accomplish the below using polymorphism
+            /*
 		dog.feed();
 		dog.wash();
 		dog.exercise();
@@ -35,6 +50,7 @@ public class Main extends Object {
 		tarantula.exercise();
 
 		// Accomplish the above using polymorphism
+            */
 
 		assert dog.isFed() && dog.isWashed() && dog.isExercised() : "Your dog needs a little more attention";
 		assert cat.isFed() && cat.isWashed() && cat.isExercised() : "Your cat needs a little more attention";
