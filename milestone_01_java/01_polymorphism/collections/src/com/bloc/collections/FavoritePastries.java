@@ -17,14 +17,18 @@ import java.util.*;
  *
  * A pastry may not have duplicate entries
  */
-public class FavoritePastries {
 
+public class FavoritePastries {
+    
+        private final HashMap<Pastry, Integer> mPastryMap;
+    
 	/*
 	 * Use a HashMap to store the relationship
 	 * between rating and pastry
 	 */
 
 	public FavoritePastries() {
+            mPastryMap = new HashMap<>();
 		// WORK HERE
 	}
 
@@ -42,6 +46,8 @@ public class FavoritePastries {
 	 * @return nothing
 	 */
 	public void addPastry(Pastry pastry, int rating) {
+            mPastryMap.put(pastry, rating);
+            System.out.println("mPastryMap = " + mPastryMap + " / ");
 		// WORK HERE
 	}
 
@@ -56,6 +62,8 @@ public class FavoritePastries {
 	 *		   false otherwise
 	 */
 	public boolean removePastry(Pastry pastry) {
+            mPastryMap.remove(pastry);
+            System.out.println("new mPastryMap = " + mPastryMap + " / ");
 		// WORK HERE
 		return false;
 	}
@@ -73,8 +81,10 @@ public class FavoritePastries {
 	 *		   -1 if not found among FavoritePastries
 	 */
 	public int getRatingForPastry(Pastry pastry) {
+            int rating = mPastryMap.get(pastry);
 		// WORK HERE
-		return -1;
+		// original code:  return -1;
+            return rating;
 	}
 
 	/*

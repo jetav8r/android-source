@@ -30,6 +30,9 @@ public class Main extends Object {
 			// Add Pastries
 			for (int i = 0; i < pastries.length; i++) {
 				favoritePastries.addPastry(pastries[i], ratings[i]);
+                                // Line to print pastries and ratings arrays
+                                System.out.println("pastries[" + i + "] = " + pastries[i] +
+                                        " / ratings[" + i + "] = " + ratings[i]);
 			}
 
 			// Test getRatingForPastry
