@@ -30,6 +30,9 @@ public class Main extends Object {
 			recursedMax = RecursionUtils.findMaxRecursively(numberList);
 			if (recursedMax != 2) {
 				System.out.println("Max was supposed to be 2, returned: " + recursedMax);
+                                //code added to see what's going on here
+                                System.out.print("numberList = " + numberList);
+                                System.out.println(", recursedMax = " + recursedMax);
 				System.exit(1);
 			}
 		} catch (Exception e) {

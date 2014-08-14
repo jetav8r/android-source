@@ -13,8 +13,23 @@ public class RecursionUtils extends Object {
 	 *
 	 * Hint: your base case may be a comparison of 2 numbers
 	 */
-	public static final int findMaxRecursively(List<Integer> numbers) {
+    public static final int findMaxRecursively(List<Integer> numbers) {
 		// IMPLEMENT ME
-		return 0;
-	}
+        System.out.println(numbers);
+        System.out.println(numbers.size());
+        int max = 0;
+        int i = 0;
+        while (i <= numbers.size() - 1) {
+            if (numbers.get(i) > max) {
+                //do recursive stuff here
+                max = numbers.get(i);
+                System.out.print("Value of index at i: = " + numbers.get(i));
+                System.out.print(", max = " + max);
+                System.out.println(", i = " + i);
+            }
+            i++; 
+        }
+        //call method with i + 1;
+	return max;
+    }
 }
