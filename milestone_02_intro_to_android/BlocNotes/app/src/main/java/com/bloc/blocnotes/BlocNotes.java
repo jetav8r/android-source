@@ -3,12 +3,14 @@ package com.bloc.blocnotes;
 import android.app.Activity;
 
 import android.app.ActionBar;
+import android.app.AlertDialog;
 import android.app.Fragment;
 import android.app.FragmentManager;
-import android.app.FragmentTransaction;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.os.Build;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -17,6 +19,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.support.v4.widget.DrawerLayout;
 import android.widget.ArrayAdapter;
+import android.widget.EditText;
 import android.widget.TextView;
 
 
@@ -27,7 +30,6 @@ public class BlocNotes extends Activity
      * Fragment managing the behaviors, interactions and presentation of the navigation drawer.
      */
     private NavigationDrawerFragment mNavigationDrawerFragment;
-    private NoteFragment mNoteFragment;
 
     /**
      * Used to store the last screen title. For use in {@link #restoreActionBar()}.
@@ -37,10 +39,8 @@ public class BlocNotes extends Activity
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        Log.d("Wayne","onCreate was called");
         setContentView(R.layout.activity_bloc_notes);
-
-        mNoteFragment = (NoteFragment)
-                getFragmentManager().findFragmentById(R.id.notefragment);
 
         mNavigationDrawerFragment = (NavigationDrawerFragment)
                 getFragmentManager().findFragmentById(R.id.navigation_drawer);
@@ -52,7 +52,55 @@ public class BlocNotes extends Activity
                 (DrawerLayout) findViewById(R.id.drawer_layout));
     }
 
+    @Override
+    protected void onResume() {
+        super.onResume();
+        Log.d("Wayne","onResume was called");
+    }
 
+    @Override
+    protected void onStart() {
+        super.onStart();
+        Log.d("Wayne","onStart was called");
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        Log.d("Wayne","onPause was called");
+    }
+
+    @Override
+    protected void onStop() {
+        super.onStop();
+        Log.d("Wayne","onStop was called");
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        Log.d("Wayne","onDestroy was called");
+    }
+
+    @Override
+    protected void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+        Log.d("Wayne", "onSaveInstanceState was called");
+        final EditText textBox = (EditText) findViewById(R.id.text);
+        CharSequence userText = textBox.getText();
+        outState.putCharSequence("savedText", userText);
+    }
+
+    @Override
+    protected void  onRestoreInstanceState(Bundle savedInstanceState) {
+        super.onRestoreInstanceState(savedInstanceState);
+        Log.d("Wayne","onRestoreInstanceState was called");
+        final EditText textBox = (EditText) findViewById(R.id.text);
+        CharSequence userText = savedInstanceState.getCharSequence("savedText");
+        textBox.setText(userText);
+
+
+    }
     @Override
     public void onNavigationDrawerItemSelected(int position) {
         // update the main content by replacing fragments
@@ -112,7 +160,24 @@ public class BlocNotes extends Activity
         if (id == R.id.action_settings) {
             return true;
         }
+        if (id == R.id.action_erase) {
+            final EditText textBox = (EditText) findViewById(R.id.text);
+            textBox.setText(" ");
+        }
+        if (id == R.id.action_add) {
+            comingSoon();
+        }
         return super.onOptionsItemSelected(item);
+    }
+
+    private void comingSoon() {
+        new AlertDialog.Builder(this).setTitle("Add Notebook").setMessage("Coming Soon").setNeutralButton("OK",
+                new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialogInterface, int i) {
+
+                    }
+                }).show();
     }
 
     /**
@@ -154,5 +219,4 @@ public class BlocNotes extends Activity
                     getArguments().getInt(ARG_SECTION_NUMBER));
         }
     }
-
 }
