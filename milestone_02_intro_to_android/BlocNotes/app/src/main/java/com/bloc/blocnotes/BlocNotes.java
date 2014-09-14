@@ -8,8 +8,11 @@ import android.app.Fragment;
 import android.app.FragmentManager;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.content.Intent;
+import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
+import android.provider.Contacts;
 import android.util.Log;
 import android.view.Gravity;
 import android.view.LayoutInflater;
@@ -21,10 +24,10 @@ import android.support.v4.widget.DrawerLayout;
 import android.widget.ArrayAdapter;
 import android.widget.EditText;
 import android.widget.TextView;
+import android.widget.Toast;
 
 
-public class BlocNotes extends Activity
-        implements NavigationDrawerFragment.NavigationDrawerCallbacks {
+public class BlocNotes extends Activity implements NavigationDrawerFragment.NavigationDrawerCallbacks {
 
     /**
      * Fragment managing the behaviors, interactions and presentation of the navigation drawer.
@@ -117,9 +120,11 @@ public class BlocNotes extends Activity
                 break;
             case 2:
                 mTitle = getString(R.string.title_section2);
+                comingSoon();
                 break;
             case 3:
                 mTitle = getString(R.string.title_section3);
+                openMap();
                 break;
             case 4:
                 mTitle = getString(R.string.title_section4);
@@ -162,22 +167,75 @@ public class BlocNotes extends Activity
         }
         if (id == R.id.action_erase) {
             final EditText textBox = (EditText) findViewById(R.id.text);
-            textBox.setText(" ");
+            textBox.setText("  ");
+            Log.d("Wayne", "textBox =" + textBox.getText().toString());
         }
         if (id == R.id.action_add) {
             comingSoon();
+        }
+        if (id == R.id.action_style) {
+            showDialog();
+            //onStyleChange();
         }
         return super.onOptionsItemSelected(item);
     }
 
     private void comingSoon() {
-        new AlertDialog.Builder(this).setTitle("Add Notebook").setMessage("Coming Soon").setNeutralButton("OK",
-                new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialogInterface, int i) {
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setTitle("Add Notebook");
+        builder.setMessage("Coming Soon!!");
+        builder.setNeutralButton("OK",new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialogInterface, int i) {
+            }
+        });
+        builder.show();
+        //new AlertDialog.Builder(this).setTitle("Add Notebook").setMessage("Coming Soon").setNeutralButton("OK",
+               //new DialogInterface.OnClickListener() {
+                    //@Override
+                   // public void onClick(DialogInterface dialogInterface, int i) {
+                   // }
+                //}).show();
+    }
 
-                    }
-                }).show();
+    private void openMap() {
+        double latitude = 32.715000;
+        double longitude = -117.162500;
+        String label = "Starting point";
+        String uriBegin = "geo:" + latitude + "," + longitude;
+        String query = latitude + "," + longitude + "(" + label + ")";
+        String encodedQuery = Uri.encode(query);
+        String uriString = uriBegin + "?q=" + encodedQuery + "&z=16";
+        Uri uri = Uri.parse(uriString);
+        Intent intent = new Intent(android.content.Intent.ACTION_VIEW, uri);
+        startActivity(intent);
+    }
+
+    public void showDialog() {
+        FragmentManager manager = getFragmentManager();
+        CustomStyleDialogFragment myStyle = new CustomStyleDialogFragment();
+        myStyle.show(manager, "CustomStyle");
+        Toast.makeText(this,"myStyle was launched", Toast.LENGTH_SHORT).show();
+        }
+
+    public void onStyleChange(CustomStyleDialogFragment dialog, int styleId) {
+        Toast.makeText(this,"TESTING STYLE CHANGE",Toast.LENGTH_LONG).show();
+    }
+
+    public void onFontChange(CustomStyleDialogFragment dialog, String fontName) {
+        Toast.makeText(this,"TESTING FONT CHANGE",Toast.LENGTH_LONG).show();
+    }
+
+    public void onThemeChange(CustomStyleDialogFragment dialog, int themeId) {
+        Toast.makeText(this,"TESTING THEME CHANGE",Toast.LENGTH_LONG).show();
+    }
+
+    public void onDialogMessage(String message) {
+        Toast.makeText(this, message, Toast.LENGTH_SHORT).show();
+    }
+
+    public void onStyleChange(View view) {
+        Toast.makeText(this,"Using XML on click call",Toast.LENGTH_LONG).show();
     }
 
     /**

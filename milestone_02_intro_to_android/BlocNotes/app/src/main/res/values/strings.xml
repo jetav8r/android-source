@@ -4,7 +4,7 @@
     <string name="app_name">BlocNotes</string>
     <string name="title_section1">Section 1</string>
     <string name="title_section2">Section 2</string>
-    <string name="title_section3">Section 3</string>
+    <string name="title_section3">Open Maps</string>
     <string name="title_section4">Section 4</string>
     <string name="title_section5">Section 5</string>
     <string name="navigation_drawer_open">Open navigation drawer</string>
@@ -14,5 +14,13 @@
     <string name="add">Add Notebook</string>
     <string name="action_settings">Settings</string>
     <string name="text">This text is editable</string>
+    <string name="ok">OK</string>
+    <string name="cancel">Cancel</string>
+    <string name="action_style">Custom Style</string>
+    <string-array name="items">
+        <item>Set Style</item>
+        <item>Set Font</item>
+        <item>Set Theme</item>
+    </string-array>
 
 </resources>
