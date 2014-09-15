@@ -190,12 +190,6 @@ public class BlocNotes extends Activity implements NavigationDrawerFragment.Navi
             }
         });
         builder.show();
-        //new AlertDialog.Builder(this).setTitle("Add Notebook").setMessage("Coming Soon").setNeutralButton("OK",
-               //new DialogInterface.OnClickListener() {
-                    //@Override
-                   // public void onClick(DialogInterface dialogInterface, int i) {
-                   // }
-                //}).show();
     }
 
     private void openMap() {
@@ -224,6 +218,7 @@ public class BlocNotes extends Activity implements NavigationDrawerFragment.Navi
 
     public void onFontChange(CustomStyleDialogFragment dialog, String fontName) {
         Toast.makeText(this,"TESTING FONT CHANGE",Toast.LENGTH_LONG).show();
+        //pull font info from spinner and apply it to the textbox/system
     }
 
     public void onThemeChange(CustomStyleDialogFragment dialog, int themeId) {
@@ -232,10 +227,6 @@ public class BlocNotes extends Activity implements NavigationDrawerFragment.Navi
 
     public void onDialogMessage(String message) {
         Toast.makeText(this, message, Toast.LENGTH_SHORT).show();
-    }
-
-    public void onStyleChange(View view) {
-        Toast.makeText(this,"Using XML on click call",Toast.LENGTH_LONG).show();
     }
 
     /**

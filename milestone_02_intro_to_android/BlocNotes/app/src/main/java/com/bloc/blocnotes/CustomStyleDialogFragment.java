@@ -2,6 +2,7 @@ package com.bloc.blocnotes;
 
 import android.app.Activity;
 import android.app.DialogFragment;
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -17,6 +18,7 @@ import android.widget.Toast;
  */
 public class CustomStyleDialogFragment extends DialogFragment implements AdapterView.OnItemSelectedListener {
 
+    int mSpinnerPos;
     //Button setFont, setStyle, setTheme;
     //Communicator communicator;
 
@@ -29,14 +31,7 @@ public class CustomStyleDialogFragment extends DialogFragment implements Adapter
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-       View view = inflater.inflate(R.layout.fragment_custom_style_dialog, null);
-        //setFont = (Button) view.findViewById(R.id.setfont);
-        //setStyle = (Button) view.findViewById(R.id.setstyle);
-        //setTheme = (Button) view.findViewById(R.id.settheme);
-        //setStyle.setOnClickListener(this);
-        //setTheme.setOnClickListener(this);
-        //setFont.setOnClickListener(this);
-        //setCancelable(false);
+        View view = inflater.inflate(R.layout.fragment_custom_style_dialog, null);
         return view;
     }
 
@@ -54,13 +49,19 @@ public class CustomStyleDialogFragment extends DialogFragment implements Adapter
     @Override
     public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
         TextView myText = (TextView) view;
-        Toast.makeText(getActivity(),"You selected "+myText.getText(),Toast.LENGTH_LONG).show();
+        Toast.makeText(getActivity(),"You selected "+myText.getText()+", i = "+i,Toast.LENGTH_LONG).show();
+        mSpinnerPos = i;
+        if (i==1) {
+            //(BlocNotes.onFontChange(pass font to method)) or call separate dialog to select font, then pass it back;
+            //also launch font selection submenu/spinner - do the same for the style and theme selections too
+        }
     }
 
     @Override
     public void onNothingSelected(AdapterView<?> adapterView) {
 
     }
+
     //@Override
     //public void onClick(View view) {
         //if (view.getId()==R.id.setfont) {
