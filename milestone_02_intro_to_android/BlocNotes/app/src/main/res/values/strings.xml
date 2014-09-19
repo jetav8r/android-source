@@ -2,6 +2,7 @@
 <resources>
 
     <string name="app_name">BlocNotes</string>
+    <string name="title">Custom Style</string>
     <string name="title_section1">Section 1</string>
     <string name="title_section2">Section 2</string>
     <string name="title_section3">Open Maps</string>
@@ -26,5 +27,19 @@
         <item>Set Font</item>
         <item>Set Theme</item>
     </string-array>
+    <string-array name="fonts">
+        <item>Default Font</item>
+        <item>Helvetica</item>
+        <item>HelveticaNeue Lt</item>
+        <item>Impact</item>
+        <item>Serif</item>
+        <item>Sans Serif</item>
+    </string-array>
+    <string-array name="style">
+        <item>Bold</item>
+        <item>Italic</item>
+        <item>Underlined</item>
+    </string-array>
+
 
 </resources>

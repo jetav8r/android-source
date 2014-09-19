@@ -27,7 +27,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 
-public class BlocNotes extends Activity implements NavigationDrawerFragment.NavigationDrawerCallbacks {
+public class BlocNotes extends Activity implements NavigationDrawerFragment.NavigationDrawerCallbacks, iCustomStyle {
 
     /**
      * Fragment managing the behaviors, interactions and presentation of the navigation drawer.
@@ -101,9 +101,8 @@ public class BlocNotes extends Activity implements NavigationDrawerFragment.Navi
         final EditText textBox = (EditText) findViewById(R.id.text);
         CharSequence userText = savedInstanceState.getCharSequence("savedText");
         textBox.setText(userText);
-
-
     }
+
     @Override
     public void onNavigationDrawerItemSelected(int position) {
         // update the main content by replacing fragments
@@ -175,7 +174,6 @@ public class BlocNotes extends Activity implements NavigationDrawerFragment.Navi
         }
         if (id == R.id.action_style) {
             showDialog();
-            //onStyleChange();
         }
         return super.onOptionsItemSelected(item);
     }
@@ -212,21 +210,21 @@ public class BlocNotes extends Activity implements NavigationDrawerFragment.Navi
         Toast.makeText(this,"myStyle was launched", Toast.LENGTH_SHORT).show();
         }
 
+    @Override
     public void onStyleChange(CustomStyleDialogFragment dialog, int styleId) {
+
         Toast.makeText(this,"TESTING STYLE CHANGE",Toast.LENGTH_LONG).show();
     }
 
+    @Override
     public void onFontChange(CustomStyleDialogFragment dialog, String fontName) {
         Toast.makeText(this,"TESTING FONT CHANGE",Toast.LENGTH_LONG).show();
         //pull font info from spinner and apply it to the textbox/system
     }
 
+    @Override
     public void onThemeChange(CustomStyleDialogFragment dialog, int themeId) {
         Toast.makeText(this,"TESTING THEME CHANGE",Toast.LENGTH_LONG).show();
-    }
-
-    public void onDialogMessage(String message) {
-        Toast.makeText(this, message, Toast.LENGTH_SHORT).show();
     }
 
     /**
