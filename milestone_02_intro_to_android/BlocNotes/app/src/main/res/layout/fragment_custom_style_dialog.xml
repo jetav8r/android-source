@@ -38,7 +38,8 @@
         android:layout_gravity="center_horizontal"
         android:layout_alignParentLeft="true"
         android:layout_alignParentTop="false"
-        android:layout_alignParentBottom="true" />
+        android:layout_alignParentBottom="true"
+        android:background="@drawable/custom_button" />
 
     <Button
         style="?android:attr/buttonStyleSmall"
@@ -46,6 +47,7 @@
         android:layout_height="wrap_content"
         android:text="@string/medium"
         android:id="@+id/medium"
+        android:background="@drawable/custom_button"
         android:layout_gravity="center_horizontal"
         android:layout_alignParentLeft="false"
         android:layout_marginLeft="308dp"
@@ -64,7 +66,8 @@
         android:layout_alignParentLeft="false"
         android:layout_alignParentTop="false"
         android:layout_alignParentBottom="true"
-        android:layout_alignParentRight="true" />
+        android:layout_alignParentRight="true"
+        android:background="@drawable/custom_button" />
 
     <TextView
         android:layout_width="wrap_content"
@@ -77,12 +80,5 @@
         android:layout_alignStart="@+id/medium" />
 
 
-    ExpandableListView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:id="@+id/expandableListView"
-        android:layout_above="@+id/textView4"
-        android:layout_alignRight="@+id/textView4"
-        android:layout_alignEnd="@+id/textView4" />
 
 </RelativeLayout>

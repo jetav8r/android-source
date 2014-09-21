@@ -26,8 +26,10 @@ import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import org.w3c.dom.CharacterData;
 
-public class BlocNotes extends Activity implements NavigationDrawerFragment.NavigationDrawerCallbacks, iCustomStyle {
+
+public class BlocNotes extends Activity implements NavigationDrawerFragment.NavigationDrawerCallbacks {
 
     /**
      * Fragment managing the behaviors, interactions and presentation of the navigation drawer.
@@ -207,26 +209,7 @@ public class BlocNotes extends Activity implements NavigationDrawerFragment.Navi
         FragmentManager manager = getFragmentManager();
         CustomStyleDialogFragment myStyle = new CustomStyleDialogFragment();
         myStyle.show(manager, "CustomStyle");
-        Toast.makeText(this,"myStyle was launched", Toast.LENGTH_SHORT).show();
         }
-
-    @Override
-    public void onStyleChange(CustomStyleDialogFragment dialog, int styleId) {
-
-        Toast.makeText(this,"TESTING STYLE CHANGE",Toast.LENGTH_LONG).show();
-    }
-
-    @Override
-    public void onFontChange(CustomStyleDialogFragment dialog, String fontName) {
-        Toast.makeText(this,"TESTING FONT CHANGE",Toast.LENGTH_LONG).show();
-        //pull font info from spinner and apply it to the textbox/system
-    }
-
-    @Override
-    public void onThemeChange(CustomStyleDialogFragment dialog, int themeId) {
-        Toast.makeText(this,"TESTING THEME CHANGE",Toast.LENGTH_LONG).show();
-    }
-
     /**
      * A placeholder fragment containing a simple view.
      */
