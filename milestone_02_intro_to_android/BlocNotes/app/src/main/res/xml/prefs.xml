@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
+
+
+    <PreferenceCategory
+        android:title="Appearance"
+        android:key="first_category">
+
+
+        <ListPreference
+            android:title="Font Selection"
+            android:summary="Default font for your notes"
+            android:key="@string/fontname"
+            android:defaultValue="4"
+            android:entries="@array/fonts"
+            android:entryValues="@array/listValues" />
+
+        <ListPreference
+            android:title="Font Size"
+            android:summary="Default size for your notes"
+            android:key="@string/fontsize"
+            android:defaultValue="3"
+            android:entries="@array/fontSizes"
+            android:entryValues="@array/listValues" />
+
+    </PreferenceCategory>
+
+</PreferenceScreen>

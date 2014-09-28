@@ -6,27 +6,29 @@ import android.app.ActionBar;
 import android.app.AlertDialog;
 import android.app.Fragment;
 import android.app.FragmentManager;
+import android.app.FragmentTransaction;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.SharedPreferences;
+import android.database.sqlite.SQLiteDatabase;
+import android.graphics.Typeface;
 import android.net.Uri;
-import android.os.Build;
 import android.os.Bundle;
-import android.provider.Contacts;
+import android.preference.PreferenceActivity;
+import android.preference.PreferenceFragment;
+import android.preference.PreferenceManager;
 import android.util.Log;
-import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.support.v4.widget.DrawerLayout;
-import android.widget.ArrayAdapter;
 import android.widget.EditText;
-import android.widget.TextView;
 import android.widget.Toast;
+import android.util.TypedValue;
 
-import org.w3c.dom.CharacterData;
 
 
 public class BlocNotes extends Activity implements NavigationDrawerFragment.NavigationDrawerCallbacks {
@@ -40,12 +42,20 @@ public class BlocNotes extends Activity implements NavigationDrawerFragment.Navi
      * Used to store the last screen title. For use in {@link #restoreActionBar()}.
      */
     private CharSequence mTitle;
+    BlocNotesHelper blocNotesHelper;
+
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+
         super.onCreate(savedInstanceState);
-        Log.d("Wayne","onCreate was called");
+        Log.d("Wayne", "onCreate was called");
+
         setContentView(R.layout.activity_bloc_notes);
+        blocNotesHelper = new BlocNotesHelper(this);
+        SQLiteDatabase sqLiteDatabase = blocNotesHelper.getWritableDatabase();
+        showUserSettings();
 
         mNavigationDrawerFragment = (NavigationDrawerFragment)
                 getFragmentManager().findFragmentById(R.id.navigation_drawer);
@@ -55,6 +65,10 @@ public class BlocNotes extends Activity implements NavigationDrawerFragment.Navi
         mNavigationDrawerFragment.setUp(
                 R.id.navigation_drawer,
                 (DrawerLayout) findViewById(R.id.drawer_layout));
+    }
+
+    private void showUserSettings() {
+        SharedPreferences sharedPrefs = PreferenceManager.getDefaultSharedPreferences(this);
     }
 
     @Override
@@ -93,16 +107,47 @@ public class BlocNotes extends Activity implements NavigationDrawerFragment.Navi
         Log.d("Wayne", "onSaveInstanceState was called");
         final EditText textBox = (EditText) findViewById(R.id.text);
         CharSequence userText = textBox.getText();
+        //Typeface fontName = textBox.getTypeface();
+        float fontSize = textBox.getTextSize();
         outState.putCharSequence("savedText", userText);
+        //Toast.makeText(this, "the fontName is " + fontName,Toast.LENGTH_SHORT).show();
+        outState.putFloat("fontSize", fontSize);
+
+
+
     }
 
     @Override
     protected void  onRestoreInstanceState(Bundle savedInstanceState) {
         super.onRestoreInstanceState(savedInstanceState);
         Log.d("Wayne","onRestoreInstanceState was called");
+
+        SharedPreferences sharedPrefs = this.getPreferences(Context.MODE_PRIVATE);
+        String defaultValue = "Serif";
+        String fontName = sharedPrefs.getString("fontName", defaultValue);
+        //Toast.makeText(this,"fontName from prefs file = " +fontName,Toast.LENGTH_LONG).show();
+
         final EditText textBox = (EditText) findViewById(R.id.text);
         CharSequence userText = savedInstanceState.getCharSequence("savedText");
+        float fontSize = savedInstanceState.getFloat("fontSize");
+        textBox.setTextSize(TypedValue.COMPLEX_UNIT_PX, fontSize);
         textBox.setText(userText);
+
+        if (fontName == "Default") {
+            textBox.setTypeface(Typeface.DEFAULT);
+        } else {
+            if (fontName == "Serif") {
+                textBox.setTypeface(Typeface.SERIF);
+            } else {
+                if (fontName == "Sans Serif") {
+                    textBox.setTypeface(Typeface.SANS_SERIF);
+                } else {
+                    Typeface currentFont = Typeface.createFromAsset(this.getAssets(), fontName);
+                    textBox.setTypeface(currentFont);
+                    //Toast.makeText(this, "the fontName is " + fontName,Toast.LENGTH_SHORT).show();
+                }
+            }
+        }
     }
 
     @Override
@@ -166,6 +211,9 @@ public class BlocNotes extends Activity implements NavigationDrawerFragment.Navi
         if (id == R.id.action_settings) {
             return true;
         }
+        if (id == R.id.preferences) {
+            showPrefs();
+        }
         if (id == R.id.action_erase) {
             final EditText textBox = (EditText) findViewById(R.id.text);
             textBox.setText("  ");
@@ -179,6 +227,7 @@ public class BlocNotes extends Activity implements NavigationDrawerFragment.Navi
         }
         return super.onOptionsItemSelected(item);
     }
+
 
     private void comingSoon() {
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
@@ -205,6 +254,14 @@ public class BlocNotes extends Activity implements NavigationDrawerFragment.Navi
         startActivity(intent);
     }
 
+    private void showPrefs() {
+        FragmentManager manager = getFragmentManager();
+        PrefFragment myPrefs = new PrefFragment();
+        FragmentTransaction fragmentTransaction = manager.beginTransaction();
+        fragmentTransaction.replace(android.R.id.content, myPrefs);
+        fragmentTransaction.addToBackStack("Preferences");
+        fragmentTransaction.commit();
+    }
     public void showDialog() {
         FragmentManager manager = getFragmentManager();
         CustomStyleDialogFragment myStyle = new CustomStyleDialogFragment();

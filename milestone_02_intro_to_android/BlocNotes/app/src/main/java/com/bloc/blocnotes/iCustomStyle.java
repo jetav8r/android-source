@@ -5,7 +5,8 @@ package com.bloc.blocnotes;
  */
 public interface iCustomStyle {
     public void onStyleChange(CustomStyleDialogFragment dialog, int styleId);
-    public void onFontChange(CustomStyleDialogFragment dialog, String fontName);
+    public void onFontChange(CustomStyleDialogFragment dialog, String fontName, int position);
     public void onThemeChange(CustomStyleDialogFragment dialog, int themeId);
+
 }
 

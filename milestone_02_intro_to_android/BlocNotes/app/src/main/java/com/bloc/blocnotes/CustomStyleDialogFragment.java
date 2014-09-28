@@ -2,8 +2,8 @@ package com.bloc.blocnotes;
 
 import android.app.Activity;
 import android.app.DialogFragment;
-import android.content.DialogInterface;
-import android.content.Intent;
+import android.content.Context;
+import android.content.SharedPreferences;
 import android.graphics.Typeface;
 import android.os.Bundle;
 import android.view.LayoutInflater;
@@ -11,13 +11,13 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
-import android.widget.Button;
+import android.widget.CompoundButton;
 import android.widget.EditText;
+import android.widget.RadioButton;
+import android.widget.RadioGroup;
 import android.widget.Spinner;
-import android.widget.TextView;
 import android.widget.Toast;
-
-import java.lang.reflect.Type;
+import android.util.TypedValue;
 
 /**
  * Created by Wayne on 9/8/2014.
@@ -40,38 +40,67 @@ public class CustomStyleDialogFragment extends DialogFragment implements Adapter
         spinner.setAdapter(adapter);
         spinner.setOnItemSelectedListener(this);
 
+        RadioGroup fonts  = (RadioGroup) view.findViewById(R.id.rg_font_size);
+
+        fonts.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(RadioGroup radioGroup, int i) {
+                if (i==R.id.radioButtonSmall) {
+                    final EditText text = (EditText) getActivity().findViewById(R.id.text);
+                    text.setTextSize(TypedValue.COMPLEX_UNIT_PX, 24);
+                    //text.setTextSize(12);
+                } else if (i==R.id.radioButtonMed) {
+                        final EditText text = (EditText) getActivity().findViewById(R.id.text);
+                    text.setTextSize(TypedValue.COMPLEX_UNIT_PX, 44);
+                    //text.setTextSize(18);
+                } else if (i==R.id.radioButtonLarge) {
+                        final EditText text = (EditText) getActivity().findViewById(R.id.text);
+                        text.setTextSize(TypedValue.COMPLEX_UNIT_PX, 64);
+                        //text.setTextSize(24);
+                    }
+            }
+        });
+
+
+        return view;
+    }
+
+        /*
         Button small = (Button) view.findViewById(R.id.small);
         Button medium = (Button) view.findViewById(R.id.medium);
         Button large = (Button) view.findViewById(R.id.large);
-
         small.setOnClickListener(new View.OnClickListener() {
-
-            @Override
-            public void onClick(View view) {
-                final EditText text = (EditText) getActivity().findViewById(R.id.text);
-                text.setTextSize(12);
-            }
+        @Override
+        public void onClick(View view) {
+        final EditText text = (EditText) getActivity().findViewById(R.id.text);
+        text.setTextSize(12);
+        }
         });
         medium.setOnClickListener(new View.OnClickListener() {
+        */
 
-            @Override
-            public void onClick(View view) {
-                final EditText text = (EditText) getActivity().findViewById(R.id.text);
-                text.setTextSize(18);
-            }
-        });
-        large.setOnClickListener(new View.OnClickListener() {
+        /*
+           @Override
+           public void onClick(View view) {
+           final EditText text = (EditText) getActivity().findViewById(R.id.text);
+           text.setTextSize(18);
+           }
+           });
+           large.setOnClickListener(new View.OnClickListener() {
+           */
 
-            @Override
-            public void onClick(View view) {
-                final EditText text = (EditText) getActivity().findViewById(R.id.text);
-                text.setTextSize(24);
-            }
-        });
+        /*
+           @Override
+           public void onClick(View view) {
+           final EditText text = (EditText) getActivity().findViewById(R.id.text);
+           text.setTextSize(24);
+           }
+           });
+           */
 
-        return view;
+        //return view;
 
-    }
+    //}
 
     @Override
     public void onActivityCreated(Bundle savedInstanceState) {
@@ -85,30 +114,37 @@ public class CustomStyleDialogFragment extends DialogFragment implements Adapter
 
         CustomStyleDialogFragment dialog = new CustomStyleDialogFragment();
         String fontName;
+        int position;
         switch (i) {
             case 0:
                 fontName = "Default";
-                this.onFontChange(dialog, fontName);
+                position=1;
+                this.onFontChange(dialog, fontName, position);
                 break;
             case 1:
                 fontName = "Helvetica_Reg.ttf";
-                this.onFontChange(dialog, fontName);
+                position=2;
+                this.onFontChange(dialog, fontName, position);
                 break;
             case 2:
                 fontName = "HelveticaNeue_Lt.ttf";
-                this.onFontChange(dialog, fontName);
+                position=3;
+                this.onFontChange(dialog, fontName, position);
                 break;
             case 3:
                 fontName = "impact.ttf";
-                this.onFontChange(dialog, fontName);
+                position=4;
+                this.onFontChange(dialog, fontName, position);
                 break;
             case 4:
                 fontName = "Serif";
-                this.onFontChange(dialog, fontName);
+                position=5;
+                this.onFontChange(dialog, fontName, position);
                 break;
             case 5:
                 fontName = "Sans Serif";
-                this.onFontChange(dialog, fontName);
+                position=6;
+                this.onFontChange(dialog, fontName, position);
                 break;
         }
     }
@@ -118,14 +154,25 @@ public class CustomStyleDialogFragment extends DialogFragment implements Adapter
 
     }
 
+
     @Override
     public void onStyleChange(CustomStyleDialogFragment dialog, int styleId) {
 
     }
 
+
     @Override
-    public void onFontChange(CustomStyleDialogFragment dialog, String fontName) {
+    public void onFontChange(CustomStyleDialogFragment dialog, String fontName, int position) {
+        //Toast.makeText(getActivity(),"position is " + position ,Toast.LENGTH_SHORT).show();
+        //Toast.makeText(getActivity(), "The onFontChange method was called with fontName = " + fontName, Toast.LENGTH_LONG).show();
         EditText text = (EditText) getActivity().findViewById(R.id.text);
+        Context context = getActivity();
+        SharedPreferences sharedPrefs = getActivity().getPreferences(Context.MODE_PRIVATE);
+        SharedPreferences.Editor editor = sharedPrefs.edit();
+        editor.putString("fontName", fontName);
+        editor.putInt("position", position);
+        editor.commit();
+
         if (fontName == "Default") {
             text.setTypeface(Typeface.DEFAULT);
         } else {
@@ -135,9 +182,10 @@ public class CustomStyleDialogFragment extends DialogFragment implements Adapter
                 if (fontName == "Sans Serif") {
                     text.setTypeface(Typeface.SANS_SERIF);
                 } else {
-                    Typeface currentFont = Typeface.createFromAsset(getActivity().getAssets(), fontName.toString());
+                    Typeface currentFont = Typeface.createFromAsset(getActivity().getAssets(), fontName);
                     text.setTypeface(currentFont);
-                    //Toast.makeText(getActivity(), "The onFontChange method was called with fontName = " + fontName, Toast.LENGTH_LONG).show();
+
+
                     //Toast.makeText(getActivity(), "currentFont variable = " + currentFont, Toast.LENGTH_LONG).show();
                 }
             }

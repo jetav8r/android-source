@@ -28,8 +28,36 @@
         android:layout_alignParentTop="true"
         android:layout_alignParentStart="false"
         android:layout_marginTop="30dp" />
+    <RadioGroup
+        android:id="@+id/rg_font_size"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:layout_alignParentBottom="true"
+        android:layout_centerHorizontal="true"
+        android:layout_alignBottom="@+id/spinner">
 
-    <Button
+        <RadioButton
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/small"
+            android:id="@+id/radioButtonSmall"/>
+
+        <RadioButton
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/medium"
+            android:id="@+id/radioButtonMed"/>
+
+        <RadioButton
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/large"
+            android:id="@+id/radioButtonLarge"/>
+
+    </RadioGroup>
+
+    Button
         style="?android:attr/buttonStyleSmall"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -41,7 +69,7 @@
         android:layout_alignParentBottom="true"
         android:background="@drawable/custom_button" />
 
-    <Button
+    Button
         style="?android:attr/buttonStyleSmall"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -56,7 +84,7 @@
         android:layout_alignParentBottom="true"
         android:layout_centerHorizontal="true" />
 
-    <Button
+    Button
         style="?android:attr/buttonStyleSmall"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -75,9 +103,9 @@
         android:textAppearance="?android:attr/textAppearanceSmall"
         android:text="@string/fontsize"
         android:id="@+id/textView4"
-        android:layout_above="@+id/large"
-        android:layout_alignLeft="@+id/medium"
-        android:layout_alignStart="@+id/medium" />
+        android:layout_above="@+id/rg_font_size"
+        android:layout_centerHorizontal="true" />
+
 
 
 
