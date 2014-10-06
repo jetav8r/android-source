@@ -167,10 +167,10 @@ public class CustomStyleDialogFragment extends DialogFragment implements Adapter
         //Toast.makeText(getActivity(), "The onFontChange method was called with fontName = " + fontName, Toast.LENGTH_LONG).show();
         EditText text = (EditText) getActivity().findViewById(R.id.text);
         Context context = getActivity();
-        SharedPreferences sharedPrefs = getActivity().getPreferences(Context.MODE_PRIVATE);
+        SharedPreferences sharedPrefs = getActivity().getSharedPreferences("Custom",Context.MODE_PRIVATE);
         SharedPreferences.Editor editor = sharedPrefs.edit();
         editor.putString("fontName", fontName);
-        editor.putInt("position", position);
+        //editor.putInt("position", position);
         editor.commit();
 
         if (fontName == "Default") {

@@ -7,6 +7,7 @@ import android.app.AlertDialog;
 import android.app.Fragment;
 import android.app.FragmentManager;
 import android.app.FragmentTransaction;
+import android.content.ContentValues;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -42,20 +43,25 @@ public class BlocNotes extends Activity implements NavigationDrawerFragment.Navi
      * Used to store the last screen title. For use in {@link #restoreActionBar()}.
      */
     private CharSequence mTitle;
-    BlocNotesHelper blocNotesHelper;
+    //BlocNotesHelper blocNotesHelper;
 
 
 
-    @Override
-    protected void onCreate(Bundle savedInstanceState) {
+        @Override
+        protected void onCreate(Bundle savedInstanceState) {
 
-        super.onCreate(savedInstanceState);
-        Log.d("Wayne", "onCreate was called");
+            super.onCreate(savedInstanceState);
+            Log.d("Wayne", "onCreate was called");
 
-        setContentView(R.layout.activity_bloc_notes);
-        blocNotesHelper = new BlocNotesHelper(this);
-        SQLiteDatabase sqLiteDatabase = blocNotesHelper.getWritableDatabase();
-        showUserSettings();
+            setContentView(R.layout.activity_bloc_notes);
+            //blocNotesHelper = new BlocNotesHelper(this);
+            //SQLiteDatabase sqLiteDatabase = blocNotesHelper.getWritableDatabase();
+
+
+        SharedPreferences sharedPrefs = this.getSharedPreferences("com.bloc.blocnotes_preferences",Context.MODE_PRIVATE);
+        String defaultValue = "";
+        String fontName = sharedPrefs.getString("fontName", defaultValue);
+        Log.d("Wayne","fontName from prefs file = " +fontName);
 
         mNavigationDrawerFragment = (NavigationDrawerFragment)
                 getFragmentManager().findFragmentById(R.id.navigation_drawer);
@@ -122,7 +128,7 @@ public class BlocNotes extends Activity implements NavigationDrawerFragment.Navi
         super.onRestoreInstanceState(savedInstanceState);
         Log.d("Wayne","onRestoreInstanceState was called");
 
-        SharedPreferences sharedPrefs = this.getPreferences(Context.MODE_PRIVATE);
+        SharedPreferences sharedPrefs = this.getSharedPreferences("Custom",Context.MODE_PRIVATE);
         String defaultValue = "Serif";
         String fontName = sharedPrefs.getString("fontName", defaultValue);
         //Toast.makeText(this,"fontName from prefs file = " +fontName,Toast.LENGTH_LONG).show();
@@ -209,10 +215,8 @@ public class BlocNotes extends Activity implements NavigationDrawerFragment.Navi
         // as you specify a parent activity in AndroidManifest.xml.
         int id = item.getItemId();
         if (id == R.id.action_settings) {
-            return true;
-        }
-        if (id == R.id.preferences) {
             showPrefs();
+            return true;
         }
         if (id == R.id.action_erase) {
             final EditText textBox = (EditText) findViewById(R.id.text);

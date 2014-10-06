@@ -1,5 +1,6 @@
 package com.bloc.blocnotes;
 
+import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
 import android.database.MatrixCursor;
@@ -21,22 +22,21 @@ public class BlocNotesHelper extends SQLiteOpenHelper {
     private static final String TABLE2_NAME = "notes";
     private static final int DATABASE_VERSION = 3;
     private static final String UID = "_id";
-    private static final String nb_id = "nb_identifier";
-    private static final String nt_id = "note_identifier";
     private static final String name = "name ";
     private static final String body = "body";
     private static final String description = "description";
     private static final String reference = "notebook_reference";
-    private static final String DROP_TABLE = "DROP TABLE IF EXISTS " + TABLE1_NAME + "";
+    private static final String DROP_TABLE_1 = "DROP TABLE IF EXISTS " + TABLE1_NAME + "";
+    private static final String DROP_TABLE_2 = "DROP TABLE IF EXISTS " + TABLE2_NAME + "";
 
     private static final String CREATE_NOTEBOOKS =
             "CREATE TABLE " + TABLE1_NAME +
-                    "(" + UID + " INTEGER PRIMARY KEY AUTOINCREMENT," + nb_id + " VARCHAR(255),"
-                    + name + " VARCHAR(255)," + description + " VARCHAR(255)" + " )";
+                    "(" + UID + " INTEGER PRIMARY KEY AUTOINCREMENT," + name + " VARCHAR(255)," +
+                    description + " VARCHAR(255)" + " )";
     private static final String CREATE_NOTES =
             "CREATE TABLE " + TABLE2_NAME +
-                    "(" + UID + " INTEGER PRIMARY KEY AUTOINCREMENT," + nt_id + " VARCHAR(255),"
-                    + body + " VARCHAR(255)," + reference + " VARCHAR(255)" + " )";
+                    "(" + UID + " INTEGER PRIMARY KEY AUTOINCREMENT," + body + " VARCHAR(255)," +
+                    reference + " VARCHAR(255)" + " )";
 
     public BlocNotesHelper(Context context) {
         super(context, DATABASE_NAME, null, DATABASE_VERSION);
@@ -54,13 +54,27 @@ public class BlocNotesHelper extends SQLiteOpenHelper {
         } catch (SQLException e) {
             Message.message(context, "" + e);
         }
+        ContentValues values = new ContentValues();
 
+        values.put(UID, "1");
+        values.put(name, "Uncategorized");
+        values.put(description, "Default Notebook");
+        sqLiteDatabase.insert("Notebooks", null, values);
+
+        values.clear();
+        values.put(UID, "1");
+        values.put(body, "Begin typing note here");
+        values.put(reference, "Uncategorized");
+        sqLiteDatabase.insert("Notes", null, values);
+
+        //sqLiteDatabase.close();
     }
 
     @Override
     public void onUpgrade(SQLiteDatabase sqLiteDatabase, int i, int i2) {
         try {
-            sqLiteDatabase.execSQL(DROP_TABLE);
+            sqLiteDatabase.execSQL(DROP_TABLE_1);
+            sqLiteDatabase.execSQL(DROP_TABLE_2);
             Message.message(context, "onUpgrade was called");
             onCreate(sqLiteDatabase);
         } catch (SQLException e) {
