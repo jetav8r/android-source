@@ -19,6 +19,7 @@ import android.os.Bundle;
 import android.preference.PreferenceActivity;
 import android.preference.PreferenceFragment;
 import android.preference.PreferenceManager;
+import android.text.Editable;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -43,6 +44,8 @@ public class BlocNotes extends Activity implements NavigationDrawerFragment.Navi
      * Used to store the last screen title. For use in {@link #restoreActionBar()}.
      */
     private CharSequence mTitle;
+    public static String mNewNotebook;
+
     //BlocNotesHelper blocNotesHelper;
 
 
@@ -54,14 +57,7 @@ public class BlocNotes extends Activity implements NavigationDrawerFragment.Navi
             Log.d("Wayne", "onCreate was called");
 
             setContentView(R.layout.activity_bloc_notes);
-            //blocNotesHelper = new BlocNotesHelper(this);
-            //SQLiteDatabase sqLiteDatabase = blocNotesHelper.getWritableDatabase();
 
-
-        SharedPreferences sharedPrefs = this.getSharedPreferences("com.bloc.blocnotes_preferences",Context.MODE_PRIVATE);
-        String defaultValue = "";
-        String fontName = sharedPrefs.getString("fontName", defaultValue);
-        Log.d("Wayne","fontName from prefs file = " +fontName);
 
         mNavigationDrawerFragment = (NavigationDrawerFragment)
                 getFragmentManager().findFragmentById(R.id.navigation_drawer);
@@ -71,10 +67,6 @@ public class BlocNotes extends Activity implements NavigationDrawerFragment.Navi
         mNavigationDrawerFragment.setUp(
                 R.id.navigation_drawer,
                 (DrawerLayout) findViewById(R.id.drawer_layout));
-    }
-
-    private void showUserSettings() {
-        SharedPreferences sharedPrefs = PreferenceManager.getDefaultSharedPreferences(this);
     }
 
     @Override
@@ -234,15 +226,34 @@ public class BlocNotes extends Activity implements NavigationDrawerFragment.Navi
 
 
     private void comingSoon() {
+        final EditText userInput = new EditText(this);
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
-        builder.setTitle("Add Notebook");
-        builder.setMessage("Coming Soon!!");
+        builder.setTitle("New Notebook");
+        builder.setView(userInput);
+        builder.setMessage("Notebook Name?");
         builder.setNeutralButton("OK",new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialogInterface, int i) {
+                Editable newText = userInput.getText();
+                Message.message(getBaseContext(), "newText = " + newText);
+                mNewNotebook=newText.toString();
+                Message.message(getBaseContext(), "mNewNotebook = " + mNewNotebook);
+                insertNewNotebook();
             }
         });
         builder.show();
+
+    }
+
+    public void insertNewNotebook() {
+        BlocNotesHelper blocNotesHelper = new BlocNotesHelper(this);
+        SQLiteDatabase sqLiteDatabase = blocNotesHelper.getWritableDatabase();
+        ContentValues values = new ContentValues();
+        values.put(BlocNotesHelper.name, mNewNotebook);
+        //values.put(description, "New Notebook");
+        long id = sqLiteDatabase.insert("Notebooks", BlocNotesHelper.description, values);
+        values.clear();
+        Message.message(this,"id = "+id);
     }
 
     private void openMap() {
@@ -300,6 +311,9 @@ public class BlocNotes extends Activity implements NavigationDrawerFragment.Navi
         public View onCreateView(LayoutInflater inflater, ViewGroup container,
                 Bundle savedInstanceState) {
             View rootView = inflater.inflate(R.layout.fragment_bloc_notes, container, false);
+
+
+
             return rootView;
         }
 

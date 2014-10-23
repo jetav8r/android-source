@@ -13,21 +13,11 @@ import android.database.sqlite.SQLiteDatabase;
 
     BlocNotesHelper blocNotesHelper;
 
-    //private static DbLauncher myDb;
-
-    //public DbLauncher getInstance(){
-        //return myDb;
-    //}
     @Override
     public void onCreate() {
         super.onCreate();
-        ContentValues values = new ContentValues();
         blocNotesHelper = new BlocNotesHelper(this);
         SQLiteDatabase sqLiteDatabase = blocNotesHelper.getWritableDatabase();
-        //sqLiteDatabase.insert("notebooks","description",values);
-        //sqLiteDatabase.close();
-        //myDb = this;
-
     }
 }
 

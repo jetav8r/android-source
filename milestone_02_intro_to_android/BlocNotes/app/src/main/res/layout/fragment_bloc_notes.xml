@@ -21,6 +21,7 @@
         android:layout_centerVertical="true"
         android:layout_centerHorizontal="true"
         android:text="@string/text"
+        android:typeface="serif"
         android:background="@drawable/custom_edit_text"
         android:textColor="@android:color/black" />
 
