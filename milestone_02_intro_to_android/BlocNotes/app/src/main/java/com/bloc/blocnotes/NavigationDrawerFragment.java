@@ -4,8 +4,15 @@ package com.bloc.blocnotes;
 import android.app.Activity;
 import android.app.ActionBar;
 import android.app.Fragment;
+import android.app.FragmentManager;
+import android.app.FragmentTransaction;
+import android.app.LoaderManager;
+import android.content.CursorLoader;
+import android.content.Loader;
 import android.database.Cursor;
 import android.support.v4.app.ActionBarDrawerToggle;
+
+
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.content.SharedPreferences;
@@ -19,18 +26,24 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
-import android.widget.ArrayAdapter;
 import android.widget.ListView;
 import android.widget.SimpleCursorAdapter;
-import android.widget.Toast;
+
+import com.bloc.blocnotes.adapters.DrawerAdapter;
+import com.bloc.blocnotes.adapters.DrawerAdapterCursor;
+import com.bloc.blocnotes.bd.BaseContract;
+import com.bloc.blocnotes.bd.BlocNotesHelper;
+import com.bloc.blocnotes.bd.NotebooksDao;
 
 /**
  * Fragment used for managing interactions for and presentation of a navigation drawer.
  * See the <a href="https://developer.android.com/design/patterns/navigation-drawer.html#Interaction">
  * design guidelines</a> for a complete explanation of the behaviors implemented here.
  */
-public class NavigationDrawerFragment extends Fragment {
+public class NavigationDrawerFragment extends Fragment implements LoaderManager.LoaderCallbacks<Cursor>{
 
+
+    //private SimpleCursorAdapter adapter;
     /**
      * Remember the position of the selected item.
      */
@@ -59,6 +72,13 @@ public class NavigationDrawerFragment extends Fragment {
     private int mCurrentSelectedPosition = 0;
     private boolean mFromSavedInstanceState;
     private boolean mUserLearnedDrawer;
+    private DrawerAdapterCursor mDrawerAdapter;//create a new adapter
+   // private DrawerAdapter mDrawerAdapter;
+    //public NotebooksDao mNotebooksDao;//no need it, loader works for us
+
+
+
+    public static String mCurrentPositionString;
 
     public NavigationDrawerFragment() {
     }
@@ -77,8 +97,10 @@ public class NavigationDrawerFragment extends Fragment {
             mFromSavedInstanceState = true;
         }
 
+
+
         // Select either the default item (0) or the last selected item.
-        selectItem(mCurrentSelectedPosition);
+        //selectItem(mCurrentSelectedPosition);
     }
 
     @Override
@@ -92,8 +114,8 @@ public class NavigationDrawerFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
             Bundle savedInstanceState) {
 
-        BlocNotesHelper blocNotesHelper = new BlocNotesHelper(getActivity());
-        Cursor cursor = blocNotesHelper.getAllNotebooks();
+       //BlocNotesHelper blocNotesHelper = new BlocNotesHelper(getActivity());
+       //Cursor cursor = blocNotesHelper.getAllNotebooks();
 
         mDrawerListView = (ListView) inflater.inflate(
                 R.layout.fragment_navigation_drawer, container, false);
@@ -104,19 +126,31 @@ public class NavigationDrawerFragment extends Fragment {
             }
         });
 
+
+        /*
         // The desired columns to be bound
         String[] columns = new String[] {
-                BlocNotesHelper.name
+                BaseContract.NotebooksEntry.NAME
         };
 
         // the XML defined views which the data will be bound to
-        int[] to = new int[] {
+        int[]
+        };to = new int[] {
                 android.R.id.text1,
-        };
 
+        adapter = new SimpleCursorAdapter(getActionBar().getThemedContext(),
+                android.R.layout.simple_list_item_activated_1, null, columns, to, 0);
 
-         mDrawerListView.setAdapter(new SimpleCursorAdapter(getActionBar().getThemedContext(),
-                 android.R.layout.simple_list_item_activated_1, cursor, columns, to));
+*///after we create another cursoradapter
+
+        //mNotebooksDao = new NotebooksDao(getActivity());
+        //first we create a cursor null with no data
+        mDrawerAdapter = new DrawerAdapterCursor(getActivity(), 0, null, new String[]{}, new int[]{});
+
+        //we need to initiate loader
+        getLoaderManager().initLoader(0, null, this);
+
+        mDrawerListView.setAdapter(mDrawerAdapter);
         //mDrawerListView.setAdapter(new ArrayAdapter<String>(
         //        getActionBar().getThemedContext(),
         //        android.R.layout.simple_list_item_activated_1,
@@ -212,8 +246,20 @@ public class NavigationDrawerFragment extends Fragment {
 
     private void selectItem(int position) {
         mCurrentSelectedPosition = position;
+
+        //mCurrentPositionString = getString(getText(mDrawerListView));
+        Message.message(getActivity(),"position = "+position);
+
         if (mDrawerListView != null) {
             mDrawerListView.setItemChecked(position, true);
+            /*
+            FragmentManager manager = getFragmentManager();
+            NotebookFragment notebookFragment = new NotebookFragment();
+            FragmentTransaction fragmentTransaction = manager.beginTransaction();
+            fragmentTransaction.replace(android.R.id.content, notebookFragment);
+            fragmentTransaction.addToBackStack("Notebook");
+            fragmentTransaction.commit();
+            */
         }
         if (mDrawerLayout != null) {
             mDrawerLayout.closeDrawer(mFragmentContainerView);
@@ -270,7 +316,8 @@ public class NavigationDrawerFragment extends Fragment {
         }
 
         //if (item.getItemId() == R.id.action_add) {
-        //    Toast.makeText(getActivity(), "Coming Soon.", Toast.LENGTH_SHORT).show();
+
+        //Toast.makeText(getActivity(), "item id = " + item.getItemId(), Toast.LENGTH_SHORT).show();
         //    return true;
         //}
 
@@ -292,6 +339,32 @@ public class NavigationDrawerFragment extends Fragment {
         return getActivity().getActionBar();
     }
 
+    //now we create a query
+    @Override
+    public Loader<Cursor> onCreateLoader(int i, Bundle bundle) {
+        return new CursorLoader(
+                getActivity(),   // Parent activity context
+                BaseContract.NotebooksEntry.URI,        // Table to query
+                null,     // Projection to return
+                null,            // where//all
+                null,            // Selection args//all
+                BaseContract.NotebooksEntry.NAME// Default sort order//sorting by name
+        );
+    }
+
+    @Override
+    public void onLoadFinished(Loader<Cursor> cursorLoader, Cursor cursor) {
+        //when load finish, set cursor to adapter
+        mDrawerAdapter.swapCursor(cursor);
+
+    }
+
+    @Override
+    public void onLoaderReset(Loader<Cursor> cursorLoader) {
+        //when load reset, set null cursor
+        mDrawerAdapter.swapCursor(null);
+    }
+
     /**
      * Callbacks interface that all activities using this fragment must implement.
      */
@@ -301,4 +374,7 @@ public class NavigationDrawerFragment extends Fragment {
          */
         void onNavigationDrawerItemSelected(int position);
     }
+
+
+
 }

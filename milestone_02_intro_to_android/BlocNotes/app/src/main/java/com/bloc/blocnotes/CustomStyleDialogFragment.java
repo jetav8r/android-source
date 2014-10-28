@@ -27,7 +27,6 @@ public class CustomStyleDialogFragment extends DialogFragment implements Adapter
     @Override
     public void onAttach(Activity activity) {
         super.onAttach(activity);
-        //communicator= (Communicator) activity;
     }
 
     @Override

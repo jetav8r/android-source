@@ -7,18 +7,13 @@ import android.app.AlertDialog;
 import android.app.Fragment;
 import android.app.FragmentManager;
 import android.app.FragmentTransaction;
-import android.content.ContentValues;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.database.sqlite.SQLiteDatabase;
 import android.graphics.Typeface;
 import android.net.Uri;
 import android.os.Bundle;
-import android.preference.PreferenceActivity;
-import android.preference.PreferenceFragment;
-import android.preference.PreferenceManager;
 import android.text.Editable;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -28,9 +23,14 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.support.v4.widget.DrawerLayout;
 import android.widget.EditText;
-import android.widget.Toast;
 import android.util.TypedValue;
 
+import com.bloc.blocnotes.bd.Note;
+import com.bloc.blocnotes.bd.Notebook;
+import com.bloc.blocnotes.bd.NotebooksDao;
+import com.bloc.blocnotes.bd.NotesDao;
+
+import java.util.ArrayList;
 
 
 public class BlocNotes extends Activity implements NavigationDrawerFragment.NavigationDrawerCallbacks {
@@ -45,6 +45,7 @@ public class BlocNotes extends Activity implements NavigationDrawerFragment.Navi
      */
     private CharSequence mTitle;
     public static String mNewNotebook;
+
 
     //BlocNotesHelper blocNotesHelper;
 
@@ -67,6 +68,11 @@ public class BlocNotes extends Activity implements NavigationDrawerFragment.Navi
         mNavigationDrawerFragment.setUp(
                 R.id.navigation_drawer,
                 (DrawerLayout) findViewById(R.id.drawer_layout));
+
+            FragmentManager fragmentManager = getFragmentManager();
+            fragmentManager.beginTransaction()
+                    .replace(R.id.container, PlaceholderFragment.newInstance(0))
+                    .commit();
     }
 
     @Override
@@ -113,6 +119,7 @@ public class BlocNotes extends Activity implements NavigationDrawerFragment.Navi
 
 
 
+
     }
 
     @Override
@@ -150,11 +157,32 @@ public class BlocNotes extends Activity implements NavigationDrawerFragment.Navi
 
     @Override
     public void onNavigationDrawerItemSelected(int position) {
+        NotebooksDao notebooksDao = new NotebooksDao(this);
+        ArrayList<Notebook> listNotebooks = new ArrayList<Notebook>();
+        listNotebooks = notebooksDao.getAllNotebooks();
+
+        //at this point we dont have data in database
+        ///then we canot access zero position of array list, is null
+        //we need to create a test first
+        if(!listNotebooks.isEmpty()){//if not empty
+            Notebook selectedNotebook =listNotebooks.get(position);
+
+            FragmentManager fragmentManager = getFragmentManager();
+            fragmentManager.beginTransaction()
+                    .replace(R.id.container, NotesFragment.newInstance(selectedNotebook))
+                    .commit();
+        }//else do nothing
+
+
+        //Message.message(this, selectedNotebook.getName());
+
         // update the main content by replacing fragments
-        FragmentManager fragmentManager = getFragmentManager();
+
+        /*FragmentManager fragmentManager = getFragmentManager();
         fragmentManager.beginTransaction()
                 .replace(R.id.container, PlaceholderFragment.newInstance(position + 1))
                 .commit();
+        */
     }
 
     public void onSectionAttached(int number) {
@@ -164,14 +192,14 @@ public class BlocNotes extends Activity implements NavigationDrawerFragment.Navi
                 break;
             case 2:
                 mTitle = getString(R.string.title_section2);
-                comingSoon();
                 break;
             case 3:
                 mTitle = getString(R.string.title_section3);
-                openMap();
+                //openMap();
                 break;
             case 4:
                 mTitle = getString(R.string.title_section4);
+                //getNotes();
                 break;
             case 5:
                 mTitle = getString(R.string.title_section5);
@@ -179,6 +207,45 @@ public class BlocNotes extends Activity implements NavigationDrawerFragment.Navi
         }
     }
 
+    //public Cursor getNotes(String notebook_reference){
+    //public void getNotes(){
+        // The desired columns to be bound
+        //String [] columns = {body, reference};
+        //String[] columns = {BlocNotesHelper.UID, BlocNotesHelper.reference, BlocNotesHelper.body};
+        //String nbRef = "To Do";
+        //String nbRef = (String) mTitle;
+        // the XML defined views which the data will be bound to
+        //int[] to = new int[] {
+        //        android.R.id.text1
+        //};
+        //BlocNotesHelper blocNotesHelper = new BlocNotesHelper(this);
+        //SQLiteDatabase sqLiteDatabase = blocNotesHelper.getWritableDatabase();
+        //Cursor cursor = sqLiteDatabase.query(BlocNotesHelper.TABLE2_NAME,columns,BlocNotesHelper.reference+" = '"+nbRef+"'",null,null,null,null);
+        //SimpleCursorAdapter dataAdapter;
+        //dataAdapter = new SimpleCursorAdapter(this, R.layout.fragment_notebook, cursor, columns, to);
+        //ListView listView = (ListView) findViewById(R.id.listView);
+        //listView.setAdapter(dataAdapter);
+
+
+
+
+
+        //StringBuffer buffer = new StringBuffer();
+        //while (cursor.moveToNext()) {
+            //int index1 = cursor.getColumnIndex(BlocNotesHelper.reference);
+            //int index2 = cursor.getColumnIndex(BlocNotesHelper.body);
+            //int cid = cursor.getInt(0);
+            //String ref = cursor.getString(index1);
+            //String contents = cursor.getString(index2);
+            //buffer.append(cid+ " "+name +" "+desc +"\n");
+            //buffer.append(ref + " " + contents + "\n");
+            //String data = buffer.toString();
+            //Message.message(this, data);
+        //}
+        //return cursor;
+
+
+    //}
     public void restoreActionBar() {
         ActionBar actionBar = getActionBar();
         actionBar.setNavigationMode(ActionBar.NAVIGATION_MODE_STANDARD);
@@ -216,7 +283,7 @@ public class BlocNotes extends Activity implements NavigationDrawerFragment.Navi
             Log.d("Wayne", "textBox =" + textBox.getText().toString());
         }
         if (id == R.id.action_add) {
-            comingSoon();
+            newNotebook();
         }
         if (id == R.id.action_style) {
             showDialog();
@@ -225,7 +292,8 @@ public class BlocNotes extends Activity implements NavigationDrawerFragment.Navi
     }
 
 
-    private void comingSoon() {
+
+    private void newNotebook() {
         final EditText userInput = new EditText(this);
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
         builder.setTitle("New Notebook");
@@ -245,15 +313,15 @@ public class BlocNotes extends Activity implements NavigationDrawerFragment.Navi
 
     }
 
+
     public void insertNewNotebook() {
-        BlocNotesHelper blocNotesHelper = new BlocNotesHelper(this);
-        SQLiteDatabase sqLiteDatabase = blocNotesHelper.getWritableDatabase();
-        ContentValues values = new ContentValues();
-        values.put(BlocNotesHelper.name, mNewNotebook);
-        //values.put(description, "New Notebook");
-        long id = sqLiteDatabase.insert("Notebooks", BlocNotesHelper.description, values);
-        values.clear();
-        Message.message(this,"id = "+id);
+        Notebook notebook = new Notebook();
+        notebook.setName(mNewNotebook);
+
+        NotebooksDao notebooksDao = new NotebooksDao(this);
+        notebooksDao.insert(notebook);
+
+        Message.message(this, "inserted");
     }
 
     private void openMap() {
