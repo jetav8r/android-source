@@ -6,6 +6,8 @@ import android.content.Context;
 import android.content.Intent;
 import android.database.sqlite.SQLiteDatabase;
 
+import com.bloc.blocnotes.bd.BlocNotesHelper;
+
 /**
  * Created by Wayne on 10/2/2014.
  */

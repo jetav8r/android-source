@@ -56,7 +56,7 @@ public class BlocNotesHelper extends SQLiteOpenHelper {
     public BlocNotesHelper(Context context) {
         super(context, DATABASE_NAME, null, DATABASE_VERSION);
         this.context = context;
-        Message.message(context, "constructor was called");
+        //Message.message(context, "db constructor was called");
     }
 
     /*
@@ -88,70 +88,70 @@ public class BlocNotesHelper extends SQLiteOpenHelper {
             //Message.message(context, "" + e);
         }
 
-        /* we use this later maybe?
+        // we use this later maybe?
         ContentValues values = new ContentValues();
 
-        values.put(UID, "1");
-        values.put(name, "Uncategorized");
-        values.put(description, "Default Notebook");
+        values.put(BaseContract.NotebooksEntry._ID, "1");
+        values.put(BaseContract.NotebooksEntry.NAME, "Uncategorized");
+        values.put(BaseContract.NotebooksEntry.DESCRIPTION, "Default Notebook");
         sqLiteDatabase.insert("Notebooks", null, values);
         values.clear();
 
-        values.put(UID, "2");
-        values.put(name, "Dreams");
-        values.put(description, "Dreams Notebook");
+        values.put(BaseContract.NotebooksEntry._ID, "2");
+        values.put(BaseContract.NotebooksEntry.NAME, "Dreams");
+        values.put(BaseContract.NotebooksEntry.DESCRIPTION, "Dreams Notebook");
         sqLiteDatabase.insert("Notebooks", null, values);
         values.clear();
 
-        values.put(UID, "3");
-        values.put(name, "To Do");
-        values.put(description, "To Do List");
+        values.put(BaseContract.NotebooksEntry._ID, "3");
+        values.put(BaseContract.NotebooksEntry.NAME, "To Do");
+        values.put(BaseContract.NotebooksEntry.DESCRIPTION, "To Do List");
         sqLiteDatabase.insert("Notebooks", null, values);
         values.clear();
 
-        values.put(UID, "4");
-        values.put(name, "Goals");
-        values.put(description, "Long Term Goals");
+        values.put(BaseContract.NotebooksEntry._ID, "4");
+        values.put(BaseContract.NotebooksEntry.NAME, "Goals");
+        values.put(BaseContract.NotebooksEntry.DESCRIPTION, "Long Term Goals");
         sqLiteDatabase.insert("Notebooks", null, values);
         values.clear();
 
-        values.put(UID, "5");
-        values.put(name, "Grocery List");
-        values.put(description, "Grocery List");
+        values.put(BaseContract.NotebooksEntry._ID, "5");
+        values.put(BaseContract.NotebooksEntry.NAME, "Grocery List");
+        values.put(BaseContract.NotebooksEntry.DESCRIPTION, "Grocery List");
         sqLiteDatabase.insert("Notebooks", null, values);
         values.clear();
 
-        values.put(UID, "1");
-        values.put(body, "Begin typing note here");
-        values.put(reference, "Uncategorized");
+        values.put(BaseContract.NotesEntry._ID, "1");
+        values.put(BaseContract.NotesEntry.BODY, "Begin typing note here");
+        values.put(BaseContract.NotesEntry.REFERENCE, "Uncategorized");
         sqLiteDatabase.insert("Notes", null, values);
 
-        values.put(UID, "2");
-        values.put(body, "I had a dream that I drank the worlds' biggest margarita.  When woke up I was hugging the toilet");
-        values.put(reference, "Dreams");
+        values.put(BaseContract.NotesEntry._ID, "2");
+        values.put(BaseContract.NotesEntry.BODY, "I had a dream that I drank the worlds' biggest margarita.  When woke up I was hugging the toilet");
+        values.put(BaseContract.NotesEntry.REFERENCE, "Dreams");
         sqLiteDatabase.insert("Notes", null, values);
 
-        values.put(UID, "3");
-        values.put(body, "My dream last night was that I had 45 dogs in my house!");
-        values.put(reference, "Dreams");
+        values.put(BaseContract.NotesEntry._ID, "3");
+        values.put(BaseContract.NotesEntry.BODY, "My dream last night was that I had 45 dogs in my house!");
+        values.put(BaseContract.NotesEntry.REFERENCE, "Dreams");
         sqLiteDatabase.insert("Notes", null, values);
 
-        values.put(UID, "4");
-        values.put(body, "I had a dream that I was dreaming");
-        values.put(reference, "Dreams");
+        values.put(BaseContract.NotesEntry._ID, "4");
+        values.put(BaseContract.NotesEntry.BODY, "I had a dream that I was dreaming");
+        values.put(BaseContract.NotesEntry.REFERENCE, "Dreams");
         sqLiteDatabase.insert("Notes", null, values);
 
-        values.put(UID, "5");
-        values.put(body, "Find grant writer for dog stuff");
-        values.put(reference, "To Do");
+        values.put(BaseContract.NotesEntry._ID, "5");
+        values.put(BaseContract.NotesEntry.BODY, "Find grant writer for dog stuff");
+        values.put(BaseContract.NotesEntry.REFERENCE, "To Do");
         sqLiteDatabase.insert("Notes", null, values);
 
-        values.put(UID, "6");
-        values.put(body, "Finish fixing shifter-karts");
-        values.put(reference, "To Do");
+        values.put(BaseContract.NotesEntry._ID, "6");
+        values.put(BaseContract.NotesEntry.BODY, "Finish fixing shifter-karts");
+        values.put(BaseContract.NotesEntry.REFERENCE, "To Do");
         sqLiteDatabase.insert("Notes", null, values);
 
-        */
+
         //String[] columns = {UID, name, description};
         //Cursor cursor = sqLiteDatabase.query(TABLE1_NAME,columns,null,null,null,null,null);
         //String[] columns = {UID, reference, body};

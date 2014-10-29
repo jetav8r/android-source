@@ -9,9 +9,7 @@ import android.widget.SimpleCursorAdapter;
 import android.widget.TextView;
 
 import com.bloc.blocnotes.bd.BaseContract;
-import com.bloc.blocnotes.bd.Notebook;
-
-import org.w3c.dom.Text;
+import com.bloc.blocnotes.model.Notebook;
 
 /**
  * Created by Wayne on 10/26/2014.

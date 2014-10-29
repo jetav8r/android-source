@@ -4,8 +4,6 @@ package com.bloc.blocnotes;
 import android.app.Activity;
 import android.app.ActionBar;
 import android.app.Fragment;
-import android.app.FragmentManager;
-import android.app.FragmentTransaction;
 import android.app.LoaderManager;
 import android.content.CursorLoader;
 import android.content.Loader;
@@ -27,13 +25,9 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ListView;
-import android.widget.SimpleCursorAdapter;
 
-import com.bloc.blocnotes.adapters.DrawerAdapter;
 import com.bloc.blocnotes.adapters.DrawerAdapterCursor;
 import com.bloc.blocnotes.bd.BaseContract;
-import com.bloc.blocnotes.bd.BlocNotesHelper;
-import com.bloc.blocnotes.bd.NotebooksDao;
 
 /**
  * Fragment used for managing interactions for and presentation of a navigation drawer.
@@ -248,7 +242,7 @@ public class NavigationDrawerFragment extends Fragment implements LoaderManager.
         mCurrentSelectedPosition = position;
 
         //mCurrentPositionString = getString(getText(mDrawerListView));
-        Message.message(getActivity(),"position = "+position);
+        //Message.message(getActivity(),"position = "+position);
 
         if (mDrawerListView != null) {
             mDrawerListView.setItemChecked(position, true);

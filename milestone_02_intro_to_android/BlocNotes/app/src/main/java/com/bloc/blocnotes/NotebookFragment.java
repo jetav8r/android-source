@@ -5,21 +5,15 @@ import android.app.LoaderManager;
 import android.content.CursorLoader;
 import android.database.Cursor;
 import android.os.Bundle;
-import android.support.v4.content.Loader;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
 import android.widget.ListView;
 
-import com.bloc.blocnotes.adapters.ListViewAdapter;
 import com.bloc.blocnotes.adapters.ListViewAdapterCursor;
 import com.bloc.blocnotes.bd.BaseContract;
-import com.bloc.blocnotes.bd.BlocNotesHelper;
-import com.bloc.blocnotes.bd.Note;
-import com.bloc.blocnotes.bd.NotesDao;
-
-import java.util.List;
+import com.bloc.blocnotes.model.Note;
+import com.bloc.blocnotes.model.NotesDao;
 
 /**
  * Created by Wayne on 10/24/2014.

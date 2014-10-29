@@ -9,7 +9,7 @@ import android.widget.SimpleCursorAdapter;
 import android.widget.TextView;
 
 import com.bloc.blocnotes.bd.BaseContract;
-import com.bloc.blocnotes.bd.Note;
+import com.bloc.blocnotes.model.Note;
 
 /**
  * Created by Wayne on 10/27/2014.

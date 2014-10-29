@@ -7,7 +7,7 @@ import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.TextView;
 
-import com.bloc.blocnotes.bd.Notebook;
+import com.bloc.blocnotes.model.Notebook;
 
 import java.util.ArrayList;
 

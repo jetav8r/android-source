@@ -25,10 +25,8 @@ import android.support.v4.widget.DrawerLayout;
 import android.widget.EditText;
 import android.util.TypedValue;
 
-import com.bloc.blocnotes.bd.Note;
-import com.bloc.blocnotes.bd.Notebook;
-import com.bloc.blocnotes.bd.NotebooksDao;
-import com.bloc.blocnotes.bd.NotesDao;
+import com.bloc.blocnotes.model.Notebook;
+import com.bloc.blocnotes.model.NotebooksDao;
 
 import java.util.ArrayList;
 
@@ -161,8 +159,8 @@ public class BlocNotes extends Activity implements NavigationDrawerFragment.Navi
         ArrayList<Notebook> listNotebooks = new ArrayList<Notebook>();
         listNotebooks = notebooksDao.getAllNotebooks();
 
-        //at this point we dont have data in database
-        ///then we canot access zero position of array list, is null
+        //at this point we don't have data in database
+        ///then we cannot access zero position of array list, is null
         //we need to create a test first
         if(!listNotebooks.isEmpty()){//if not empty
             Notebook selectedNotebook =listNotebooks.get(position);
@@ -170,6 +168,7 @@ public class BlocNotes extends Activity implements NavigationDrawerFragment.Navi
             FragmentManager fragmentManager = getFragmentManager();
             fragmentManager.beginTransaction()
                     .replace(R.id.container, NotesFragment.newInstance(selectedNotebook))
+                    .addToBackStack("Notes")
                     .commit();
         }//else do nothing
 
@@ -303,9 +302,9 @@ public class BlocNotes extends Activity implements NavigationDrawerFragment.Navi
             @Override
             public void onClick(DialogInterface dialogInterface, int i) {
                 Editable newText = userInput.getText();
-                Message.message(getBaseContext(), "newText = " + newText);
+                //Message.message(getBaseContext(), "newText = " + newText);
                 mNewNotebook=newText.toString();
-                Message.message(getBaseContext(), "mNewNotebook = " + mNewNotebook);
+                //Message.message(getBaseContext(), "mNewNotebook = " + mNewNotebook);
                 insertNewNotebook();
             }
         });
@@ -321,7 +320,7 @@ public class BlocNotes extends Activity implements NavigationDrawerFragment.Navi
         NotebooksDao notebooksDao = new NotebooksDao(this);
         notebooksDao.insert(notebook);
 
-        Message.message(this, "inserted");
+        //Message.message(this, "inserted");
     }
 
     private void openMap() {
