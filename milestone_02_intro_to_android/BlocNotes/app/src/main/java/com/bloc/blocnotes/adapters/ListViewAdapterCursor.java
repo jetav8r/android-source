@@ -27,16 +27,16 @@ public class ListViewAdapterCursor extends SimpleCursorAdapter {
     }
 
     @Override
-    public Object getItem(int position) {//this method returns an notebook
+    public Object getItem(int position) {//this method returns a notebook
         getCursor().moveToPosition(position);//this cursor contains our data, moving this to selected position by user
 
-        //then get data from this position
-        Note note = new Note();
+        //then gets data from this position
+        Note note = new Note(context);
         note.setId(getCursor().getLong(getCursor().getColumnIndex(BaseContract.NotesEntry._ID)));//this id is generated automaticaly,
         note.setBody(getCursor().getString(getCursor().getColumnIndex(BaseContract.NotesEntry.BODY)));
         note.setReference(getCursor().getString(getCursor().getColumnIndex(BaseContract.NotesEntry.REFERENCE)));
 
-        return note;//finally returns it
+        return note;// returns it
     }
 
     @Override

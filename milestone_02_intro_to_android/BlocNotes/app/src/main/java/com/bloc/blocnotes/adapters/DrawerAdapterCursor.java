@@ -31,7 +31,7 @@ public class DrawerAdapterCursor extends SimpleCursorAdapter{//simplecursoradapt
         getCursor().moveToPosition(position);//this cursor contains our data, moving this to selected position by user
 
         //then get data from this position
-        Notebook notebook = new Notebook();
+        Notebook notebook = new Notebook(context);
         notebook.setId(getCursor().getLong(getCursor().getColumnIndex(BaseContract.NotebooksEntry._ID)));//this id is generated automaticaly,
         notebook.setName(getCursor().getString(getCursor().getColumnIndex(BaseContract.NotebooksEntry.NAME)));
         notebook.setDescription(getCursor().getString(getCursor().getColumnIndex(BaseContract.NotebooksEntry.DESCRIPTION)));

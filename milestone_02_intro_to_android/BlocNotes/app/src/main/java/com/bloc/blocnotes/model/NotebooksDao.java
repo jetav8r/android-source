@@ -4,6 +4,7 @@ import android.content.ContentUris;
 import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
+import android.os.AsyncTask;
 
 import com.bloc.blocnotes.bd.BaseContract;
 
@@ -19,14 +20,31 @@ public class NotebooksDao {
         this.context = context;
     }
 
-    public void insert(Notebook notebook){ //now we create an insert for a notebook object
+    public void insert( Notebook notebook){ //now we create an insert for a notebook object
         ContentValues values = new ContentValues();
 
-
-        values.put(BaseContract.NotebooksEntry.NAME, notebook.getName());//remember this ok? we're linking name of tables for the object to represent
+        values.put(BaseContract.NotebooksEntry.NAME, notebook.getName());//we're linking name of tables for the object to represent
         values.put(BaseContract.NotebooksEntry.DESCRIPTION, notebook.getDescription());
 
-        ContentUris.parseId(context.getContentResolver().insert(BaseContract.NotebooksEntry.URI, values)); //uri identifies our table and put values in it
+        context.getContentResolver().insert(BaseContract.NotebooksEntry.URI, values); //uri identifies our table and put values in it
+    }
+
+    public void update(Notebook notebook){
+        ContentValues values = new ContentValues();
+
+        values.put(BaseContract.NotebooksEntry.NAME, notebook.getName());
+        values.put(BaseContract.NotebooksEntry.DESCRIPTION, notebook.getDescription());
+
+        //to update a notebook we need a where clause to find it in the base
+        //we use its id
+        String selection = BaseContract.NotebooksEntry._ID + " = ? ";
+        String[] selectionArgs = new String[]{ String.valueOf(notebook.getId())};
+
+        context.getContentResolver().update(BaseContract.NotebooksEntry.URI, values, selection, selectionArgs);
+    }
+
+    public void delete(Notebook notebook){
+        context.getContentResolver().delete(BaseContract.NotebooksEntry.URI, BaseContract.NotebooksEntry._ID + " = " + notebook.getId(), null);
     }
 
     public ArrayList<Notebook> getAllNotebooks(){
@@ -40,12 +58,12 @@ public class NotebooksDao {
 
         if (cursor.moveToFirst()) {
             do {
-                Notebook notebook = new Notebook();
-                //we no need all data here, because data in memory is a problem
+                Notebook notebook = new Notebook(context);
+                //we don't need all data here, because data in memory is a problem
                 //but we need the id, because the id is the primary key
                 //with the id we can find the rest of data
-                //notebook.setId(cursor.getLong(cursor.getColumnIndex(BaseContract.NotebooksEntry._ID)));//this id is generated automatically,
-                notebook.setName(cursor.getString(cursor.getColumnIndex(BaseContract.NotebooksEntry.NAME)));
+                notebook.setId(cursor.getLong(cursor.getColumnIndex(BaseContract.NotebooksEntry._ID)));//this id is generated automatically,
+                //notebook.setName(cursor.getString(cursor.getColumnIndex(BaseContract.NotebooksEntry.NAME)));
                 //notebook.setDescription(cursor.getString(cursor.getColumnIndex(BaseContract.NotebooksEntry.DESCRIPTION)));
 
 
@@ -56,5 +74,29 @@ public class NotebooksDao {
         cursor.close();
 
         return list;
+    }
+
+    public Notebook getNotebook(long id){
+        String selection = BaseContract.NotebooksEntry._ID + " = ?";
+        String[] selectionArgs = new String[]{String.valueOf(id)};
+
+        Notebook notebook = new Notebook(context);
+
+        Cursor cursor = context.getContentResolver().query(BaseContract.NotebooksEntry.URI,
+                null,
+                selection,//all
+                selectionArgs,//all
+                null);//this query returns only one
+
+        if(cursor.moveToFirst()){
+
+            //when we load data
+            //we need to marks loaded
+            notebook.setId(cursor.getLong(cursor.getColumnIndex(BaseContract.NotebooksEntry._ID)));//this id is generated automatically,
+            notebook.setName(cursor.getString(cursor.getColumnIndex(BaseContract.NotebooksEntry.NAME)));
+            notebook.setDescription(cursor.getString(cursor.getColumnIndex(BaseContract.NotebooksEntry.DESCRIPTION)));
+            notebook.setLoaded(true);
+        }
+        return notebook;
     }
 }

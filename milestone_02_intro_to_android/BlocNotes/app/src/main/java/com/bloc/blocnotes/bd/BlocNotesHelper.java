@@ -7,6 +7,7 @@ import android.database.MatrixCursor;
 import android.database.SQLException;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
+import android.os.AsyncTask;
 import android.util.Log;
 import android.widget.ListView;
 import android.widget.SimpleCursorAdapter;
@@ -78,80 +79,101 @@ public class BlocNotesHelper extends SQLiteOpenHelper {
     //}
 
     @Override
-    public void onCreate(SQLiteDatabase sqLiteDatabase) {
+    public void onCreate(SQLiteDatabase mSqliteDatabase) {
 
         try {
-            sqLiteDatabase.execSQL(CREATE_NOTEBOOKS);
-            sqLiteDatabase.execSQL(CREATE_NOTES);
+            mSqliteDatabase.execSQL(CREATE_NOTEBOOKS);
+            mSqliteDatabase.execSQL(CREATE_NOTES);
             //Message.message(context, "onCreate was called");
         } catch (SQLException e) {
             //Message.message(context, "" + e);
         }
 
-        // we use this later maybe?
-        ContentValues values = new ContentValues();
+    }
+            /*ContentValues values = new ContentValues();
 
-        values.put(BaseContract.NotebooksEntry._ID, "1");
-        values.put(BaseContract.NotebooksEntry.NAME, "Uncategorized");
-        values.put(BaseContract.NotebooksEntry.DESCRIPTION, "Default Notebook");
-        sqLiteDatabase.insert("Notebooks", null, values);
-        values.clear();
+            values.put(BaseContract.NotebooksEntry._ID,"1");
+            values.put(BaseContract.NotebooksEntry.NAME,"Uncategorized");
+            values.put(BaseContract.NotebooksEntry.DESCRIPTION,"Default Notebook");
+            mSqliteDatabase.insert("Notebooks", null, values);
+            values.clear();
 
-        values.put(BaseContract.NotebooksEntry._ID, "2");
-        values.put(BaseContract.NotebooksEntry.NAME, "Dreams");
-        values.put(BaseContract.NotebooksEntry.DESCRIPTION, "Dreams Notebook");
-        sqLiteDatabase.insert("Notebooks", null, values);
-        values.clear();
+            values.put(BaseContract.NotebooksEntry._ID,"2");
+            values.put(BaseContract.NotebooksEntry.NAME,"Dreams");
+            values.put(BaseContract.NotebooksEntry.DESCRIPTION,"Dreams Notebook");
+            mSqliteDatabase.insert("Notebooks", null, values);
+            values.clear();
 
-        values.put(BaseContract.NotebooksEntry._ID, "3");
-        values.put(BaseContract.NotebooksEntry.NAME, "To Do");
-        values.put(BaseContract.NotebooksEntry.DESCRIPTION, "To Do List");
-        sqLiteDatabase.insert("Notebooks", null, values);
-        values.clear();
+            values.put(BaseContract.NotebooksEntry._ID,"3");
+            values.put(BaseContract.NotebooksEntry.NAME,"To Do");
+            values.put(BaseContract.NotebooksEntry.DESCRIPTION,"To Do List");
+            mSqliteDatabase.insert("Notebooks", null, values);
+            values.clear();
 
-        values.put(BaseContract.NotebooksEntry._ID, "4");
-        values.put(BaseContract.NotebooksEntry.NAME, "Goals");
-        values.put(BaseContract.NotebooksEntry.DESCRIPTION, "Long Term Goals");
-        sqLiteDatabase.insert("Notebooks", null, values);
-        values.clear();
+            values.put(BaseContract.NotebooksEntry._ID,"4");
+            values.put(BaseContract.NotebooksEntry.NAME,"Goals");
+            values.put(BaseContract.NotebooksEntry.DESCRIPTION,"Long Term Goals");
+            mSqliteDatabase.insert("Notebooks", null, values);
+            values.clear();
 
-        values.put(BaseContract.NotebooksEntry._ID, "5");
-        values.put(BaseContract.NotebooksEntry.NAME, "Grocery List");
-        values.put(BaseContract.NotebooksEntry.DESCRIPTION, "Grocery List");
-        sqLiteDatabase.insert("Notebooks", null, values);
-        values.clear();
+            values.put(BaseContract.NotebooksEntry._ID,"5");
+            values.put(BaseContract.NotebooksEntry.NAME,"Grocery List");
+            values.put(BaseContract.NotebooksEntry.DESCRIPTION,"Grocery List");
+            mSqliteDatabase.insert("Notebooks", null, values);
+            values.clear();
 
-        values.put(BaseContract.NotesEntry._ID, "1");
-        values.put(BaseContract.NotesEntry.BODY, "Begin typing note here");
-        values.put(BaseContract.NotesEntry.REFERENCE, "Uncategorized");
-        sqLiteDatabase.insert("Notes", null, values);
+            values.put(BaseContract.NotesEntry._ID,"1");
+            values.put(BaseContract.NotesEntry.BODY,"Begin typing note here");
+            values.put(BaseContract.NotesEntry.REFERENCE,"Uncategorized");
+            mSqliteDatabase.insert("Notes", null, values);
 
-        values.put(BaseContract.NotesEntry._ID, "2");
-        values.put(BaseContract.NotesEntry.BODY, "I had a dream that I drank the worlds' biggest margarita.  When woke up I was hugging the toilet");
-        values.put(BaseContract.NotesEntry.REFERENCE, "Dreams");
-        sqLiteDatabase.insert("Notes", null, values);
+            values.put(BaseContract.NotesEntry._ID,"2");
+            values.put(BaseContract.NotesEntry.BODY,"I had a dream that I drank the worlds' biggest margarita.  When woke up I was hugging the toilet");
+            values.put(BaseContract.NotesEntry.REFERENCE,"Dreams");
+            mSqliteDatabase.insert("Notes", null, values);
 
-        values.put(BaseContract.NotesEntry._ID, "3");
-        values.put(BaseContract.NotesEntry.BODY, "My dream last night was that I had 45 dogs in my house!");
-        values.put(BaseContract.NotesEntry.REFERENCE, "Dreams");
-        sqLiteDatabase.insert("Notes", null, values);
+            values.put(BaseContract.NotesEntry._ID,"3");
+            values.put(BaseContract.NotesEntry.BODY,"My dream last night was that I had 45 dogs in my house!");
+            values.put(BaseContract.NotesEntry.REFERENCE,"Dreams");
+            mSqliteDatabase.insert("Notes", null, values);
 
-        values.put(BaseContract.NotesEntry._ID, "4");
-        values.put(BaseContract.NotesEntry.BODY, "I had a dream that I was dreaming");
-        values.put(BaseContract.NotesEntry.REFERENCE, "Dreams");
-        sqLiteDatabase.insert("Notes", null, values);
+            values.put(BaseContract.NotesEntry._ID,"4");
+            values.put(BaseContract.NotesEntry.BODY,"I had a dream that I was dreaming");
+            values.put(BaseContract.NotesEntry.REFERENCE,"Dreams");
+            mSqliteDatabase.insert("Notes", null, values);
 
-        values.put(BaseContract.NotesEntry._ID, "5");
-        values.put(BaseContract.NotesEntry.BODY, "Find grant writer for dog stuff");
-        values.put(BaseContract.NotesEntry.REFERENCE, "To Do");
-        sqLiteDatabase.insert("Notes", null, values);
+            values.put(BaseContract.NotesEntry._ID,"5");
+            values.put(BaseContract.NotesEntry.BODY,"Find grant writer for dog stuff");
+            values.put(BaseContract.NotesEntry.REFERENCE,"To Do");
+            mSqliteDatabase.insert("Notes", null, values);
 
-        values.put(BaseContract.NotesEntry._ID, "6");
-        values.put(BaseContract.NotesEntry.BODY, "Finish fixing shifter-karts");
-        values.put(BaseContract.NotesEntry.REFERENCE, "To Do");
-        sqLiteDatabase.insert("Notes", null, values);
+            values.put(BaseContract.NotesEntry._ID,"6");
+            values.put(BaseContract.NotesEntry.BODY,"Finish fixing shifter-karts");
+            values.put(BaseContract.NotesEntry.REFERENCE,"To Do");
+            mSqliteDatabase.insert("Notes", null, values);
 
+            values.put(BaseContract.NotesEntry._ID,"7");
+            values.put(BaseContract.NotesEntry.BODY,"Build Sanctuary for rescued dogs");
+            values.put(BaseContract.NotesEntry.REFERENCE,"Goals");
+            mSqliteDatabase.insert("Notes", null, values);
 
+            values.put(BaseContract.NotesEntry._ID,"8");
+            values.put(BaseContract.NotesEntry.BODY,"Become good at Android programming");
+            values.put(BaseContract.NotesEntry.REFERENCE,"Goals");
+            mSqliteDatabase.insert("Notes", null, values);
+
+            values.put(BaseContract.NotesEntry._ID,"9");
+            values.put(BaseContract.NotesEntry.BODY,"Cereal");
+            values.put(BaseContract.NotesEntry.REFERENCE,"Grocery List");
+            mSqliteDatabase.insert("Notes", null, values);
+
+            values.put(BaseContract.NotesEntry._ID,"10");
+            values.put(BaseContract.NotesEntry.BODY,"Milk");
+            values.put(BaseContract.NotesEntry.REFERENCE,"Grocery List");
+            mSqliteDatabase.insert("Notes", null, values);
+
+        }
+        */
         //String[] columns = {UID, name, description};
         //Cursor cursor = sqLiteDatabase.query(TABLE1_NAME,columns,null,null,null,null,null);
         //String[] columns = {UID, reference, body};
@@ -171,7 +193,8 @@ public class BlocNotesHelper extends SQLiteOpenHelper {
 
 
         //}
-    }
+
+
 
 
 

@@ -27,6 +27,7 @@ import android.util.TypedValue;
 
 import com.bloc.blocnotes.model.Notebook;
 import com.bloc.blocnotes.model.NotebooksDao;
+import com.bloc.blocnotes.util.Utilities;
 
 import java.util.ArrayList;
 
@@ -56,7 +57,7 @@ public class BlocNotes extends Activity implements NavigationDrawerFragment.Navi
             Log.d("Wayne", "onCreate was called");
 
             setContentView(R.layout.activity_bloc_notes);
-
+            Utilities.createInitialDatabase(this);
 
         mNavigationDrawerFragment = (NavigationDrawerFragment)
                 getFragmentManager().findFragmentById(R.id.navigation_drawer);
@@ -71,7 +72,11 @@ public class BlocNotes extends Activity implements NavigationDrawerFragment.Navi
             fragmentManager.beginTransaction()
                     .replace(R.id.container, PlaceholderFragment.newInstance(0))
                     .commit();
+
+            //restoreFontType();//and call it oncreate
     }
+
+
 
     @Override
     protected void onResume() {
@@ -167,7 +172,7 @@ public class BlocNotes extends Activity implements NavigationDrawerFragment.Navi
 
             FragmentManager fragmentManager = getFragmentManager();
             fragmentManager.beginTransaction()
-                    .replace(R.id.container, NotesFragment.newInstance(selectedNotebook))
+                    .replace(R.id.container, NotesFragment.newInstance(selectedNotebook))//here we pass a notebook from list, but not call get name yet
                     .addToBackStack("Notes")
                     .commit();
         }//else do nothing
@@ -314,8 +319,9 @@ public class BlocNotes extends Activity implements NavigationDrawerFragment.Navi
 
 
     public void insertNewNotebook() {
-        Notebook notebook = new Notebook();
+        Notebook notebook = new Notebook(this);
         notebook.setName(mNewNotebook);
+        notebook.setLoaded(true);
 
         NotebooksDao notebooksDao = new NotebooksDao(this);
         notebooksDao.insert(notebook);
@@ -379,7 +385,9 @@ public class BlocNotes extends Activity implements NavigationDrawerFragment.Navi
                 Bundle savedInstanceState) {
             View rootView = inflater.inflate(R.layout.fragment_bloc_notes, container, false);
 
-
+            EditText editText = (EditText)rootView.findViewById(R.id.text);
+            Utilities.restoreFontType(getActivity(), editText);
+            Utilities.restoreFontSize(getActivity(), editText);
 
             return rootView;
         }

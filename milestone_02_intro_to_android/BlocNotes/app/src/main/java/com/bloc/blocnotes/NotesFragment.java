@@ -20,14 +20,17 @@ import com.bloc.blocnotes.model.Notebook;
  * Created by Wayne on 10/27/2014.
  */
 public class NotesFragment extends Fragment implements LoaderManager.LoaderCallbacks<Cursor>{
-    private static String selectedNotebook = "selectedNotebook";
+    private static String keyNotebook = "keyNotebook";
     private ListView listView;
     private ListViewAdapterCursor mAdapter;
+    private String name;
 
-    public static NotesFragment newInstance(Notebook notebook) {
+    public static NotesFragment newInstance(Notebook selectedNotebook) {
         NotesFragment fragment = new NotesFragment();
         Bundle args = new Bundle();
-        args.putSerializable(selectedNotebook, notebook);
+        //the fist argument is to identify the arg to find it later
+        //this is correct way
+        args.putSerializable(keyNotebook, selectedNotebook);
         fragment.setArguments(args);
 
         return fragment;
@@ -40,14 +43,15 @@ public class NotesFragment extends Fragment implements LoaderManager.LoaderCallb
 
         View rootView = inflater.inflate(R.layout.fragment_notes, container, false);
 
-        //Message.message(getActivity(), "here ok");
-
         mAdapter = new ListViewAdapterCursor(getActivity(), 0, null, new String[]{}, new int[]{});
 
         getLoaderManager().initLoader(0, null, this);
 
+
+
         listView = (ListView)rootView.findViewById(R.id.listView);
         listView.setAdapter(mAdapter);
+
 
         return rootView;
     }
@@ -56,16 +60,16 @@ public class NotesFragment extends Fragment implements LoaderManager.LoaderCallb
     public Loader<Cursor> onCreateLoader(int i, Bundle bundle) {
         String selection = BaseContract.NotesEntry.REFERENCE + " = ?";
 
-        Notebook argumentNotebook = (Notebook)getArguments().getSerializable(selectedNotebook);
+        Notebook selectedNotebook = (Notebook)getArguments().getSerializable(keyNotebook);
 
-        String[] selectionArgs = new String[]{argumentNotebook.getName()};
+        String[] selectionArgs = new String[]{selectedNotebook.getName()};//only here we call get name, here the data been loaded
 
         return new CursorLoader(
                 getActivity(),   // Parent activity context
                 BaseContract.NotesEntry.URI,        // Table to query
                 null,     // Projection to return
-                selection,            // where//all
-                selectionArgs,            // Selection args//all
+                selection,            // NotesEntry.Reference data...actual notebook reference here
+                selectionArgs,            // selectedNotebook name
                 null// Default sort order//sorting by name
         );
     }

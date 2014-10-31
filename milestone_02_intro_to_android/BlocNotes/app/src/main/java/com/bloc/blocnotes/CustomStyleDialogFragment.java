@@ -1,6 +1,7 @@
 package com.bloc.blocnotes;
 
 import android.app.Activity;
+import android.app.Dialog;
 import android.app.DialogFragment;
 import android.content.Context;
 import android.content.SharedPreferences;
@@ -40,23 +41,27 @@ public class CustomStyleDialogFragment extends DialogFragment implements Adapter
         spinner.setOnItemSelectedListener(this);
 
         RadioGroup fonts  = (RadioGroup) view.findViewById(R.id.rg_font_size);
-
         fonts.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(RadioGroup radioGroup, int i) {
+                CustomStyleDialogFragment dialog = new CustomStyleDialogFragment();
+                int fontSize;
                 if (i==R.id.radioButtonSmall) {
                     final EditText text = (EditText) getActivity().findViewById(R.id.text);
-                    text.setTextSize(TypedValue.COMPLEX_UNIT_PX, 24);
-                    //text.setTextSize(12);
+                    fontSize = 24;
+                    onStyleChange(dialog, fontSize);
+                    //text.setTextSize(TypedValue.COMPLEX_UNIT_PX,fontSize);
                 } else if (i==R.id.radioButtonMed) {
-                        final EditText text = (EditText) getActivity().findViewById(R.id.text);
-                    text.setTextSize(TypedValue.COMPLEX_UNIT_PX, 44);
-                    //text.setTextSize(18);
+                    final EditText text = (EditText) getActivity().findViewById(R.id.text);
+                    fontSize = 44;
+                    onStyleChange(dialog, fontSize);
+                    //text.setTextSize(TypedValue.COMPLEX_UNIT_PX, fontSize);
                 } else if (i==R.id.radioButtonLarge) {
-                        final EditText text = (EditText) getActivity().findViewById(R.id.text);
-                        text.setTextSize(TypedValue.COMPLEX_UNIT_PX, 64);
-                        //text.setTextSize(24);
-                    }
+                    final EditText text = (EditText) getActivity().findViewById(R.id.text);
+                    fontSize = 64;
+                    onStyleChange(dialog, fontSize);
+                    //text.setTextSize(TypedValue.COMPLEX_UNIT_PX, fontSize);
+                }
             }
         });
 
@@ -155,8 +160,13 @@ public class CustomStyleDialogFragment extends DialogFragment implements Adapter
 
 
     @Override
-    public void onStyleChange(CustomStyleDialogFragment dialog, int styleId) {
-
+    public void onStyleChange(CustomStyleDialogFragment dialog, int fontSize) {
+        EditText text = (EditText) getActivity().findViewById(R.id.text);
+        SharedPreferences sharedPrefs = getActivity().getSharedPreferences("Custom",Context.MODE_PRIVATE);
+        SharedPreferences.Editor editor = sharedPrefs.edit();
+        editor.putInt(getActivity().getString(R.string.pref_font_size), fontSize);
+        editor.commit();
+        text.setTextSize(TypedValue.COMPLEX_UNIT_PX, fontSize);
     }
 
 
@@ -168,7 +178,7 @@ public class CustomStyleDialogFragment extends DialogFragment implements Adapter
         Context context = getActivity();
         SharedPreferences sharedPrefs = getActivity().getSharedPreferences("Custom",Context.MODE_PRIVATE);
         SharedPreferences.Editor editor = sharedPrefs.edit();
-        editor.putString("fontName", fontName);
+        editor.putString(getActivity().getString(R.string.pref_font_name), fontName);
         //editor.putInt("position", position);
         editor.commit();
 

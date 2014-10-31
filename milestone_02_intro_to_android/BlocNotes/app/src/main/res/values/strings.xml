@@ -58,5 +58,8 @@
 
     <string name="hello_blank_fragment">Hello blank fragment</string>
     <string name="add_note_button">Add Note</string>
+    <string name="pref_font_name">fontName</string>
+    <string name="pref_font_size">fontSize</string>
+    <string name="pref_database_created">created</string>
 
 </resources>

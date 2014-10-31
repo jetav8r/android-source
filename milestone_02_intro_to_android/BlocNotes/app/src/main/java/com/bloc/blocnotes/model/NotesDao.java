@@ -29,6 +29,24 @@ public class NotesDao {//Dao is Data Access Object
         ContentUris.parseId(context.getContentResolver().insert(BaseContract.NotesEntry.URI, values)); //uri identifies our table and put values in it
     }
 
+    public void update(Note note){
+        ContentValues values = new ContentValues();
+
+        values.put(BaseContract.NotesEntry.BODY, note.getBody());
+        values.put(BaseContract.NotesEntry.REFERENCE, note.getReference());
+
+        //to update a notebook we need a where clause to find it in the base
+        //we use its id
+        String selection = BaseContract.NotesEntry._ID + " = ? ";
+        String[] selectionArgs = new String[]{ String.valueOf(note.getId())};
+
+        context.getContentResolver().update(BaseContract.NotesEntry.URI, values, selection, selectionArgs);
+    }
+
+    public void delete(Note note){
+        context.getContentResolver().delete(BaseContract.NotesEntry.URI, BaseContract.NotesEntry._ID + " = " + note.getId(), null);
+    }
+
     public ArrayList<Note> getAllNotes(){
         Cursor cursor = context.getContentResolver().query(BaseContract.NotesEntry.URI,
                 null,
@@ -40,7 +58,7 @@ public class NotesDao {//Dao is Data Access Object
 
         if (cursor.moveToFirst()) {
             do {
-                Note note = new Note();
+                Note note = new Note(context);
                 note.setId(cursor.getLong(cursor.getColumnIndex(BaseContract.NotesEntry._ID)));//this id is generated automatically,
                 note.setBody(cursor.getString(cursor.getColumnIndex(BaseContract.NotesEntry.BODY)));
                 note.setReference(cursor.getString(cursor.getColumnIndex(BaseContract.NotesEntry.REFERENCE)));
@@ -52,4 +70,30 @@ public class NotesDao {//Dao is Data Access Object
 
         return list;
     }
+
+    public Note getNote(long id){
+        String selection = BaseContract.NotesEntry._ID + " = ?";
+        String[] selectionArgs = new String[]{String.valueOf(id)};
+
+        Note note = new Note(context);
+
+        Cursor cursor = context.getContentResolver().query(BaseContract.NotesEntry.URI,
+                null,
+                selection,//all
+                selectionArgs,//all
+                null);//this query returns only one
+
+        if(cursor.moveToFirst()){
+
+            //when we load data
+            //we need to marks loaded
+            note.setId(cursor.getLong(cursor.getColumnIndex(BaseContract.NotesEntry._ID)));//this id is generated automatically,
+            note.setBody(cursor.getString(cursor.getColumnIndex(BaseContract.NotesEntry.BODY)));
+            note.setReference(cursor.getString(cursor.getColumnIndex(BaseContract.NotesEntry.REFERENCE)));
+            note.setLoaded(true);
+        }
+        return note;
+    }
+
+    //i will leave the other methodds to you
 }
