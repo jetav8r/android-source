@@ -20,31 +20,50 @@ public class NotebooksDao {
         this.context = context;
     }
 
-    public void insert( Notebook notebook){ //now we create an insert for a notebook object
-        ContentValues values = new ContentValues();
+    public void insert(final Notebook notebook){ //now we create an insert for a notebook object
+        new AsyncTask<Void, Void, Void>(){
+            @Override
+            protected Void doInBackground(Void... voids) {
+                ContentValues values = new ContentValues();
 
-        values.put(BaseContract.NotebooksEntry.NAME, notebook.getName());//we're linking name of tables for the object to represent
-        values.put(BaseContract.NotebooksEntry.DESCRIPTION, notebook.getDescription());
+                values.put(BaseContract.NotebooksEntry.NAME, notebook.getName());//we're linking name of tables for the object to represent
+                values.put(BaseContract.NotebooksEntry.DESCRIPTION, notebook.getDescription());
 
-        context.getContentResolver().insert(BaseContract.NotebooksEntry.URI, values); //uri identifies our table and put values in it
+                context.getContentResolver().insert(BaseContract.NotebooksEntry.URI, values); //uri identifies our table and put values in it
+                return null;
+            }
+        }.execute();
     }
 
-    public void update(Notebook notebook){
-        ContentValues values = new ContentValues();
+    public void update(final Notebook notebook){
+        new AsyncTask<Void, Void, Void>(){
+            @Override
+            protected Void doInBackground(Void... voids) {
+                ContentValues values = new ContentValues();
 
-        values.put(BaseContract.NotebooksEntry.NAME, notebook.getName());
-        values.put(BaseContract.NotebooksEntry.DESCRIPTION, notebook.getDescription());
+                values.put(BaseContract.NotebooksEntry.NAME, notebook.getName());
+                values.put(BaseContract.NotebooksEntry.DESCRIPTION, notebook.getDescription());
 
-        //to update a notebook we need a where clause to find it in the base
-        //we use its id
-        String selection = BaseContract.NotebooksEntry._ID + " = ? ";
-        String[] selectionArgs = new String[]{ String.valueOf(notebook.getId())};
+                //to update a notebook we need a where clause to find it in the base
+                //we use its id
+                String selection = BaseContract.NotebooksEntry._ID + " = ? ";
+                String[] selectionArgs = new String[]{ String.valueOf(notebook.getId())};
 
-        context.getContentResolver().update(BaseContract.NotebooksEntry.URI, values, selection, selectionArgs);
+                context.getContentResolver().update(BaseContract.NotebooksEntry.URI, values, selection, selectionArgs);
+                return null;
+            }
+        }.execute();
+
     }
 
-    public void delete(Notebook notebook){
-        context.getContentResolver().delete(BaseContract.NotebooksEntry.URI, BaseContract.NotebooksEntry._ID + " = " + notebook.getId(), null);
+    public void delete(final Notebook notebook){
+        new AsyncTask<Void, Void, Void>() {
+            @Override
+            protected Void doInBackground(Void... voids) {
+                context.getContentResolver().delete(BaseContract.NotebooksEntry.URI, BaseContract.NotebooksEntry._ID + " = " + notebook.getId(), null);
+                return null;
+            }
+        }.execute();
     }
 
     public ArrayList<Notebook> getAllNotebooks(){

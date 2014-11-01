@@ -211,28 +211,6 @@ public class BlocNotes extends Activity implements NavigationDrawerFragment.Navi
         }
     }
 
-    //public Cursor getNotes(String notebook_reference){
-    //public void getNotes(){
-        // The desired columns to be bound
-        //String [] columns = {body, reference};
-        //String[] columns = {BlocNotesHelper.UID, BlocNotesHelper.reference, BlocNotesHelper.body};
-        //String nbRef = "To Do";
-        //String nbRef = (String) mTitle;
-        // the XML defined views which the data will be bound to
-        //int[] to = new int[] {
-        //        android.R.id.text1
-        //};
-        //BlocNotesHelper blocNotesHelper = new BlocNotesHelper(this);
-        //SQLiteDatabase sqLiteDatabase = blocNotesHelper.getWritableDatabase();
-        //Cursor cursor = sqLiteDatabase.query(BlocNotesHelper.TABLE2_NAME,columns,BlocNotesHelper.reference+" = '"+nbRef+"'",null,null,null,null);
-        //SimpleCursorAdapter dataAdapter;
-        //dataAdapter = new SimpleCursorAdapter(this, R.layout.fragment_notebook, cursor, columns, to);
-        //ListView listView = (ListView) findViewById(R.id.listView);
-        //listView.setAdapter(dataAdapter);
-
-
-
-
 
         //StringBuffer buffer = new StringBuffer();
         //while (cursor.moveToNext()) {
