@@ -31,12 +31,10 @@ public class NotesDao {//Dao is Data Access Object
 
     public void update(Note note){
         ContentValues values = new ContentValues();
-
         values.put(BaseContract.NotesEntry.BODY, note.getBody());
         values.put(BaseContract.NotesEntry.REFERENCE, note.getReference());
 
-        //to update a notebook we need a where clause to find it in the base
-        //we use its id
+        //to update a note we use a where clause and _ID to find it in the database
         String selection = BaseContract.NotesEntry._ID + " = ? ";
         String[] selectionArgs = new String[]{ String.valueOf(note.getId())};
 
@@ -46,6 +44,7 @@ public class NotesDao {//Dao is Data Access Object
     public void delete(Note note){
         context.getContentResolver().delete(BaseContract.NotesEntry.URI, BaseContract.NotesEntry._ID + " = " + note.getId(), null);
     }
+
 
     public ArrayList<Note> getAllNotes(){
         Cursor cursor = context.getContentResolver().query(BaseContract.NotesEntry.URI,
@@ -94,6 +93,4 @@ public class NotesDao {//Dao is Data Access Object
         }
         return note;
     }
-
-    //i will leave the other methodds to you
 }

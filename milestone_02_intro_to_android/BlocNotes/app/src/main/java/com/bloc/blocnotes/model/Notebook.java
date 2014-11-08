@@ -34,12 +34,9 @@ public class Notebook implements Serializable {
 
 
         instance = notebooksDao.getNotebook(getId());//we need create method first
-
         //now we have an object with all data the instance
-        this.setName(instance.getName());//this call get name too
-        this.setDescription(instance.getDescription());
-
-                //Log.e("name", getName()); the error is here, it calls getname inside getname, recursivelly
+        this.setName(instance.getName());//this calls get name too
+        this.setDescription(instance.getDescription());//same here
         //now we remove instance from memory
         //we do not need it anymore
         //because this object has all values passed to local variable

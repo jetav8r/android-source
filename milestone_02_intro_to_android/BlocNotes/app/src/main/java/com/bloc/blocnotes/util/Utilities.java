@@ -98,14 +98,10 @@ public class Utilities {
                 NotesDao notesDao = new NotesDao(context);
                 Note note = new Note(context);
 
-                note.setBody("Begin typing note here");
+                note.setBody("Default location for notes here");//place for notes with no notebook name assigned
                 note.setReference("Uncategorized");
                 note.setLoaded(true);//we need set true because we are passing data to it, no need load
                 //inserting
-                notesDao.insert(note);
-
-                note.setBody("Begin typing note here");
-                note.setReference("Uncategorized");
                 notesDao.insert(note);
 
                 note.setBody("I had a dream that I drank the worlds' biggest margarita.  When woke up I was hugging the toilet");

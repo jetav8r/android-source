@@ -3,10 +3,13 @@ package com.bloc.blocnotes;
 import android.app.Activity;
 
 import android.app.ActionBar;
+import android.app.AlarmManager;
 import android.app.AlertDialog;
 import android.app.Fragment;
 import android.app.FragmentManager;
 import android.app.FragmentTransaction;
+import android.app.NotificationManager;
+import android.app.PendingIntent;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -14,6 +17,7 @@ import android.content.SharedPreferences;
 import android.graphics.Typeface;
 import android.net.Uri;
 import android.os.Bundle;
+import android.support.v4.app.NotificationCompat;
 import android.text.Editable;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -22,11 +26,18 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.support.v4.widget.DrawerLayout;
+import android.widget.Button;
 import android.widget.EditText;
 import android.util.TypedValue;
 
+import com.bloc.blocnotes.bd.BaseProvider;
+import com.bloc.blocnotes.fragments.CreateNoteFragment;
+import com.bloc.blocnotes.fragments.EditNoteFragment;
+import com.bloc.blocnotes.model.Note;
 import com.bloc.blocnotes.model.Notebook;
 import com.bloc.blocnotes.model.NotebooksDao;
+import com.bloc.blocnotes.model.NotesDao;
+import com.bloc.blocnotes.util.ReminderReceiver;
 import com.bloc.blocnotes.util.Utilities;
 
 import java.util.ArrayList;
@@ -44,7 +55,7 @@ public class BlocNotes extends Activity implements NavigationDrawerFragment.Navi
      */
     private CharSequence mTitle;
     public static String mNewNotebook;
-
+    private static Context context;
 
     //BlocNotesHelper blocNotesHelper;
 
@@ -70,13 +81,9 @@ public class BlocNotes extends Activity implements NavigationDrawerFragment.Navi
 
             FragmentManager fragmentManager = getFragmentManager();
             fragmentManager.beginTransaction()
-                    .replace(R.id.container, PlaceholderFragment.newInstance(0))
+                    .replace(R.id.container, CreateNoteFragment.newInstance(""))
                     .commit();
-
-            //restoreFontType();//and call it oncreate
     }
-
-
 
     @Override
     protected void onResume() {
@@ -140,6 +147,7 @@ public class BlocNotes extends Activity implements NavigationDrawerFragment.Navi
         float fontSize = savedInstanceState.getFloat("fontSize");
         textBox.setTextSize(TypedValue.COMPLEX_UNIT_PX, fontSize);
         textBox.setText(userText);
+        textBox.requestFocus();
 
         if (fontName == "Default") {
             textBox.setTypeface(Typeface.DEFAULT);
@@ -260,9 +268,7 @@ public class BlocNotes extends Activity implements NavigationDrawerFragment.Navi
             return true;
         }
         if (id == R.id.action_erase) {
-            final EditText textBox = (EditText) findViewById(R.id.text);
-            textBox.setText("  ");
-            Log.d("Wayne", "textBox =" + textBox.getText().toString());
+            textErase();
         }
         if (id == R.id.action_add) {
             newNotebook();
@@ -273,7 +279,12 @@ public class BlocNotes extends Activity implements NavigationDrawerFragment.Navi
         return super.onOptionsItemSelected(item);
     }
 
-
+    private void textErase() {
+        final EditText textBox = (EditText) findViewById(R.id.text);
+        textBox.setText("  ");
+        textBox.requestFocus();
+        Log.d("Wayne", "textBox =" + textBox.getText().toString());
+    }
 
     private void newNotebook() {
         final EditText userInput = new EditText(this);
@@ -292,7 +303,16 @@ public class BlocNotes extends Activity implements NavigationDrawerFragment.Navi
             }
         });
         builder.show();
+        /*
+        NotificationCompat.Builder mBuilder =
+                new NotificationCompat.Builder(this)
+                        .setSmallIcon(R.drawable.ic_launcher)
+                        .setContentTitle("My notification")
+                        .setContentText("New notebook was added!");
 
+        NotificationManager mNotificationManager = (NotificationManager) this.getSystemService(Context.NOTIFICATION_SERVICE);
+        mNotificationManager.notify(1, mBuilder.build());
+        */
     }
 
 
@@ -333,48 +353,19 @@ public class BlocNotes extends Activity implements NavigationDrawerFragment.Navi
         CustomStyleDialogFragment myStyle = new CustomStyleDialogFragment();
         myStyle.show(manager, "CustomStyle");
         }
-    /**
-     * A placeholder fragment containing a simple view.
-     */
-    public static class PlaceholderFragment extends Fragment {
-        /**
-         * The fragment argument representing the section number for this
-         * fragment.
-         */
-        private static final String ARG_SECTION_NUMBER = "section_number";
 
-        /**
-         * Returns a new instance of this fragment for the given section
-         * number.
-         */
-        public static PlaceholderFragment newInstance(int sectionNumber) {
-            PlaceholderFragment fragment = new PlaceholderFragment();
-            Bundle args = new Bundle();
-            args.putInt(ARG_SECTION_NUMBER, sectionNumber);
-            fragment.setArguments(args);
-            return fragment;
-        }
+    public void createNewNote(String notebookName){
+        FragmentManager fragmentManager = getFragmentManager();
+        fragmentManager.beginTransaction()
+                .replace(R.id.container, CreateNoteFragment.newInstance(notebookName))
+                .commit();
+    }
 
-        public PlaceholderFragment() {
-        }
-
-        @Override
-        public View onCreateView(LayoutInflater inflater, ViewGroup container,
-                Bundle savedInstanceState) {
-            View rootView = inflater.inflate(R.layout.fragment_bloc_notes, container, false);
-
-            EditText editText = (EditText)rootView.findViewById(R.id.text);
-            Utilities.restoreFontType(getActivity(), editText);
-            Utilities.restoreFontSize(getActivity(), editText);
-
-            return rootView;
-        }
-
-        @Override
-        public void onAttach(Activity activity) {
-            super.onAttach(activity);
-            ((BlocNotes) activity).onSectionAttached(
-                    getArguments().getInt(ARG_SECTION_NUMBER));
-        }
+    public void updateNote(Note note){
+        ///replacing the container with the edit fragment
+        FragmentManager fragmentManager = getFragmentManager();
+        fragmentManager.beginTransaction()
+                .replace(R.id.container, EditNoteFragment.newInstance(note))
+                .commit();
     }
 }

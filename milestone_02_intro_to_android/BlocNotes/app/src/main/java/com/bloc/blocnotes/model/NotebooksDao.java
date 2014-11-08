@@ -20,25 +20,19 @@ public class NotebooksDao {
         this.context = context;
     }
 
-    public void insert(final Notebook notebook){ //now we create an insert for a notebook object
-        new AsyncTask<Void, Void, Void>(){
-            @Override
-            protected Void doInBackground(Void... voids) {
+    public void insert(Notebook notebook){ //now we create an insert for a notebook object
+
                 ContentValues values = new ContentValues();
 
                 values.put(BaseContract.NotebooksEntry.NAME, notebook.getName());//we're linking name of tables for the object to represent
                 values.put(BaseContract.NotebooksEntry.DESCRIPTION, notebook.getDescription());
 
                 context.getContentResolver().insert(BaseContract.NotebooksEntry.URI, values); //uri identifies our table and put values in it
-                return null;
-            }
-        }.execute();
+
     }
 
     public void update(final Notebook notebook){
-        new AsyncTask<Void, Void, Void>(){
-            @Override
-            protected Void doInBackground(Void... voids) {
+
                 ContentValues values = new ContentValues();
 
                 values.put(BaseContract.NotebooksEntry.NAME, notebook.getName());
@@ -50,20 +44,24 @@ public class NotebooksDao {
                 String[] selectionArgs = new String[]{ String.valueOf(notebook.getId())};
 
                 context.getContentResolver().update(BaseContract.NotebooksEntry.URI, values, selection, selectionArgs);
-                return null;
-            }
-        }.execute();
 
     }
 
     public void delete(final Notebook notebook){
-        new AsyncTask<Void, Void, Void>() {
-            @Override
-            protected Void doInBackground(Void... voids) {
+
                 context.getContentResolver().delete(BaseContract.NotebooksEntry.URI, BaseContract.NotebooksEntry._ID + " = " + notebook.getId(), null);
-                return null;
-            }
-        }.execute();
+    }
+
+
+    public String[] getArrayStringNotebooks(){
+        ArrayList<Notebook> listNotebooks = getAllNotebooks();
+        String[] arrayStringNotebooks = new String[listNotebooks.size()];
+
+        for (int i = 0; i < listNotebooks.size(); i++){
+            arrayStringNotebooks[i] = listNotebooks.get(i).getName();
+        }
+
+        return arrayStringNotebooks;
     }
 
     public ArrayList<Notebook> getAllNotebooks(){
