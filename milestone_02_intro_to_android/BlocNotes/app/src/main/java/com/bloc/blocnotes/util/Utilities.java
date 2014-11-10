@@ -70,13 +70,11 @@ public class Utilities {
             @Override
             protected Void doInBackground(Void... voids) {
                 NotebooksDao notebooksDao = new NotebooksDao(context);
-                Notebook notebook = new Notebook(context);
+                Notebook notebook = new Notebook();
 
                 //in the insert we not need pass id because it is created automatically
                 notebook.setName("Uncategorized");
                 notebook.setDescription("Default Notebook");
-                notebook.setLoaded(true);//we need set true because we are passing data to it, no need load
-                //inserting
                 notebooksDao.insert(notebook);
 
                 notebook.setName("Dreams");
@@ -96,11 +94,10 @@ public class Utilities {
                 notebooksDao.insert(notebook);
 
                 NotesDao notesDao = new NotesDao(context);
-                Note note = new Note(context);
+                Note note = new Note();
 
                 note.setBody("Default location for notes here");//place for notes with no notebook name assigned
                 note.setReference("Uncategorized");
-                note.setLoaded(true);//we need set true because we are passing data to it, no need load
                 //inserting
                 notesDao.insert(note);
 

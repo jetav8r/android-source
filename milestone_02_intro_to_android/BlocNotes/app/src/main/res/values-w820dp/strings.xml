@@ -16,5 +16,13 @@
     <string name="text">This text is editable</string>
     <string name="add_note_button">Add Note</string>
     <string name="save_text">Save to Notebook</string>
-
+    <string name="done_snoozing">Done snoozing</string>
+    <string name="snoozing">Snoozing</string>
+    <string name="note_content_title">Note is due</string>
+    <string name="note_content_text">Touch to activate</string>
+    <string name="snooze_text">Snooze</string>
+    <string name="delete_text">Delete</string>
+    <string name="timer_start">timer started</string>
+    <string name="sleep_error">Sleep error</string>
+    <string name="timer_finished">Timer finished</string>
 </resources>

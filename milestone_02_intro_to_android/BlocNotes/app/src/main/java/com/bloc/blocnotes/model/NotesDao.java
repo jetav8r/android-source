@@ -57,7 +57,7 @@ public class NotesDao {//Dao is Data Access Object
 
         if (cursor.moveToFirst()) {
             do {
-                Note note = new Note(context);
+                Note note = new Note();
                 note.setId(cursor.getLong(cursor.getColumnIndex(BaseContract.NotesEntry._ID)));//this id is generated automatically,
                 note.setBody(cursor.getString(cursor.getColumnIndex(BaseContract.NotesEntry.BODY)));
                 note.setReference(cursor.getString(cursor.getColumnIndex(BaseContract.NotesEntry.REFERENCE)));
@@ -74,7 +74,7 @@ public class NotesDao {//Dao is Data Access Object
         String selection = BaseContract.NotesEntry._ID + " = ?";
         String[] selectionArgs = new String[]{String.valueOf(id)};
 
-        Note note = new Note(context);
+        Note note = new Note();
 
         Cursor cursor = context.getContentResolver().query(BaseContract.NotesEntry.URI,
                 null,
@@ -89,7 +89,6 @@ public class NotesDao {//Dao is Data Access Object
             note.setId(cursor.getLong(cursor.getColumnIndex(BaseContract.NotesEntry._ID)));//this id is generated automatically,
             note.setBody(cursor.getString(cursor.getColumnIndex(BaseContract.NotesEntry.BODY)));
             note.setReference(cursor.getString(cursor.getColumnIndex(BaseContract.NotesEntry.REFERENCE)));
-            note.setLoaded(true);
         }
         return note;
     }

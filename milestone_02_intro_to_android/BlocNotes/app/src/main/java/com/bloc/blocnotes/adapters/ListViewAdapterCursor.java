@@ -7,6 +7,8 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.database.Cursor;
+import android.text.format.DateUtils;
+import android.text.format.Time;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -47,11 +49,10 @@ public class ListViewAdapterCursor extends SimpleCursorAdapter implements View.O
         getCursor().moveToPosition(position);//this cursor contains our data, moving this to selected position by user
 
         //then gets data from this position
-        Note note = new Note(context);
+        Note note = new Note();
         note.setId(getCursor().getLong(getCursor().getColumnIndex(BaseContract.NotesEntry._ID)));//this id is generated automatically,
         note.setBody(getCursor().getString(getCursor().getColumnIndex(BaseContract.NotesEntry.BODY)));
         note.setReference(getCursor().getString(getCursor().getColumnIndex(BaseContract.NotesEntry.REFERENCE)));
-        note.setLoaded(true);//to not loop
 
         return note;// returns it
     }
@@ -102,7 +103,7 @@ public class ListViewAdapterCursor extends SimpleCursorAdapter implements View.O
                         break;
                     case 3:
                         // remind me call here
-                        remindMe();
+                        remindMe(mPosition);
                         break;
                 }
                 return true;
@@ -116,14 +117,31 @@ public class ListViewAdapterCursor extends SimpleCursorAdapter implements View.O
         });
     }
 
-    public void remindMe() {
+    public void remindMe(int position) {
+
+        Note note = (Note)getItem(position);
+
         Intent reminderReceiverIntent = new Intent(context, ReminderReceiver.class);
         reminderReceiverIntent.setAction("SHOW_NOTIFICATION");
         reminderReceiverIntent.putExtra("EXTRA_REMINDER_TITLE", "Note is due for editing");
+        reminderReceiverIntent.putExtra("note", note);
         //String action =  reminderReceiverIntent.getAction();
         // Make a Broadcasting PendingIntent based on the previous
         final PendingIntent reminderPendingIntent = PendingIntent.getBroadcast(context, 0, reminderReceiverIntent,0);
         final AlarmManager alarmManager = (AlarmManager) context.getSystemService(Context.ALARM_SERVICE);
+/*
+        Intent intent = new Intent(context, context.getClass());
+        PendingIntent pendingIntent =
+                PendingIntent.getService(context, 0, intent, PendingIntent.FLAG_UPDATE_CURRENT);
+
+        long currentTimeMillis = System.currentTimeMillis();
+        long nextUpdateTimeMillis = currentTimeMillis + 5 * DateUtils.MINUTE_IN_MILLIS;
+        Time nextUpdateTime = new Time();
+        nextUpdateTime.set(nextUpdateTimeMillis);
+
+        AlarmManager alarmManager = (AlarmManager) getSystemService(Context.ALARM_SERVICE);
+        alarmManager.set(AlarmManager.RTC, nextUpdateTimeMillis, pendingIntent);
+ */
 
         final CharSequence[] items = {"5 minutes","10 minutes","30 minutes","60 minutes"};
         AlertDialog.Builder builder = new AlertDialog.Builder(context);

@@ -68,6 +68,10 @@ public class BlocNotes extends Activity implements NavigationDrawerFragment.Navi
             Log.d("Wayne", "onCreate was called");
 
             setContentView(R.layout.activity_bloc_notes);
+
+
+
+
             Utilities.createInitialDatabase(this);
 
         mNavigationDrawerFragment = (NavigationDrawerFragment)
@@ -83,12 +87,23 @@ public class BlocNotes extends Activity implements NavigationDrawerFragment.Navi
             fragmentManager.beginTransaction()
                     .replace(R.id.container, CreateNoteFragment.newInstance(""))
                     .commit();
+
+
+            if(getIntent().getExtras() != null){
+                Note note = (Note)getIntent().getExtras().getSerializable("note");
+                updateNote(note);
+            }
     }
 
     @Override
     protected void onResume() {
         super.onResume();
         Log.d("Wayne","onResume was called");
+
+        if(getIntent().getExtras() != null){
+            Note note = (Note)getIntent().getExtras().getSerializable("note");
+            updateNote(note);
+        }
     }
 
     @Override
@@ -120,12 +135,14 @@ public class BlocNotes extends Activity implements NavigationDrawerFragment.Navi
         super.onSaveInstanceState(outState);
         Log.d("Wayne", "onSaveInstanceState was called");
         final EditText textBox = (EditText) findViewById(R.id.text);
-        CharSequence userText = textBox.getText();
-        //Typeface fontName = textBox.getTypeface();
-        float fontSize = textBox.getTextSize();
-        outState.putCharSequence("savedText", userText);
-        //Toast.makeText(this, "the fontName is " + fontName,Toast.LENGTH_SHORT).show();
-        outState.putFloat("fontSize", fontSize);
+        if(textBox != null){
+            CharSequence userText = textBox.getText();
+            //Typeface fontName = textBox.getTypeface();
+            float fontSize = textBox.getTextSize();
+            outState.putCharSequence("savedText", userText);
+            //Toast.makeText(this, "the fontName is " + fontName,Toast.LENGTH_SHORT).show();
+            outState.putFloat("fontSize", fontSize);
+        }
 
 
 
@@ -317,14 +334,12 @@ public class BlocNotes extends Activity implements NavigationDrawerFragment.Navi
 
 
     public void insertNewNotebook() {
-        Notebook notebook = new Notebook(this);
+        Notebook notebook = new Notebook();
         notebook.setName(mNewNotebook);
-        notebook.setLoaded(true);
 
         NotebooksDao notebooksDao = new NotebooksDao(this);
         notebooksDao.insert(notebook);
 
-        //Message.message(this, "inserted");
     }
 
     private void openMap() {

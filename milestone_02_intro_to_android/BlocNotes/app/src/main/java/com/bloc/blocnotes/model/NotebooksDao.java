@@ -75,13 +75,13 @@ public class NotebooksDao {
 
         if (cursor.moveToFirst()) {
             do {
-                Notebook notebook = new Notebook(context);
+                Notebook notebook = new Notebook();
                 //we don't need all data here, because data in memory is a problem
                 //but we need the id, because the id is the primary key
                 //with the id we can find the rest of data
                 notebook.setId(cursor.getLong(cursor.getColumnIndex(BaseContract.NotebooksEntry._ID)));//this id is generated automatically,
-                //notebook.setName(cursor.getString(cursor.getColumnIndex(BaseContract.NotebooksEntry.NAME)));
-                //notebook.setDescription(cursor.getString(cursor.getColumnIndex(BaseContract.NotebooksEntry.DESCRIPTION)));
+                notebook.setName(cursor.getString(cursor.getColumnIndex(BaseContract.NotebooksEntry.NAME)));
+                notebook.setDescription(cursor.getString(cursor.getColumnIndex(BaseContract.NotebooksEntry.DESCRIPTION)));
 
 
                 list.add(notebook);
@@ -97,7 +97,7 @@ public class NotebooksDao {
         String selection = BaseContract.NotebooksEntry._ID + " = ?";
         String[] selectionArgs = new String[]{String.valueOf(id)};
 
-        Notebook notebook = new Notebook(context);
+        Notebook notebook = new Notebook();
 
         Cursor cursor = context.getContentResolver().query(BaseContract.NotebooksEntry.URI,
                 null,
@@ -112,7 +112,6 @@ public class NotebooksDao {
             notebook.setId(cursor.getLong(cursor.getColumnIndex(BaseContract.NotebooksEntry._ID)));//this id is generated automatically,
             notebook.setName(cursor.getString(cursor.getColumnIndex(BaseContract.NotebooksEntry.NAME)));
             notebook.setDescription(cursor.getString(cursor.getColumnIndex(BaseContract.NotebooksEntry.DESCRIPTION)));
-            notebook.setLoaded(true);
         }
         return notebook;
     }

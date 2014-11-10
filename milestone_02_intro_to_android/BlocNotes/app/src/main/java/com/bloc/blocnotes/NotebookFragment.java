@@ -42,7 +42,7 @@ public class NotebookFragment extends Fragment implements LoaderManager.LoaderCa
     //listView.setAdapter(dataAdapter);
 
     public void insertNewNote() {
-        Note note = new Note(getActivity());
+        Note note = new Note();
         note.setBody(mNewNote);
 
         NotesDao notesDao = new NotesDao(getActivity());

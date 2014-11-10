@@ -70,7 +70,7 @@ public class CreateNoteFragment extends Fragment implements View.OnClickListener
         int id = view.getId();
         if(id == buttonSave.getId()){
             NotesDao notesDao = new NotesDao(getActivity());
-            Note note = new Note(getActivity());
+            Note note = new Note();
             note.setBody(editText.getText().toString());
             noteName = getArguments().getString(ARG_NOTEBOOK_NAME);
             if (noteName==""){
@@ -79,7 +79,6 @@ public class CreateNoteFragment extends Fragment implements View.OnClickListener
             } else {
                 note.setReference(noteName);
             }
-            note.setLoaded(true);
             notesDao.insert(note);
             editText.setText("");
             editText.requestFocus();
