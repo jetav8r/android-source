@@ -91,6 +91,7 @@ public class BlocNotes extends Activity implements NavigationDrawerFragment.Navi
 
             if(getIntent().getExtras() != null){
                 Note note = (Note)getIntent().getExtras().getSerializable("note");
+                Log.e("Note in BlocNotes on Create", note.getBody());
                 updateNote(note);
             }
     }
@@ -102,6 +103,7 @@ public class BlocNotes extends Activity implements NavigationDrawerFragment.Navi
 
         if(getIntent().getExtras() != null){
             Note note = (Note)getIntent().getExtras().getSerializable("note");
+            Log.e("Note in BlocNotes on Resume", note.getBody());
             updateNote(note);
         }
     }

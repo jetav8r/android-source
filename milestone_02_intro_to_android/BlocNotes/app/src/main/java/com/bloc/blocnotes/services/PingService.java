@@ -22,7 +22,7 @@ import com.bloc.blocnotes.util.ReminderReceiver;
  */
 public class PingService extends IntentService {
     Context context;
-    private String mMessage;
+    //private String mMessage;
 
     public PingService() {
         super("com.bloc.blocnotes.util.ReminderReceiver");
@@ -30,8 +30,9 @@ public class PingService extends IntentService {
 
     @Override
     protected void onHandleIntent(Intent intent) {
-        Note note = (Note) intent.getExtras().getSerializable("note");
+        Note note = (Note) intent.getExtras().getSerializable(this.getString(R.string.note_parameter_notification));
         //int mWhen = ReminderReceiver.getWhen();
+        Log.e("Note on HandleIntent", note.getBody());
         String action = intent.getAction();
         // The reminder message the user set.
         //mMessage = intent.getStringExtra(CommonConstants.EXTRA_MESSAGE);
@@ -52,7 +53,12 @@ public class PingService extends IntentService {
             if (action.equals(CommonConstants.ACTION_DELETE)) {
                 manager.cancel(CommonConstants.NOTIFICATION_ID);
                 deleteAction(note);
-            }
+            } /*else {
+                if (action.equals(CommonConstants.ACTION_DISMISS)) {
+                    manager.cancel(CommonConstants.NOTIFICATION_ID);
+                    manager.cancelAll();
+                }
+            }*/
         }
     }
 
@@ -66,7 +72,7 @@ public class PingService extends IntentService {
     private void snoozeAction(Note note) {
         Intent reminderReceiverIntent = new Intent(this, ReminderReceiver.class);
         reminderReceiverIntent.setAction("SHOW_NOTIFICATION");
-        reminderReceiverIntent.putExtra("EXTRA_REMINDER_TITLE", "Note is due for editing");
+        //reminderReceiverIntent.putExtra("EXTRA_REMINDER_TITLE", "Note is due for editing");
         reminderReceiverIntent.putExtra("note", note);
         //String action =  reminderReceiverIntent.getAction();
         // Make a Broadcasting PendingIntent based on the previous
@@ -116,7 +122,7 @@ public class PingService extends IntentService {
          * This is available through either the normal view or big view.
          */
         /*Intent resultIntent = new Intent(this, BlocNotes.class);
-        resultIntent.putExtra(CommonConstants.EXTnote.getBody()MESSAGE, msg);
+        resultIntent.putExtra((note.getBody()), msg);
         resultIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
         // Because clicking the notification opens a new ("special") activity, there's
         // no need to create an artificial back stack.

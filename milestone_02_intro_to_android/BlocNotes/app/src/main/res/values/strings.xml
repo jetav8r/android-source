@@ -79,6 +79,7 @@
     <string name="sleep_error">Sleep error</string>
     <string name="timer_finished">Timer finished</string>
     <string name="dismiss">Dismiss</string>
+    <string name="note_parameter_notification">note</string>
 
 
 </resources>

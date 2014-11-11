@@ -9,6 +9,7 @@ import android.content.Intent;
 import android.database.Cursor;
 import android.text.format.DateUtils;
 import android.text.format.Time;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -121,10 +122,13 @@ public class ListViewAdapterCursor extends SimpleCursorAdapter implements View.O
 
         Note note = (Note)getItem(position);
 
+        Log.e("note", note.getBody());//here it is correct
+
         Intent reminderReceiverIntent = new Intent(context, ReminderReceiver.class);
         reminderReceiverIntent.setAction("SHOW_NOTIFICATION");
         reminderReceiverIntent.putExtra("EXTRA_REMINDER_TITLE", "Note is due for editing");
-        reminderReceiverIntent.putExtra("note", note);
+        reminderReceiverIntent.putExtra(context.getString(R.string.note_parameter_notification), note);
+        //reminderReceiverIntent.putExtra("noteText", noteText);
         //String action =  reminderReceiverIntent.getAction();
         // Make a Broadcasting PendingIntent based on the previous
         final PendingIntent reminderPendingIntent = PendingIntent.getBroadcast(context, 0, reminderReceiverIntent,0);

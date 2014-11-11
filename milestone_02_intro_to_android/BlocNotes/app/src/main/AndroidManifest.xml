@@ -20,9 +20,6 @@
             android:enabled="true"
             android:name=".services.PingService" />
 
-        <service
-            android:enabled="true"
-            android:name=".services.DeleteService" />
 
         <activity
             android:name=".BlocNotes"

@@ -7,8 +7,10 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.support.v4.app.NotificationCompat;
+import android.util.Log;
 
 import com.bloc.blocnotes.BlocNotes;
+import com.bloc.blocnotes.Message;
 import com.bloc.blocnotes.R;
 import com.bloc.blocnotes.model.Note;
 import com.bloc.blocnotes.services.CommonConstants;
@@ -37,22 +39,36 @@ public class ReminderReceiver extends BroadcastReceiver {
         //mServiceIntent = new Intent(context, PingService.class);
 
 
-        Note note = (Note)intent.getExtras().getSerializable("note");
+        Note note = (Note)intent.getExtras().getSerializable(context.getString(R.string.note_parameter_notification));
+
+        Log.e("Note on receive", note.getBody());
+
+        String noteText= note.getBody();
 
         Intent editIntent = new Intent(context, BlocNotes.class);
         editIntent.setAction(CommonConstants.ACTION_EDIT);
-        editIntent.putExtra("note",note);
+        editIntent.putExtra(context.getString(R.string.note_parameter_notification),note);
+        editIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
         PendingIntent piEdit = PendingIntent.getActivity(context, 0, editIntent, 0);
 
         Intent deleteIntent = new Intent(context, PingService.class);
         deleteIntent.setAction(CommonConstants.ACTION_DELETE);
-        deleteIntent.putExtra("note",note);
+        deleteIntent.putExtra(context.getString(R.string.note_parameter_notification),note);
+        deleteIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
         PendingIntent piDelete = PendingIntent.getService(context, 0, deleteIntent, 0);
 
         Intent snoozeIntent = new Intent(context, PingService.class);
-        snoozeIntent.putExtra("note", note);
+        snoozeIntent.putExtra(context.getString(R.string.note_parameter_notification), note);
+        snoozeIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
         snoozeIntent.setAction(CommonConstants.ACTION_SNOOZE);
         PendingIntent piSnooze = PendingIntent.getService(context, 0, snoozeIntent, 0);
+
+        /*Intent dismissIntent = new Intent(context, PingService.class);
+        snoozeIntent.putExtra("note", note);
+        snoozeIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+        snoozeIntent.setAction(CommonConstants.ACTION_DISMISS);
+        PendingIntent piDismiss = PendingIntent.getService(context, 0, snoozeIntent, 0);
+        */
 
         //Message.message(context, "onReceive started");
         /*if ("SHOW_NOTIFICATION".equals(intent.getAction())) {
@@ -74,11 +90,13 @@ public class ReminderReceiver extends BroadcastReceiver {
             NotificationManager notificationManager = (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
             notificationManager.notify(0, notification);
 */
-
-        String msgText = "Your note is ready for editing.  "
-                + "You can edit the note, delete it or snooze.  "
-                + "Touch the notification to edit your note.";
-        NotificationCompat.Builder builder = new NotificationCompat.Builder(context)
+        Message.message(context, "onReceive started");
+        if ("SHOW_NOTIFICATION".equals(intent.getAction())) {
+            //String msgText = "Your note is ready for editing.  "
+            //+ "You can edit the note, delete it or snooze.  "
+            //+ "Touch the notification to edit your note.";
+            Message.message(context, "Message received");
+            NotificationCompat.Builder builder = new NotificationCompat.Builder(context)
                     .setContentTitle(context.getString(R.string.note_content_title))
                     .setContentText(context.getString(R.string.note_content_text))
                     .setSmallIcon(R.drawable.ic_stat_image_edit)
@@ -87,9 +105,10 @@ public class ReminderReceiver extends BroadcastReceiver {
                     .setAutoCancel(true)
                     .addAction(R.drawable.ic_delete, context.getString(R.string.delete_text), piDelete)
                     .addAction(R.drawable.ic_snooze, context.getString(R.string.snooze_text), piSnooze)
-                     //.setStyle(new NotificationCompat.InboxStyle().setSummaryText(msgText));
+                            //.addAction(R.drawable.ic__notification_dismiss, context.getString(R.string.dismiss), piDismiss)
+                            //.setStyle(new NotificationCompat.InboxStyle().setSummaryText(msgText));
                     .setStyle(new NotificationCompat.BigTextStyle().bigText(note.getBody()));
-        //Notification notification = builder.build();
+            //Notification notification = builder.build();
             /*Notification notification =
                     new Notification.Builder(context)
                             .setSmallIcon(R.drawable.ic_stat_image_edit)
@@ -101,9 +120,11 @@ public class ReminderReceiver extends BroadcastReceiver {
                             .addAction(R.drawable.ic_snooze, "More", piSnooze)
                             .build();
             */
-        //int when = (int) System.currentTimeMillis();
-        //setWhen(when);
-        NotificationManager mNotificationManager = (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
-        mNotificationManager.notify(CommonConstants.NOTIFICATION_ID, builder.build());
+            //int when = (int) System.currentTimeMillis();
+            //setWhen(when);
+            NotificationManager mNotificationManager = (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
+            mNotificationManager.cancelAll();
+            mNotificationManager.notify(CommonConstants.NOTIFICATION_ID, builder.build());
+        }
     }
 }
