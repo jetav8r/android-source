@@ -73,7 +73,7 @@ public class CreateNoteFragment extends Fragment implements View.OnClickListener
             Note note = new Note();
             note.setBody(editText.getText().toString());
             noteName = getArguments().getString(ARG_NOTEBOOK_NAME);
-            if (noteName==""){
+            if (noteName.equals("")){
                 noteName = "Uncategorized";
                 note.setReference(noteName);
             } else {

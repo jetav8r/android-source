@@ -30,13 +30,13 @@ public class Utilities {
         //String fontName = "Sans Serif";
         //now change app style font here
         //EditText text = (EditText) this.findViewById(R.id.text);z
-        if (fontName == "Default") {
+        if (fontName.equals("Default")) {
             view.setTypeface(Typeface.DEFAULT);
         } else {
-            if (fontName == "Serif") {
+            if (fontName.equals("Serif")) {
                 view.setTypeface(Typeface.SERIF);
             } else {
-                if (fontName == "Sans Serif") {
+                if (fontName.equals("Sans Serif")) {
                     view.setTypeface(Typeface.SANS_SERIF);
                 } else {
                     Typeface currentFont = Typeface.createFromAsset(context.getAssets(), fontName);

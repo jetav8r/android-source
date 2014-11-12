@@ -36,7 +36,7 @@ import com.bloc.blocnotes.util.ReminderReceiver;
 public class ListViewAdapterCursor extends SimpleCursorAdapter implements View.OnClickListener{
     LayoutInflater inflater;
     Context context;
-    private int layout = R.layout.custom_adapter_notes; //this is the view we use, but we can create our own view
+    private int layout = R.layout.custom_adapter_notes; //this is the view we use... can create our own view
 
     public ListViewAdapterCursor(Context context, int layout, Cursor c, String[] from, int[] to) {//cursor is now our data list
         super(context, layout, c, from, to, 0);
@@ -126,12 +126,12 @@ public class ListViewAdapterCursor extends SimpleCursorAdapter implements View.O
 
         Intent reminderReceiverIntent = new Intent(context, ReminderReceiver.class);
         reminderReceiverIntent.setAction("SHOW_NOTIFICATION");
-        reminderReceiverIntent.putExtra("EXTRA_REMINDER_TITLE", "Note is due for editing");
+        //reminderReceiverIntent.putExtra("EXTRA_REMINDER_TITLE", "Note is due for editing");
         reminderReceiverIntent.putExtra(context.getString(R.string.note_parameter_notification), note);
         //reminderReceiverIntent.putExtra("noteText", noteText);
         //String action =  reminderReceiverIntent.getAction();
         // Make a Broadcasting PendingIntent based on the previous
-        final PendingIntent reminderPendingIntent = PendingIntent.getBroadcast(context, 0, reminderReceiverIntent,0);
+        final PendingIntent reminderPendingIntent = PendingIntent.getBroadcast(context, 0, reminderReceiverIntent,PendingIntent.FLAG_UPDATE_CURRENT);
         final AlarmManager alarmManager = (AlarmManager) context.getSystemService(Context.ALARM_SERVICE);
 /*
         Intent intent = new Intent(context, context.getClass());

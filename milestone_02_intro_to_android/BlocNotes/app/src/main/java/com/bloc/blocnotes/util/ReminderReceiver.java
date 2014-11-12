@@ -49,19 +49,19 @@ public class ReminderReceiver extends BroadcastReceiver {
         editIntent.setAction(CommonConstants.ACTION_EDIT);
         editIntent.putExtra(context.getString(R.string.note_parameter_notification),note);
         editIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
-        PendingIntent piEdit = PendingIntent.getActivity(context, 0, editIntent, 0);
+        PendingIntent piEdit = PendingIntent.getActivity(context, 0, editIntent, PendingIntent.FLAG_UPDATE_CURRENT);
 
         Intent deleteIntent = new Intent(context, PingService.class);
         deleteIntent.setAction(CommonConstants.ACTION_DELETE);
         deleteIntent.putExtra(context.getString(R.string.note_parameter_notification),note);
         deleteIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
-        PendingIntent piDelete = PendingIntent.getService(context, 0, deleteIntent, 0);
+        PendingIntent piDelete = PendingIntent.getService(context, 0, deleteIntent, PendingIntent.FLAG_UPDATE_CURRENT);
 
         Intent snoozeIntent = new Intent(context, PingService.class);
         snoozeIntent.putExtra(context.getString(R.string.note_parameter_notification), note);
         snoozeIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
         snoozeIntent.setAction(CommonConstants.ACTION_SNOOZE);
-        PendingIntent piSnooze = PendingIntent.getService(context, 0, snoozeIntent, 0);
+        PendingIntent piSnooze = PendingIntent.getService(context, 0, snoozeIntent, PendingIntent.FLAG_UPDATE_CURRENT);
 
         /*Intent dismissIntent = new Intent(context, PingService.class);
         snoozeIntent.putExtra("note", note);
@@ -79,6 +79,7 @@ public class ReminderReceiver extends BroadcastReceiver {
             Builder builder = new Notification.Builder(context)
                     .setContentTitle("Note is due")
                     .setContentText("Touch to activate")
+                    .setContentIntent(piEdit)
                     .setSmallIcon(R.drawable.ic_stat_image_edit)
                     .setPriority(Notification.PRIORITY_HIGH)
                     .addAction(R.drawable.ic_delete, "Delete", piDelete)
@@ -98,7 +99,7 @@ public class ReminderReceiver extends BroadcastReceiver {
             Message.message(context, "Message received");
             NotificationCompat.Builder builder = new NotificationCompat.Builder(context)
                     .setContentTitle(context.getString(R.string.note_content_title))
-                    .setContentText(context.getString(R.string.note_content_text))
+                    //.setContentText(context.getString(R.string.note_content_text))
                     .setSmallIcon(R.drawable.ic_stat_image_edit)
                     .setPriority(Notification.PRIORITY_HIGH)
                     .setContentIntent(piEdit)

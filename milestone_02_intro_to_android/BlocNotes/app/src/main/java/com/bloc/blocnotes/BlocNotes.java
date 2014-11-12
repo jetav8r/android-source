@@ -168,13 +168,13 @@ public class BlocNotes extends Activity implements NavigationDrawerFragment.Navi
         textBox.setText(userText);
         textBox.requestFocus();
 
-        if (fontName == "Default") {
+        if (fontName.equals("Default")) {
             textBox.setTypeface(Typeface.DEFAULT);
         } else {
-            if (fontName == "Serif") {
+            if (fontName.equals("Serif")) {
                 textBox.setTypeface(Typeface.SERIF);
             } else {
-                if (fontName == "Sans Serif") {
+                if (fontName.equals("Sans Serif")) {
                     textBox.setTypeface(Typeface.SANS_SERIF);
                 } else {
                     Typeface currentFont = Typeface.createFromAsset(this.getAssets(), fontName);
@@ -257,6 +257,7 @@ public class BlocNotes extends Activity implements NavigationDrawerFragment.Navi
     //}
     public void restoreActionBar() {
         ActionBar actionBar = getActionBar();
+        assert actionBar != null;
         actionBar.setNavigationMode(ActionBar.NAVIGATION_MODE_STANDARD);
         actionBar.setDisplayShowTitleEnabled(true);
         actionBar.setTitle(mTitle);

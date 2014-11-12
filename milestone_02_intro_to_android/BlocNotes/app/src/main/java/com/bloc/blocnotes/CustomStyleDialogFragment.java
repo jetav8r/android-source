@@ -182,13 +182,13 @@ public class CustomStyleDialogFragment extends DialogFragment implements Adapter
         //editor.putInt("position", position);
         editor.commit();
 
-        if (fontName == "Default") {
+        if (fontName.equals("Default")) {
             text.setTypeface(Typeface.DEFAULT);
         } else {
-            if (fontName == "Serif") {
+            if (fontName.equals("Serif")) {
                 text.setTypeface(Typeface.SERIF);
             } else {
-                if (fontName == "Sans Serif") {
+                if (fontName.equals("Sans Serif")) {
                     text.setTypeface(Typeface.SANS_SERIF);
                 } else {
                     Typeface currentFont = Typeface.createFromAsset(getActivity().getAssets(), fontName);

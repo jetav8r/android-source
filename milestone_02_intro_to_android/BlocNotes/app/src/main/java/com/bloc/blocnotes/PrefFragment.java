@@ -44,6 +44,7 @@ public class PrefFragment extends PreferenceFragment implements Preference.OnPre
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle
             savedInstanceState) {
         View view = super.onCreateView(inflater, container, savedInstanceState);
+        assert view != null;
         view.setBackgroundColor(getResources().getColor(android.R.color.black));
         addPreferencesFromResource(R.xml.prefs);
 

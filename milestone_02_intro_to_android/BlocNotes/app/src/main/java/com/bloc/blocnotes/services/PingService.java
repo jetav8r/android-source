@@ -76,7 +76,7 @@ public class PingService extends IntentService {
         reminderReceiverIntent.putExtra("note", note);
         //String action =  reminderReceiverIntent.getAction();
         // Make a Broadcasting PendingIntent based on the previous
-        final PendingIntent reminderPendingIntent = PendingIntent.getBroadcast(this, 0, reminderReceiverIntent, 0);
+        final PendingIntent reminderPendingIntent = PendingIntent.getBroadcast(this, 0, reminderReceiverIntent, PendingIntent.FLAG_UPDATE_CURRENT);
         final AlarmManager alarmManager = (AlarmManager) this.getSystemService(Context.ALARM_SERVICE);
 
         alarmManager.set(AlarmManager.RTC,
