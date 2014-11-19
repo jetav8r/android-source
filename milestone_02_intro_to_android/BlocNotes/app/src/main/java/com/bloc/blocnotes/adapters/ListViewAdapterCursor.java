@@ -7,6 +7,14 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.database.Cursor;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.graphics.drawable.BitmapDrawable;
+import android.graphics.drawable.Drawable;
+import android.os.AsyncTask;
+import android.os.Environment;
+import android.support.annotation.DrawableRes;
+import android.text.Editable;
 import android.text.format.DateUtils;
 import android.text.format.Time;
 import android.util.Log;
@@ -15,6 +23,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.PopupMenu;
 import android.widget.SimpleCursorAdapter;
@@ -28,7 +37,17 @@ import com.bloc.blocnotes.bd.BaseContract;
 import com.bloc.blocnotes.model.Note;
 import com.bloc.blocnotes.model.NotebooksDao;
 import com.bloc.blocnotes.model.NotesDao;
+import com.bloc.blocnotes.util.ImageLoader;
 import com.bloc.blocnotes.util.ReminderReceiver;
+
+import java.io.ByteArrayOutputStream;
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.net.URL;
+import java.net.URLConnection;
 
 /**
  * Created by Wayne on 10/27/2014.
@@ -37,6 +56,7 @@ public class ListViewAdapterCursor extends SimpleCursorAdapter implements View.O
     LayoutInflater inflater;
     Context context;
     private int layout = R.layout.custom_adapter_notes; //this is the view we use... can create our own view
+    private ImageLoader imgLoader;
 
     public ListViewAdapterCursor(Context context, int layout, Cursor c, String[] from, int[] to) {//cursor is now our data list
         super(context, layout, c, from, to, 0);
@@ -54,6 +74,7 @@ public class ListViewAdapterCursor extends SimpleCursorAdapter implements View.O
         note.setId(getCursor().getLong(getCursor().getColumnIndex(BaseContract.NotesEntry._ID)));//this id is generated automatically,
         note.setBody(getCursor().getString(getCursor().getColumnIndex(BaseContract.NotesEntry.BODY)));
         note.setReference(getCursor().getString(getCursor().getColumnIndex(BaseContract.NotesEntry.REFERENCE)));
+        note.setImageUrl(getCursor().getString(getCursor().getColumnIndex(BaseContract.NotesEntry.IMAGE_URL)));
 
         return note;// returns it
     }
@@ -83,6 +104,20 @@ public class ListViewAdapterCursor extends SimpleCursorAdapter implements View.O
         popupMenu.getMenu().add(Menu.NONE, 1, Menu.NONE, "Update note");
         popupMenu.getMenu().add(Menu.NONE, 2, Menu.NONE, "Move note");
         popupMenu.getMenu().add(Menu.NONE, 3, Menu.NONE, "Remind me");
+        popupMenu.getMenu().add(Menu.NONE, 4, Menu.NONE, "Add image for note");
+
+        ImageView imageViewUrl = (ImageView)view.findViewById(R.id.imageViewUrl);
+        imageViewUrl.setFocusable(false);
+        //passing url to imageview
+        String newUrl = cursor.getString(cursor.getColumnIndex(BaseContract.NotesEntry.IMAGE_URL));
+        imageViewUrl.setTag(newUrl);
+        //passing imageview with url to Asynctask
+        //new LoadUrl().execute(imageViewUrl);
+
+        //This is where we call the utilities for images from cache
+        imgLoader = new ImageLoader(context);
+        imgLoader.DisplayImage(newUrl,imageViewUrl);
+
 
 
         popupMenu.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
@@ -106,6 +141,10 @@ public class ListViewAdapterCursor extends SimpleCursorAdapter implements View.O
                         // remind me call here
                         remindMe(mPosition);
                         break;
+                    case 4:
+                        // image URL call here
+                        addUrl(mPosition);
+                        break;
                 }
                 return true;
             }
@@ -117,6 +156,8 @@ public class ListViewAdapterCursor extends SimpleCursorAdapter implements View.O
             }
         });
     }
+
+
 
     public void remindMe(int position) {
 
@@ -226,8 +267,143 @@ public class ListViewAdapterCursor extends SimpleCursorAdapter implements View.O
         return super.getItemId(position);
     }
 
+    private void addUrl(int mPosition) {
+        final Note currentNote = (Note) getItem(mPosition);
+        final EditText userInput = new EditText(context);
+
+        AlertDialog.Builder builder = new AlertDialog.Builder(context);
+        builder.setTitle("Add url where image is located")
+                .setView(userInput)
+                .setMessage("Image URL Address")
+                .setNeutralButton("OK", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialogInterface, int i) {
+
+                        currentNote.setImageUrl(userInput.getText().toString());
+                        NotesDao dao = new NotesDao(context);
+                        dao.update(currentNote);
+                    }
+                });
+        builder.show();
+    }
+
+
+
     @Override
     public void onClick(View view) {
 
     }
+
+    /*public void saveImageToSD(Bitmap image, String name) {
+        if (Environment.getExternalStorageState().equals(Environment.MEDIA_MOUNTED) == false) {
+            return;
+        }
+
+        ByteArrayOutputStream imageBytes = new ByteArrayOutputStream();
+        image.compress(Bitmap.CompressFormat.PNG, 100, imageBytes);
+        File extCache = Environment.getDownloadCacheDirectory();
+                File cachedImageFile = new File(extCache.getAbsolutePath()
+                + File.separator + name);
+        try {
+            cachedImageFile.createNewFile();
+            FileOutputStream fos = new FileOutputStream(cachedImageFile);
+            fos.write(imageBytes.toByteArray());
+            fos.close();
+            Message.message(context, "File name = " + fos.toString());
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        //next lines test storage of image to SD storage directory
+        File extStore= Environment.getExternalStorageDirectory();
+        File storedImageFile = new File (extStore.getAbsolutePath()
+                + File.separator + name);
+        try {
+            storedImageFile.createNewFile();
+            FileOutputStream fos = new FileOutputStream(storedImageFile);
+            fos.write(imageBytes.toByteArray());
+            fos.close();
+            Message.message(context, "File name = " + fos.toString());
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public Bitmap bitmapFromCache(String name) {
+        String extState = Environment.getExternalStorageState();
+        if (!(extState.equals(Environment.MEDIA_MOUNTED) ||
+                extState.equals(Environment.MEDIA_MOUNTED_READ_ONLY))) {
+            return null;
+        }
+        String photoPath = Environment.getDownloadCacheDirectory() + File.separator + name;
+        File photoFile = new File(photoPath);
+
+        // Check if the file exists
+        if (photoFile.exists() == false) {
+            // Returning null signifies that the file is not in cache
+            return null;
+        }
+        // Re-create the bitmap from the raw data saved during `saveImageToSD`
+        BitmapFactory.Options options = new BitmapFactory.Options();
+        options.inPreferredConfig = Bitmap.Config.ARGB_8888;
+        return BitmapFactory.decodeFile(photoPath, options);
+    }
+
+    private class LoadUrl extends AsyncTask<ImageView, Void, Drawable>{
+        ImageView imageView;
+        Drawable imageLoaded;
+
+        protected Drawable doInBackground(ImageView... params) {
+            imageView = params[0];
+
+            //Check SD card for image to see if it exists... call bitmapFromCache to check and return image here
+            //then create an if statement or try/catch to run code if it doesn't exist
+            Bitmap currentImage = bitmapFromCache((String) imageView.getTag());
+            if (currentImage != null) {
+                imageLoaded = new BitmapDrawable(currentImage);
+            }
+
+            if (currentImage == null) {
+                try {
+                    String currentUrl = (String)imageView.getTag();
+                    URL url = new URL(currentUrl);
+                    URLConnection urlConnection = url.openConnection();
+                    InputStream inputStream = urlConnection.getInputStream();
+                    //Bitmap currentImage = BitmapFactory.decodeStream(inputStream);  commented out temporarily with if statement running
+                    currentImage = BitmapFactory.decodeStream(inputStream);
+                    imageLoaded = new BitmapDrawable(currentImage);
+                    saveImageToSD(currentImage,currentUrl);
+
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+
+            }
+
+
+
+            //...here is the code to load from url save on sd and pass path to create drawable
+            //test image is loaded in sd
+            //if yes load and return to onpostexecute
+
+            //if not load from url, save in sd an return to onpostexecute
+            return imageLoaded;
+        }
+
+        @Override
+        protected void onPostExecute(Drawable imageLoaded) {
+            super.onPostExecute(imageLoaded);
+            //after load image on background method pass image to imageview here.
+            if (imageLoaded == null) {
+                //assign default icon/image to imageLoaded
+            } else {
+                imageView.setImageDrawable(imageLoaded);
+            }
+        }
+    }
+    */
 }

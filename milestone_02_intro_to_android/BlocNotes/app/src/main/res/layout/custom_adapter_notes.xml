@@ -10,10 +10,9 @@ android:layout_width="match_parent" android:layout_height="match_parent">
     android:text="Medium Text"
     android:id="@+id/textView_body"
     android:layout_centerVertical="true"
-    android:layout_alignParentLeft="true"
-    android:layout_alignParentStart="true"
-    android:layout_toLeftOf="@+id/imageView_menu"
-    android:layout_toStartOf="@+id/imageView_menu" />
+    android:layout_toRightOf="@+id/imageViewUrl"
+    android:layout_toEndOf="@id/imageViewUrl"
+    android:layout_toLeftOf="@+id/imageView_menu" />
 
 <ImageView
     android:layout_width="wrap_content"
@@ -23,4 +22,13 @@ android:layout_width="match_parent" android:layout_height="match_parent">
     android:layout_alignParentRight="true"
     android:layout_alignParentEnd="true"
     android:src="@drawable/ic_action_more_vert" />
+
+    <ImageView
+        android:layout_width="50dp"
+        android:layout_height="50dp"
+        android:id="@+id/imageViewUrl"
+        android:layout_centerVertical="true"
+        android:layout_alignParentStart="true"
+        android:layout_alignParentLeft="true"
+        android:src="@drawable/custom_button_default" />
 </RelativeLayout>

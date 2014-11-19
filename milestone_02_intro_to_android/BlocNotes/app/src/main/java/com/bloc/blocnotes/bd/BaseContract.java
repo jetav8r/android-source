@@ -25,6 +25,7 @@ public class BaseContract {
         public static final String TABLE = "notes"; //this is the name of table
         public static final String BODY = "body";//this is the first column
         public static final String REFERENCE = "reference"; //this is the second column
+        public static final String IMAGE_URL  = "image_url";
 
         public static final Uri URI = Uri.withAppendedPath(AUTHORITY_URI, TABLE); //same here
     }

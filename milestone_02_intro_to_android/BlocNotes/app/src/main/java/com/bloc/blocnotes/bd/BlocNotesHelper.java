@@ -26,16 +26,8 @@ public class BlocNotesHelper extends SQLiteOpenHelper {
 
     private Context context;
     public static final String DATABASE_NAME = "blocnotes";
-    //public static final String TABLE1_NAME = "notebooks";
-    //public static final String TABLE2_NAME = "notes";
-    public static final int DATABASE_VERSION = 1;
-    //public static final String UID = "_id";
-    //public static final String name = "name";
-    //public static final String body = "body";
-    //public static final String description = "description";
-    //public static final String reference = "notebook_reference";
-    //public static final String DROP_TABLE_1 = "DROP TABLE IF EXISTS " + TABLE1_NAME + "";
-    //public static final String DROP_TABLE_2 = "DROP TABLE IF EXISTS " + TABLE2_NAME + "";
+    //public static final int DATABASE_VERSION = 1;//increment version
+    public static final int DATABASE_VERSION = 2;
 
     private static final String TEXT_TYPE = " TEXT";
     private static final String INTEGER_TYPE = " INTEGER";
@@ -51,6 +43,7 @@ public class BlocNotesHelper extends SQLiteOpenHelper {
 
     public static final String CREATE_NOTES = "CREATE TABLE " + BaseContract.NotesEntry.TABLE + " (" +
                     BaseContract.NotesEntry._ID + INTEGER_PRIMARY_KEY + COMMA_SEP +
+                    BaseContract.NotesEntry.IMAGE_URL + TEXT_TYPE + COMMA_SEP + //if the user have not the app instaled the creation have the column added too
                     BaseContract.NotesEntry.BODY + TEXT_TYPE + COMMA_SEP +
                     BaseContract.NotesEntry.REFERENCE + TEXT_TYPE + " );";
 
@@ -92,14 +85,17 @@ public class BlocNotesHelper extends SQLiteOpenHelper {
     }
 
     @Override
-    public void onUpgrade(SQLiteDatabase sqLiteDatabase, int i, int i2) {
-        try {
-            //sqLiteDatabase.execSQL(DROP_TABLE_1); //no the best aproach, but see it later
-            //sqLiteDatabase.execSQL(DROP_TABLE_2);
-            Message.message(context, "onUpgrade was called");
-            onCreate(sqLiteDatabase);
-        } catch (SQLException e) {
-            Message.message(context, "" + e);
+    public void onUpgrade(SQLiteDatabase sqLiteDatabase, int oldVersion, int newVersion) {
+        if(oldVersion < 2){//upgrading to 2
+            try{
+                //we are adding a new column if the user already has the app installed
+                //not delete it , upgrade
+                sqLiteDatabase.execSQL("ALTER TABLE " + BaseContract.NotesEntry.TABLE + " ADD COLUMN " + BaseContract.NotesEntry.IMAGE_URL + TEXT_TYPE + ";");
+                Log.e("Wayne","" + "upgraded");
+            }catch (SQLException e){
+                Log.e("Wayne","" + e.getMessage());
+            }
+
         }
     }
 }

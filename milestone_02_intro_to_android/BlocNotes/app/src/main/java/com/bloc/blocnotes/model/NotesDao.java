@@ -25,6 +25,7 @@ public class NotesDao {//Dao is Data Access Object
 
         values.put(BaseContract.NotesEntry.BODY, note.getBody());//remember this ok? we're linking name of tables to object represent
         values.put(BaseContract.NotesEntry.REFERENCE, note.getReference());
+        values.put(BaseContract.NotesEntry.IMAGE_URL, note.getImageUrl());
 
         ContentUris.parseId(context.getContentResolver().insert(BaseContract.NotesEntry.URI, values)); //uri identifies our table and put values in it
     }
@@ -33,6 +34,7 @@ public class NotesDao {//Dao is Data Access Object
         ContentValues values = new ContentValues();
         values.put(BaseContract.NotesEntry.BODY, note.getBody());
         values.put(BaseContract.NotesEntry.REFERENCE, note.getReference());
+        values.put(BaseContract.NotesEntry.IMAGE_URL, note.getImageUrl());
 
         //to update a note we use a where clause and _ID to find it in the database
         String selection = BaseContract.NotesEntry._ID + " = ? ";
@@ -61,6 +63,7 @@ public class NotesDao {//Dao is Data Access Object
                 note.setId(cursor.getLong(cursor.getColumnIndex(BaseContract.NotesEntry._ID)));//this id is generated automatically,
                 note.setBody(cursor.getString(cursor.getColumnIndex(BaseContract.NotesEntry.BODY)));
                 note.setReference(cursor.getString(cursor.getColumnIndex(BaseContract.NotesEntry.REFERENCE)));
+                note.setImageUrl(cursor.getString(cursor.getColumnIndex(BaseContract.NotesEntry.IMAGE_URL)));
                 list.add(note);
             } while (cursor.moveToNext());
 
@@ -89,6 +92,7 @@ public class NotesDao {//Dao is Data Access Object
             note.setId(cursor.getLong(cursor.getColumnIndex(BaseContract.NotesEntry._ID)));//this id is generated automatically,
             note.setBody(cursor.getString(cursor.getColumnIndex(BaseContract.NotesEntry.BODY)));
             note.setReference(cursor.getString(cursor.getColumnIndex(BaseContract.NotesEntry.REFERENCE)));
+            note.setImageUrl(cursor.getString(cursor.getColumnIndex(BaseContract.NotesEntry.IMAGE_URL)));
         }
         return note;
     }

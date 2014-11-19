@@ -11,6 +11,7 @@ public class Note implements Serializable {
 
     private long id;
 
+    private String imageUrl;
     private String body;
     private String reference;
 
@@ -41,4 +42,11 @@ public class Note implements Serializable {
         this.reference = reference;
     }
 
+    public String getImageUrl() {
+        return imageUrl;
+    }
+
+    public void setImageUrl(String imageUrl) {
+        this.imageUrl = imageUrl;
+    }
 }

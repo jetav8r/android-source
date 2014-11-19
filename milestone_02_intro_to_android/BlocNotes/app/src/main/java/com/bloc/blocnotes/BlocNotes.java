@@ -26,6 +26,8 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.support.v4.widget.DrawerLayout;
+import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
 import android.widget.Button;
 import android.widget.EditText;
 import android.util.TypedValue;
@@ -56,7 +58,6 @@ public class BlocNotes extends Activity implements NavigationDrawerFragment.Navi
     private CharSequence mTitle;
     public static String mNewNotebook;
     private static Context context;
-
     //BlocNotesHelper blocNotesHelper;
 
 
@@ -68,9 +69,6 @@ public class BlocNotes extends Activity implements NavigationDrawerFragment.Navi
             Log.d("Wayne", "onCreate was called");
 
             setContentView(R.layout.activity_bloc_notes);
-
-
-
 
             Utilities.createInitialDatabase(this);
 
@@ -199,7 +197,9 @@ public class BlocNotes extends Activity implements NavigationDrawerFragment.Navi
 
             FragmentManager fragmentManager = getFragmentManager();
             fragmentManager.beginTransaction()
+                    .setCustomAnimations(R.anim.note_in, R.anim.note_out, R.anim.note_in, R.anim.note_out)
                     .replace(R.id.container, NotesFragment.newInstance(selectedNotebook))//here we pass a notebook from list, but not call get name yet
+
                     .addToBackStack("Notes")
                     .commit();
         }//else do nothing
