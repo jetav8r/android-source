@@ -29,8 +29,7 @@ public class ListViewAdapter extends BaseAdapter {
     public View getView(int position, View convertView, ViewGroup parent) {
         View rowView = inflater.inflate(android.R.layout.simple_list_item_activated_1, parent, false);//inflating the view
         TextView textView = (TextView) rowView.findViewById(android.R.id.text1);//the text view to value
-
-        textView.setText(values.get(position).getBody()); //we getting the contents of note from arraylist
+        textView.setText(values.get(position).getBody()); //we get the contents of note from arraylist
         return rowView;
     }
 

@@ -35,7 +35,6 @@ public class BaseProvider extends ContentProvider{
         return rows;
     }
 
-
     @Override
     public Uri insert(Uri uri, ContentValues values) {
 
@@ -56,11 +55,9 @@ public class BaseProvider extends ContentProvider{
         return ContentUris.withAppendedId(uri, id);
     }
 
-
     @Override
     public Cursor query(Uri uri, String[] projection, String selection,	String[] selectionArgs, String sortOrder) {
-        SQLiteDatabase db = blocNotesHelper.getReadableDatabase(); //now this is readable only
-        //SQLiteQueryBuilder _QB = new SQLiteQueryBuilder();
+        SQLiteDatabase db = blocNotesHelper.getReadableDatabase(); // this is readable only
 
         //execute query
         Cursor cursor = db.query(uri.getLastPathSegment(), projection, selection, selectionArgs, null, null, sortOrder);
@@ -70,7 +67,6 @@ public class BaseProvider extends ContentProvider{
 
         return cursor;
     }
-
 
     @Override
     public int update(Uri uri, ContentValues values, String selection,String[] selectionArgs) {
@@ -85,8 +81,6 @@ public class BaseProvider extends ContentProvider{
         return rows;
     }
 
-
-    //finally this
     @Override
     public String getType(Uri uri) {
         return null;

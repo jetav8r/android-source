@@ -43,7 +43,7 @@ public class BlocNotesHelper extends SQLiteOpenHelper {
 
     public static final String CREATE_NOTES = "CREATE TABLE " + BaseContract.NotesEntry.TABLE + " (" +
                     BaseContract.NotesEntry._ID + INTEGER_PRIMARY_KEY + COMMA_SEP +
-                    BaseContract.NotesEntry.IMAGE_URL + TEXT_TYPE + COMMA_SEP + //if the user have not the app instaled the creation have the column added too
+                    BaseContract.NotesEntry.IMAGE_URL + TEXT_TYPE + COMMA_SEP + //this line added for image_url for version 2
                     BaseContract.NotesEntry.BODY + TEXT_TYPE + COMMA_SEP +
                     BaseContract.NotesEntry.REFERENCE + TEXT_TYPE + " );";
 
@@ -52,24 +52,6 @@ public class BlocNotesHelper extends SQLiteOpenHelper {
         this.context = context;
         //Message.message(context, "db constructor was called");
     }
-
-    /*
-    public Cursor getAllNotebooks(){
-        String[] columns = {UID, name, description};
-        return this.getWritableDatabase().query(TABLE1_NAME,columns,null,null,null,null,null);
-    }
-*/
-
-    //public void insertNewNotebook(String newNotebookName){
-        //String mNewNotebookName=newNotebookName;
-        //SQLiteDatabase sqLiteDatabase = this.getWritableDatabase();
-        //Message.message(context," " + newNotebookName);
-        //ContentValues values = new ContentValues();
-        //values.put(name, mNewNotebookName);
-        //values.put(description, "New Notebook");
-        //long id = sqLiteDatabase.insert("Notebooks", description, values);
-        //values.clear();
-    //}
 
     @Override
     public void onCreate(SQLiteDatabase mSqliteDatabase) {
@@ -81,16 +63,16 @@ public class BlocNotesHelper extends SQLiteOpenHelper {
         } catch (SQLException e) {
             //Message.message(context, "" + e);
         }
-
     }
 
     @Override
     public void onUpgrade(SQLiteDatabase sqLiteDatabase, int oldVersion, int newVersion) {
         if(oldVersion < 2){//upgrading to 2
             try{
-                //we are adding a new column if the user already has the app installed
-                //not delete it , upgrade
-                sqLiteDatabase.execSQL("ALTER TABLE " + BaseContract.NotesEntry.TABLE + " ADD COLUMN " + BaseContract.NotesEntry.IMAGE_URL + TEXT_TYPE + ";");
+                //we are adding a new column if the user already has the app installed. We do not
+                //delete it, we upgrade it by Altering the table instead of destroying and recreating
+                sqLiteDatabase.execSQL("ALTER TABLE " + BaseContract.NotesEntry.TABLE + " ADD COLUMN "
+                        + BaseContract.NotesEntry.IMAGE_URL + TEXT_TYPE + ";");
                 Log.e("Wayne","" + "upgraded");
             }catch (SQLException e){
                 Log.e("Wayne","" + e.getMessage());

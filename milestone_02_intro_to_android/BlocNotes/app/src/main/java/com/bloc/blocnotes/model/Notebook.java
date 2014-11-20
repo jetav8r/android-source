@@ -11,7 +11,6 @@ import java.util.ArrayList;
  */
 public class Notebook implements Serializable {
     private long id;
-
     private String mName;
     private String mDescription;
 

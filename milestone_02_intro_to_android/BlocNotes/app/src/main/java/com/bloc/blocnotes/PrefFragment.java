@@ -21,7 +21,6 @@ import android.widget.Toast;
  */
 public class PrefFragment extends PreferenceFragment implements Preference.OnPreferenceChangeListener {
 
-
     SharedPreferences prefs;
 
     public boolean onPreferenceTreeClick(PreferenceScreen preferenceScreen, Preference preference) {
@@ -29,10 +28,8 @@ public class PrefFragment extends PreferenceFragment implements Preference.OnPre
         String id = (String) preference.getTitle();
         Log.d("Wayne", "key = " + key +", id =" +id);
 
-
         return super.onPreferenceTreeClick(preferenceScreen, preference);
     }
-
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -53,7 +50,6 @@ public class PrefFragment extends PreferenceFragment implements Preference.OnPre
 
     @Override
     public boolean onPreferenceChange(Preference preference, Object newValue) {
-
         String value = newValue.toString();
         Log.d("Wayne", "new value = " + value);
         return true;

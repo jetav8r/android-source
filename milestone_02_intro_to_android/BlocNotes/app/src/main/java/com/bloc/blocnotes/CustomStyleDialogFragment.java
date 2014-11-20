@@ -64,8 +64,6 @@ public class CustomStyleDialogFragment extends DialogFragment implements Adapter
                 }
             }
         });
-
-
         return view;
     }
 
@@ -74,6 +72,7 @@ public class CustomStyleDialogFragment extends DialogFragment implements Adapter
         Button medium = (Button) view.findViewById(R.id.medium);
         Button large = (Button) view.findViewById(R.id.large);
         small.setOnClickListener(new View.OnClickListener() {
+
         @Override
         public void onClick(View view) {
         final EditText text = (EditText) getActivity().findViewById(R.id.text);
@@ -81,30 +80,25 @@ public class CustomStyleDialogFragment extends DialogFragment implements Adapter
         }
         });
         medium.setOnClickListener(new View.OnClickListener() {
-        */
 
-        /*
-           @Override
-           public void onClick(View view) {
-           final EditText text = (EditText) getActivity().findViewById(R.id.text);
-           text.setTextSize(18);
-           }
-           });
-           large.setOnClickListener(new View.OnClickListener() {
-           */
+        @Override
+        public void onClick(View view) {
+        final EditText text = (EditText) getActivity().findViewById(R.id.text);
+        text.setTextSize(18);
+        }
+        });
+        large.setOnClickListener(new View.OnClickListener() {
 
-        /*
-           @Override
-           public void onClick(View view) {
-           final EditText text = (EditText) getActivity().findViewById(R.id.text);
-           text.setTextSize(24);
-           }
-           });
-           */
+        @Override
+        public void onClick(View view) {
+        final EditText text = (EditText) getActivity().findViewById(R.id.text);
+        text.setTextSize(24);
+        }
+        });
 
-        //return view;
-
-    //}
+        return view;
+    }
+    */
 
     @Override
     public void onActivityCreated(Bundle savedInstanceState) {
@@ -158,7 +152,6 @@ public class CustomStyleDialogFragment extends DialogFragment implements Adapter
 
     }
 
-
     @Override
     public void onStyleChange(CustomStyleDialogFragment dialog, int fontSize) {
         EditText text = (EditText) getActivity().findViewById(R.id.text);
@@ -168,7 +161,6 @@ public class CustomStyleDialogFragment extends DialogFragment implements Adapter
         editor.commit();
         text.setTextSize(TypedValue.COMPLEX_UNIT_PX, fontSize);
     }
-
 
     @Override
     public void onFontChange(CustomStyleDialogFragment dialog, String fontName, int position) {
@@ -193,8 +185,6 @@ public class CustomStyleDialogFragment extends DialogFragment implements Adapter
                 } else {
                     Typeface currentFont = Typeface.createFromAsset(getActivity().getAssets(), fontName);
                     text.setTypeface(currentFont);
-
-
                     //Toast.makeText(getActivity(), "currentFont variable = " + currentFont, Toast.LENGTH_LONG).show();
                 }
             }

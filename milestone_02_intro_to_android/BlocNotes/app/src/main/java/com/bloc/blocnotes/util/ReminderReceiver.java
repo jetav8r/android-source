@@ -21,29 +21,12 @@ import com.bloc.blocnotes.services.PingService;
  */
 public class ReminderReceiver extends BroadcastReceiver {
     Context context;
-    //private Intent mServiceIntent;
-    /*private static int mWhen;
-
-    public static int getWhen() {
-        return mWhen;
-    }
-
-    public static void setWhen(int when) {
-        mWhen = when;
-    }
-    */
     //@TargetApi(Build.VERSION_CODES.JELLY_BEAN)
+
     @Override
     public void onReceive(Context context, Intent intent) {
-
-        //mServiceIntent = new Intent(context, PingService.class);
-
-
         Note note = (Note)intent.getExtras().getSerializable(context.getString(R.string.note_parameter_notification));
-
         Log.e("Note on receive", note.getBody());
-
-        String noteText= note.getBody();
 
         Intent editIntent = new Intent(context, BlocNotes.class);
         editIntent.setAction(CommonConstants.ACTION_EDIT);
@@ -71,32 +54,8 @@ public class ReminderReceiver extends BroadcastReceiver {
         */
 
         //Message.message(context, "onReceive started");
-        /*if ("SHOW_NOTIFICATION".equals(intent.getAction())) {
-            //Message.message(context, "Message received");
-            String msgText = "Your note is ready for editing.  "
-                    + "You can edit the note, delete it or snooze.  "
-                    + "Touch the notification to edit your note.";
-            Builder builder = new Notification.Builder(context)
-                    .setContentTitle("Note is due")
-                    .setContentText("Touch to activate")
-                    .setContentIntent(piEdit)
-                    .setSmallIcon(R.drawable.ic_stat_image_edit)
-                    .setPriority(Notification.PRIORITY_HIGH)
-                    .addAction(R.drawable.ic_delete, "Delete", piDelete)
-                    .addAction(R.drawable.ic_snooze, "Snooze", piSnooze);
-            Notification notification = new Notification.BigTextStyle(builder)
-                    .bigText(msgText).build();
-            notification.flags|=Notification.FLAG_AUTO_CANCEL;
-            //notification.flags|=Notification.FLAG_NO_CLEAR;//this makes it so you CAN NOT clear the notification
-            NotificationManager notificationManager = (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
-            notificationManager.notify(0, notification);
-*/
-        Message.message(context, "onReceive started");
         if ("SHOW_NOTIFICATION".equals(intent.getAction())) {
-            //String msgText = "Your note is ready for editing.  "
-            //+ "You can edit the note, delete it or snooze.  "
-            //+ "Touch the notification to edit your note.";
-            Message.message(context, "Message received");
+            //Message.message(context, "Message received");
             NotificationCompat.Builder builder = new NotificationCompat.Builder(context)
                     .setContentTitle(context.getString(R.string.note_content_title))
                     //.setContentText(context.getString(R.string.note_content_text))
@@ -107,7 +66,6 @@ public class ReminderReceiver extends BroadcastReceiver {
                     .addAction(R.drawable.ic_delete, context.getString(R.string.delete_text), piDelete)
                     .addAction(R.drawable.ic_snooze, context.getString(R.string.snooze_text), piSnooze)
                             //.addAction(R.drawable.ic__notification_dismiss, context.getString(R.string.dismiss), piDismiss)
-                            //.setStyle(new NotificationCompat.InboxStyle().setSummaryText(msgText));
                     .setStyle(new NotificationCompat.BigTextStyle().bigText(note.getBody()));
             //Notification notification = builder.build();
             /*Notification notification =
@@ -121,8 +79,7 @@ public class ReminderReceiver extends BroadcastReceiver {
                             .addAction(R.drawable.ic_snooze, "More", piSnooze)
                             .build();
             */
-            //int when = (int) System.currentTimeMillis();
-            //setWhen(when);
+
             NotificationManager mNotificationManager = (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
             mNotificationManager.cancelAll();
             mNotificationManager.notify(CommonConstants.NOTIFICATION_ID, builder.build());

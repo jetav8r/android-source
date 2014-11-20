@@ -58,6 +58,7 @@ public class EditNoteFragment extends Fragment implements View.OnClickListener{
 
         Utilities.restoreFontType(getActivity(), editText);
         Utilities.restoreFontSize(getActivity(), editText);
+        editText.requestFocus();
 
         buttonSave = (Button)rootView.findViewById(R.id.button_save);
         buttonSave.setOnClickListener(this);
@@ -76,11 +77,11 @@ public class EditNoteFragment extends Fragment implements View.OnClickListener{
         int id = view.getId();
         if(id == buttonSave.getId()){
             NotesDao notesDao = new NotesDao(getActivity());
-            //this not
+            //this note
             //we need only change text of body
-            //other data are in there
+            //other data is unchanged
             note.setBody(editText.getText().toString());
-            notesDao.update(note);//we can update now
+            notesDao.update(note);//now we update note
             editText.setText("");
             Message.message(getActivity(), "Note was saved succesfully");
         }

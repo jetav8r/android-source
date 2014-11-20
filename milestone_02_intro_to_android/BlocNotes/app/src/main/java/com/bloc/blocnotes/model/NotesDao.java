@@ -35,11 +35,9 @@ public class NotesDao {//Dao is Data Access Object
         values.put(BaseContract.NotesEntry.BODY, note.getBody());
         values.put(BaseContract.NotesEntry.REFERENCE, note.getReference());
         values.put(BaseContract.NotesEntry.IMAGE_URL, note.getImageUrl());
-
         //to update a note we use a where clause and _ID to find it in the database
         String selection = BaseContract.NotesEntry._ID + " = ? ";
         String[] selectionArgs = new String[]{ String.valueOf(note.getId())};
-
         context.getContentResolver().update(BaseContract.NotesEntry.URI, values, selection, selectionArgs);
     }
 
@@ -66,10 +64,8 @@ public class NotesDao {//Dao is Data Access Object
                 note.setImageUrl(cursor.getString(cursor.getColumnIndex(BaseContract.NotesEntry.IMAGE_URL)));
                 list.add(note);
             } while (cursor.moveToNext());
-
         }
         cursor.close();
-
         return list;
     }
 

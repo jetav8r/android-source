@@ -25,11 +25,8 @@ public class Utilities {
 
     public static void restoreFontType(Context context, EditText view) {
         SharedPreferences sharedPrefs = context.getSharedPreferences("Custom", Context.MODE_PRIVATE);
-
         String fontName = sharedPrefs.getString(context.getString(R.string.pref_font_name), "Default");//if not saved set default
-        //String fontName = "Sans Serif";
-        //now change app style font here
-        //EditText text = (EditText) this.findViewById(R.id.text);z
+
         if (fontName.equals("Default")) {
             view.setTypeface(Typeface.DEFAULT);
         } else {
@@ -41,8 +38,6 @@ public class Utilities {
                 } else {
                     Typeface currentFont = Typeface.createFromAsset(context.getAssets(), fontName);
                     view.setTypeface(currentFont);
-
-
                     //Message.message(context, "currentFont variable = " + currentFont);
                 }
             }
@@ -63,7 +58,6 @@ public class Utilities {
         if(isCreated){
             return;
         }
-
 
         new AsyncTask<Void, Void, Void>() {
 
@@ -98,7 +92,6 @@ public class Utilities {
 
                 note.setBody("Default location for notes here");//place for notes with no notebook name assigned
                 note.setReference("Uncategorized");
-                //inserting
                 notesDao.insert(note);
 
                 note.setBody("I had a dream that I drank the worlds' biggest margarita.  When woke up I was hugging the toilet");

@@ -60,16 +60,11 @@ public class BlocNotes extends Activity implements NavigationDrawerFragment.Navi
     private static Context context;
     //BlocNotesHelper blocNotesHelper;
 
-
-
         @Override
         protected void onCreate(Bundle savedInstanceState) {
-
             super.onCreate(savedInstanceState);
             Log.d("Wayne", "onCreate was called");
-
             setContentView(R.layout.activity_bloc_notes);
-
             Utilities.createInitialDatabase(this);
 
         mNavigationDrawerFragment = (NavigationDrawerFragment)
@@ -85,7 +80,6 @@ public class BlocNotes extends Activity implements NavigationDrawerFragment.Navi
             fragmentManager.beginTransaction()
                     .replace(R.id.container, CreateNoteFragment.newInstance(""))
                     .commit();
-
 
             if(getIntent().getExtras() != null){
                 Note note = (Note)getIntent().getExtras().getSerializable("note");
@@ -143,22 +137,15 @@ public class BlocNotes extends Activity implements NavigationDrawerFragment.Navi
             //Toast.makeText(this, "the fontName is " + fontName,Toast.LENGTH_SHORT).show();
             outState.putFloat("fontSize", fontSize);
         }
-
-
-
-
     }
 
     @Override
     protected void  onRestoreInstanceState(Bundle savedInstanceState) {
         super.onRestoreInstanceState(savedInstanceState);
         Log.d("Wayne","onRestoreInstanceState was called");
-
         SharedPreferences sharedPrefs = this.getSharedPreferences("Custom",Context.MODE_PRIVATE);
         String defaultValue = "Serif";
         String fontName = sharedPrefs.getString("fontName", defaultValue);
-        //Toast.makeText(this,"fontName from prefs file = " +fontName,Toast.LENGTH_LONG).show();
-
         final EditText textBox = (EditText) findViewById(R.id.text);
         CharSequence userText = savedInstanceState.getCharSequence("savedText");
         float fontSize = savedInstanceState.getFloat("fontSize");
@@ -194,21 +181,18 @@ public class BlocNotes extends Activity implements NavigationDrawerFragment.Navi
         //we need to create a test first
         if(!listNotebooks.isEmpty()){//if not empty
             Notebook selectedNotebook =listNotebooks.get(position);
-
             FragmentManager fragmentManager = getFragmentManager();
             fragmentManager.beginTransaction()
                     .setCustomAnimations(R.anim.note_in, R.anim.note_out, R.anim.note_in, R.anim.note_out)
-                    .replace(R.id.container, NotesFragment.newInstance(selectedNotebook))//here we pass a notebook from list, but not call get name yet
-
+                            //here we pass a notebook from list, but don't call getname yet
+                    .replace(R.id.container, NotesFragment.newInstance(selectedNotebook))
                     .addToBackStack("Notes")
                     .commit();
         }//else do nothing
 
 
         //Message.message(this, selectedNotebook.getName());
-
         // update the main content by replacing fragments
-
         /*FragmentManager fragmentManager = getFragmentManager();
         fragmentManager.beginTransaction()
                 .replace(R.id.container, PlaceholderFragment.newInstance(position + 1))
@@ -226,18 +210,15 @@ public class BlocNotes extends Activity implements NavigationDrawerFragment.Navi
                 break;
             case 3:
                 mTitle = getString(R.string.title_section3);
-                //openMap();
                 break;
             case 4:
                 mTitle = getString(R.string.title_section4);
-                //getNotes();
                 break;
             case 5:
                 mTitle = getString(R.string.title_section5);
                 break;
         }
     }
-
 
         //StringBuffer buffer = new StringBuffer();
         //while (cursor.moveToNext()) {
@@ -252,9 +233,8 @@ public class BlocNotes extends Activity implements NavigationDrawerFragment.Navi
             //Message.message(this, data);
         //}
         //return cursor;
-
-
     //}
+
     public void restoreActionBar() {
         ActionBar actionBar = getActionBar();
         assert actionBar != null;
@@ -301,7 +281,7 @@ public class BlocNotes extends Activity implements NavigationDrawerFragment.Navi
 
     private void textErase() {
         final EditText textBox = (EditText) findViewById(R.id.text);
-        textBox.setText("  ");
+        textBox.setText("");
         textBox.requestFocus();
         Log.d("Wayne", "textBox =" + textBox.getText().toString());
     }
@@ -316,30 +296,17 @@ public class BlocNotes extends Activity implements NavigationDrawerFragment.Navi
             @Override
             public void onClick(DialogInterface dialogInterface, int i) {
                 Editable newText = userInput.getText();
-                //Message.message(getBaseContext(), "newText = " + newText);
                 mNewNotebook=newText.toString();
-                //Message.message(getBaseContext(), "mNewNotebook = " + mNewNotebook);
                 insertNewNotebook();
             }
         });
         builder.show();
-        /*
-        NotificationCompat.Builder mBuilder =
-                new NotificationCompat.Builder(this)
-                        .setSmallIcon(R.drawable.ic_launcher)
-                        .setContentTitle("My notification")
-                        .setContentText("New notebook was added!");
-
-        NotificationManager mNotificationManager = (NotificationManager) this.getSystemService(Context.NOTIFICATION_SERVICE);
-        mNotificationManager.notify(1, mBuilder.build());
-        */
     }
 
 
     public void insertNewNotebook() {
         Notebook notebook = new Notebook();
         notebook.setName(mNewNotebook);
-
         NotebooksDao notebooksDao = new NotebooksDao(this);
         notebooksDao.insert(notebook);
 

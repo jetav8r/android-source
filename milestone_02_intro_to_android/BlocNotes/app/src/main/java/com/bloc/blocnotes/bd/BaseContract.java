@@ -17,7 +17,6 @@ public class BaseContract {
         public static final String TABLE = "notebooks"; //this is the name of table
         public static final String NAME = "name";//this is the first column
         public static final String DESCRIPTION = "description"; //this is the second column
-
         public static final Uri URI = Uri.withAppendedPath(AUTHORITY_URI, TABLE); //this is how the provider identifies our table
     }
 
@@ -26,7 +25,6 @@ public class BaseContract {
         public static final String BODY = "body";//this is the first column
         public static final String REFERENCE = "reference"; //this is the second column
         public static final String IMAGE_URL  = "image_url";
-
-        public static final Uri URI = Uri.withAppendedPath(AUTHORITY_URI, TABLE); //same here
+        public static final Uri URI = Uri.withAppendedPath(AUTHORITY_URI, TABLE); //this is how the provider identifies our table
     }
 }

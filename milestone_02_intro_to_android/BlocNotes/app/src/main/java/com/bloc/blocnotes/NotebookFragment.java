@@ -44,10 +44,8 @@ public class NotebookFragment extends Fragment implements LoaderManager.LoaderCa
     public void insertNewNote() {
         Note note = new Note();
         note.setBody(mNewNote);
-
         NotesDao notesDao = new NotesDao(getActivity());
         notesDao.insert(note);
-
         Message.message(getActivity(), "inserted");
     }
     public static NotebookFragment newInstance(String column_2,String column, String table) {
@@ -71,14 +69,6 @@ public class NotebookFragment extends Fragment implements LoaderManager.LoaderCa
                              Bundle savedInstanceState) {
         View view=inflater.inflate(R.layout.fragment_notebook,container,false);
         view.setBackgroundColor(getResources().getColor(android.R.color.holo_blue_dark));
-
-        //Button button = (Button) view.findViewById(R.id.note_button);
-        //button.setOnClickListener(new View.OnClickListener() {
-            //@Override
-            //public void onClick(View view) {
-             //   Message.message(getActivity(),"Button was clicked");
-            //}
-        //});
 
         //first we create a cursor null with no data
         mListViewAdapterCursor = new ListViewAdapterCursor(getActivity(), 0, null, new String[]{}, new int[]{});
@@ -104,42 +94,13 @@ public class NotebookFragment extends Fragment implements LoaderManager.LoaderCa
 
     @Override
     public void onLoadFinished(android.content.Loader<Cursor> cursorLoader, Cursor cursor) {
-        //when load finish, set cursor to adapter
+        //when load finished, set cursor to adapter
         mListViewAdapterCursor.swapCursor(cursor);
-
     }
 
     @Override
     public void onLoaderReset(android.content.Loader<Cursor> cursorLoader) {
         //when load reset, set null cursor
         mListViewAdapterCursor.swapCursor(null);
-    }//@Override
-   // public Loader<Cursor> onCreateLoader(int i, Bundle bundle) {
-
-        //String nbRef = (name from navigation drawer)
-        //String selection = BlocNotesHelper.reference+ " = ?";
-        //String selectionArgs[] = new String[]{getArguments().getString(ARG_COLUMN)};
-
-        //return new CursorLoader(
-                 //getActivity(),   // Parent activity context
-                //BaseDadosContract.PoupancaEntry.URI,        // Table to query
-                //null,     // Projection to return
-                //selection,            // where
-                //selectionArgs,            // Selection args
-                //BaseDadosContract.PoupancaEntry.NOME// Default sort order
-        //);
-
-    //}
-        //return null;
-    //}
-
-    //@Override
-    //public void onLoadFinished(Loader<Cursor> cursorLoader, Cursor cursor) {
-
-    //}
-
-    //@Override
-    //public void onLoaderReset(Loader<Cursor> cursorLoader) {
-
-    //}
+    }
 }

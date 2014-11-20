@@ -23,35 +23,26 @@ public class NotebooksDao {
     public void insert(Notebook notebook){ //now we create an insert for a notebook object
 
                 ContentValues values = new ContentValues();
-
                 values.put(BaseContract.NotebooksEntry.NAME, notebook.getName());//we're linking name of tables for the object to represent
                 values.put(BaseContract.NotebooksEntry.DESCRIPTION, notebook.getDescription());
-
                 context.getContentResolver().insert(BaseContract.NotebooksEntry.URI, values); //uri identifies our table and put values in it
-
     }
 
     public void update(final Notebook notebook){
 
                 ContentValues values = new ContentValues();
-
                 values.put(BaseContract.NotebooksEntry.NAME, notebook.getName());
                 values.put(BaseContract.NotebooksEntry.DESCRIPTION, notebook.getDescription());
-
-                //to update a notebook we need a where clause to find it in the base
-                //we use its id
+                //to update a notebook we need a where clause to find it in the database
+                //we use it's id
                 String selection = BaseContract.NotebooksEntry._ID + " = ? ";
                 String[] selectionArgs = new String[]{ String.valueOf(notebook.getId())};
-
                 context.getContentResolver().update(BaseContract.NotebooksEntry.URI, values, selection, selectionArgs);
-
     }
 
     public void delete(final Notebook notebook){
-
                 context.getContentResolver().delete(BaseContract.NotebooksEntry.URI, BaseContract.NotebooksEntry._ID + " = " + notebook.getId(), null);
     }
-
 
     public String[] getArrayStringNotebooks(){
         ArrayList<Notebook> listNotebooks = getAllNotebooks();
@@ -60,7 +51,6 @@ public class NotebooksDao {
         for (int i = 0; i < listNotebooks.size(); i++){
             arrayStringNotebooks[i] = listNotebooks.get(i).getName();
         }
-
         return arrayStringNotebooks;
     }
 
@@ -76,20 +66,13 @@ public class NotebooksDao {
         if (cursor.moveToFirst()) {
             do {
                 Notebook notebook = new Notebook();
-                //we don't need all data here, because data in memory is a problem
-                //but we need the id, because the id is the primary key
-                //with the id we can find the rest of data
                 notebook.setId(cursor.getLong(cursor.getColumnIndex(BaseContract.NotebooksEntry._ID)));//this id is generated automatically,
                 notebook.setName(cursor.getString(cursor.getColumnIndex(BaseContract.NotebooksEntry.NAME)));
                 notebook.setDescription(cursor.getString(cursor.getColumnIndex(BaseContract.NotebooksEntry.DESCRIPTION)));
-
-
                 list.add(notebook);
             } while (cursor.moveToNext());
-
         }
         cursor.close();
-
         return list;
     }
 

@@ -29,8 +29,7 @@ public class DrawerAdapter extends BaseAdapter{
     public View getView(int position, View convertView, ViewGroup parent) {
         View rowView = inflater.inflate(android.R.layout.simple_list_item_activated_1, parent, false);//inflating the view
         TextView textView = (TextView) rowView.findViewById(android.R.id.text1);//the text view to value
-
-        textView.setText(values.get(position).getName()); //we getting the name of notebook from arraylist
+        textView.setText(values.get(position).getName()); //we get the name of notebook from arraylist
         return rowView;
     }
 

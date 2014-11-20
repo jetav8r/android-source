@@ -10,11 +10,9 @@ import java.io.Serializable;
 public class Note implements Serializable {
 
     private long id;
-
     private String imageUrl;
     private String body;
     private String reference;
-
 
     public long getId() {
         return id;
@@ -25,7 +23,6 @@ public class Note implements Serializable {
     }
 
     public String getBody() {
-
         return body;
     }
 
@@ -34,7 +31,6 @@ public class Note implements Serializable {
     }
 
     public String getReference() {
-
         return reference;
     }
 
