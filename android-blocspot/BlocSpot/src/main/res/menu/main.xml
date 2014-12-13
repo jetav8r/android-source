@@ -1,0 +1,38 @@
+<menu xmlns:android="http://schemas.android.com/apk/res/android" >
+
+    <item android:id="@+id/action_list"
+          android:icon="@drawable/ic_action_action_list"
+          android:title="@string/action_search"
+          android:showAsAction="always" />
+
+    <item android:id="@+id/action_favorites_map"
+          android:icon="@drawable/ic_action_maps_place"
+          android:title="@string/action_map"
+          android:visible="false"
+          android:showAsAction="always" />
+
+    <item android:id="@+id/action_search"
+          android:icon="@drawable/ic_action_action_search"
+          android:title="@string/action_search"
+          android:showAsAction="always" />
+
+    <item android:id="@+id/action_favorites"
+          android:icon="@drawable/ic_action_favorite"
+          android:title="@string/action_search"
+          android:showAsAction="always" />
+
+    <item android:id="@+id/action_filter"
+          android:icon="@drawable/ic_filter"
+          android:title="@string/action_filter"
+          android:showAsAction="ifRoom" />
+
+    <item android:id="@+id/action_clear_map"
+          android:title="@string/action_clear"
+          android:showAsAction="never" />
+
+    <item android:id="@+id/action_settings"
+          android:title="@string/action_settings"
+          android:orderInCategory="100"
+          android:showAsAction="never" />
+
+</menu>

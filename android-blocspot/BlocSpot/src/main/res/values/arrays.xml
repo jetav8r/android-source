@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string-array name="marker_menu">
+        <item>Add To Favorites</item>
+        <item>Navigate To</item>
+        <item>Share</item>
+        </string-array>
+
+    <string-array name="color_list">
+        <item>Red</item>
+        <item>Purple</item>
+        <item>Blue</item>
+        <item>Green</item>
+        <item>Yellow</item>
+        <item>Orange</item>
+    </string-array>
+
+    <string-array name="material_color">
+        <item>#e51c23</item>
+        <item>#9c27b0</item>
+        <item>#5677fc</item>
+        <item>#259b24</item>
+        <item>#ffeb3b</item>
+        <item>#ff9800</item>
+
+    </string-array>
+</resources>
