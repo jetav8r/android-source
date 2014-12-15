@@ -29,7 +29,7 @@ public class PlacesDao {
         values.put(BaseContract.PlacesEntry.GOOGLEID, place.getId());
         values.put(BaseContract.PlacesEntry.DESCRIPTION, place.getDescription());
         values.put(BaseContract.PlacesEntry.ICON, place.getIcon());
-        values.put(BaseContract.PlacesEntry.MARKER_ICON, place.getMarkerIcon());
+        values.put(BaseContract.PlacesEntry.VISITED, place.getVisited());
         values.put(BaseContract.PlacesEntry.LATITUDE, place.getLatitude());
         values.put(BaseContract.PlacesEntry.LONGITUDE, place.getLongitude());
         values.put(BaseContract.PlacesEntry.VICINITY, place.getVicinity());
@@ -43,7 +43,7 @@ public class PlacesDao {
         values.put(BaseContract.PlacesEntry.DESCRIPTION, place.getDescription());
         values.put(BaseContract.PlacesEntry.FAV_CATEGORY, place.getFav_Category());
         values.put(BaseContract.PlacesEntry.COLOR, place.getColor());
-        values.put(BaseContract.PlacesEntry.MARKER_ICON, place.getMarkerIcon());
+        values.put(BaseContract.PlacesEntry.VISITED, place.getVisited());
 
         //to update a note we use a where clause and _ID to find it in the com.bloc.blocspot.database
         String selection = BaseContract.PlacesEntry._ID + " = ? ";
@@ -84,7 +84,7 @@ public class PlacesDao {
                 place.setFav_Category(cursor.getString(cursor.getColumnIndex(BaseContract.PlacesEntry.FAV_CATEGORY)));
                 place.setGoogleId(cursor.getString(cursor.getColumnIndex(BaseContract.PlacesEntry.GOOGLEID)));
                 place.setName(cursor.getString(cursor.getColumnIndex(BaseContract.PlacesEntry.NAME)));
-                place.setMarkerIcon(cursor.getInt(cursor.getColumnIndex(BaseContract.PlacesEntry.MARKER_ICON)));
+                place.setVisited(cursor.getInt(cursor.getColumnIndex(BaseContract.PlacesEntry.VISITED)));
                 place.setDescription(cursor.getString(cursor.getColumnIndex(BaseContract.PlacesEntry.DESCRIPTION)));
                 place.setVicinity(cursor.getString(cursor.getColumnIndex(BaseContract.PlacesEntry.VICINITY)));
                 place.setIcon(cursor.getString(cursor.getColumnIndex(BaseContract.PlacesEntry.ICON)));
@@ -119,6 +119,7 @@ public class PlacesDao {
             place.setGoogleId(cursor.getString(cursor.getColumnIndex(BaseContract.PlacesEntry.GOOGLEID)));
             place.setDescription(cursor.getString(cursor.getColumnIndex(BaseContract.PlacesEntry.DESCRIPTION)));
             place.setIcon(cursor.getString(cursor.getColumnIndex(BaseContract.PlacesEntry.ICON)));
+            place.setVisited(cursor.getInt(cursor.getColumnIndex(BaseContract.PlacesEntry.VISITED)));
             place.setVicinity(cursor.getString(cursor.getColumnIndex(BaseContract.PlacesEntry.VICINITY)));
             place.setLatitude(cursor.getDouble(cursor.getColumnIndex(BaseContract.PlacesEntry.LATITUDE)));
             place.setLongitude(cursor.getDouble(cursor.getColumnIndex(BaseContract.PlacesEntry.LONGITUDE)));

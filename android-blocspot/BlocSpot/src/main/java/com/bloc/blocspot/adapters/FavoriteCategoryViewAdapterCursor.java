@@ -117,16 +117,6 @@ public class FavoriteCategoryViewAdapterCursor extends SimpleCursorAdapter imple
                 popupMenu.show();
             }
         });
-        /*
-        checked = (CheckBox) view.findViewById(R.id.selectedCheckBox);
-        checked.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                ((BlocSpotActivity) context).currentLocation(googleName);
-                ((BlocSpotActivity) context).removeFragments();
-            }
-        });
-        */
     }
 
     private void removeFavCategory(int mPosition) {

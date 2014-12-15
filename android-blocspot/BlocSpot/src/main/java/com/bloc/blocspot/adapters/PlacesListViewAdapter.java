@@ -86,6 +86,8 @@ public class PlacesListViewAdapter extends BaseAdapter{
         PlacesDao placesDao = new PlacesDao(context);
         place.setFavorite("Y");
         place.setFav_Category("default_category");
+        place.setColor("#40c4ff");
+        place.setVisited(0);
         try {
             placesDao.insert(place);
             Message.message(context, "Favorite added");

@@ -55,7 +55,7 @@ public class FavoritePlacesViewAdapterCursor extends SimpleCursorAdapter impleme
     }
 
     @Override
-    public Object getItem(int position) {//this method returns a notebook
+    public Object getItem(int position) {//this method returns a place
         getCursor().moveToPosition(position);//this cursor contains our data, moving this to selected position by user
         //then gets data from this position
         Place place = new Place();
@@ -66,6 +66,7 @@ public class FavoritePlacesViewAdapterCursor extends SimpleCursorAdapter impleme
         place.setColor(getCursor().getString(getCursor().getColumnIndex(BaseContract.PlacesEntry.COLOR)));
         place.setName(getCursor().getString(getCursor().getColumnIndex(BaseContract.PlacesEntry.NAME)));
         place.setIcon(getCursor().getString(getCursor().getColumnIndex(BaseContract.PlacesEntry.ICON)));
+        place.setVisited(getCursor().getInt(getCursor().getColumnIndex(BaseContract.PlacesEntry.VISITED)));
         place.setDescription(getCursor().getString(getCursor().getColumnIndex(BaseContract.PlacesEntry.DESCRIPTION)));
         place.setLatitude(getCursor().getDouble(getCursor().getColumnIndex(BaseContract.PlacesEntry.LATITUDE)));
         place.setLongitude(getCursor().getDouble(getCursor().getColumnIndex(BaseContract.PlacesEntry.LONGITUDE)));
@@ -88,8 +89,13 @@ public class FavoritePlacesViewAdapterCursor extends SimpleCursorAdapter impleme
         //then we can get the position here
         String catColor = cursor.getString(cursor.getColumnIndex(BaseContract.PlacesEntry.COLOR));
         if (catColor==null) { catColor="#40c4ff";}
+
+        int checkBoxState = cursor.getInt(cursor.getColumnIndex(BaseContract.PlacesEntry.VISITED));
         checked=(CheckBox)view.findViewById(R.id.visitedCheckBox);
         checked.setBackgroundColor((Color.parseColor(catColor)));
+        if(checkBoxState == 1){
+            checked.setChecked(true);
+        }
         TextView textView = (TextView) view.findViewById(R.id.textView_fav_place_name);
         final String text = cursor.getString(cursor.getColumnIndex(BaseContract.PlacesEntry.NAME));
         textView.setText(text);
@@ -164,16 +170,27 @@ public class FavoritePlacesViewAdapterCursor extends SimpleCursorAdapter impleme
                 popupMenu.show();
             }
         });
-        /*
-        checked = (CheckBox) view.findViewById(R.id.selectedCheckBox);
+
         checked.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onClick(View v) {
-                ((BlocSpotActivity) context).currentLocation(googleName);
-                ((BlocSpotActivity) context).removeFragments();
+            public void onClick(View view) {
+                if(((CheckBox) view).isChecked()) {
+                    //set 1
+                    Place currentPlace = (Place) getItem(mPosition);
+                    currentPlace.setVisited(1);
+                    PlacesDao placesDao = new PlacesDao(context);
+                    placesDao.update(currentPlace);
+
+                }else{
+                    //set 0
+                    Place currentPlace = (Place) getItem(mPosition);
+                    currentPlace.setVisited(0);
+                    PlacesDao placesDao = new PlacesDao(context);
+                    placesDao.update(currentPlace);
+                }
             }
         });
-        */
+
     }
 
     private void deleteCategory(int mPosition) {
@@ -226,7 +243,7 @@ public class FavoritePlacesViewAdapterCursor extends SimpleCursorAdapter impleme
                 Place currentPlace = (Place) getItem(mPosition);
                 currentPlace.setDescription(mDescription);
                 //would like to be able to pick a color here
-                currentPlace.setColor("#40c4ff");
+                //currentPlace.setColor("#40c4ff");
                 PlacesDao placesDao = new PlacesDao(context);
                 placesDao.update(currentPlace);//now we update category
                 //changeCategory(mPosition, mNewCategoryName);

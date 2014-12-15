@@ -72,6 +72,8 @@ public class MarkerDialogFragment extends DialogFragment implements View.OnClick
         place.setLatitude(destLat);
         place.setLongitude(destLong);
         place.setVicinity(vicinity);
+        place.setColor("#40c4ff");
+        place.setVisited(0);
         try {
             placesDao.insert(place);
             Message.message(getActivity(), "Favorite added");

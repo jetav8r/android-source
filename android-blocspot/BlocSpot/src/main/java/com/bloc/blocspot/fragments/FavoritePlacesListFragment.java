@@ -39,7 +39,6 @@ public class FavoritePlacesListFragment extends Fragment implements LoaderManage
     private String mCategoryName;
     private static String CATEGORY_NAME = "category_name";
 
-
     public static FavoritePlacesListFragment newInstance(String categoryName) {
         FavoritePlacesListFragment fragment = new FavoritePlacesListFragment();
         Bundle args = new Bundle();
@@ -74,7 +73,7 @@ public class FavoritePlacesListFragment extends Fragment implements LoaderManage
 
         mListView = (ListView) rootView.findViewById(R.id.favorite_placesListView);
         mListView.setAdapter(mAdapter);
-        //mListView.setOnItemClickListener(this);
+        //mListView.setOnItemClickListener(this); //Here is where I reference method for placing single marker on map for favorite place clicked in list
 
         //mImageView = (ImageView) rootView.findViewById(R.id.imageView_add_cat);
         //mImageView.setOnClickListener(this);
@@ -155,7 +154,7 @@ public class FavoritePlacesListFragment extends Fragment implements LoaderManage
 
     /*
     @Override
-    public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+    public void onItemClick(AdapterView<?> parent, View view, int position, long id) {//this is where that method to put marker actually goes
         Category category = (Category)mAdapter.getItem(position);
         mCategoryName = category.getFriendly_name();
         Log.e("Test", "googleName = "+ mCategoryName);

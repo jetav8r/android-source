@@ -21,7 +21,7 @@ public class BaseContract {
         public static final String FAV_CATEGORY="category";//custom category for favorites
         public static final String GOOGLEID = "id"; //this is Google Places ID
         public static final String ICON = "icon";//this is Google http address of icon
-        public static final String MARKER_ICON = "marker";//drawable marker for place
+        public static final String VISITED = "visited";//drawable marker for place
         public static final String NAME = "name";//name of place
         public static final String DESCRIPTION = "description"; //description/notes of place
         public static final String LATITUDE = "latitude";

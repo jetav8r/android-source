@@ -9,7 +9,6 @@ import android.location.LocationListener;
 import android.location.LocationManager;
 import android.os.AsyncTask;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -39,16 +38,17 @@ public class PlacesListFragment extends Fragment implements AdapterView.OnItemCl
     private LocationManager locationManager;
     private Location loc;
     private static String ARG_GOOGLE_NAME = "google_name";
+    private static String ARG_PLACES_PASSED = "places_passed";
 
     ArrayList<Place> places = new ArrayList<Place>();
 
 
-    public static PlacesListFragment newInstance(String  google_name) {
+    public static PlacesListFragment newInstance(String  google_name, ArrayList<Place> places_passed) {
         PlacesListFragment fragment = new PlacesListFragment();
         Bundle args = new Bundle();
         args.putString(ARG_GOOGLE_NAME, google_name);
-        //the fist argument is to identify the arg to find it later
-        //this is correct way
+        args.putSerializable(ARG_PLACES_PASSED, places_passed);
+        //the first argument is to identify the arg to find it later
         //args.putSerializable(keyPlace, selectedPlace);
         fragment.setArguments(args);
 
@@ -61,6 +61,7 @@ public class PlacesListFragment extends Fragment implements AdapterView.OnItemCl
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setHasOptionsMenu(true);
+
     }
 
     @Override
@@ -71,10 +72,18 @@ public class PlacesListFragment extends Fragment implements AdapterView.OnItemCl
 
         listView = (ListView) rootView.findViewById(R.id.returnedPlaceslistView);
 
+        places = (ArrayList<Place>)getArguments().getSerializable(ARG_PLACES_PASSED);
 
-        //call search here
-        String google_name = getArguments().getString(ARG_GOOGLE_NAME);
-        currentLocation(google_name);
+        if(!places.isEmpty()){
+            PlacesListViewAdapter adapter = new PlacesListViewAdapter(getActivity(), places);
+            listView.setAdapter(adapter);
+        }else{
+            //call search here
+            String google_name = getArguments().getString(ARG_GOOGLE_NAME);
+            currentLocation(google_name);
+        }
+
+
         //new GetPlaces(getActivity(), google_name).execute();
 
 
@@ -110,6 +119,7 @@ public class PlacesListFragment extends Fragment implements AdapterView.OnItemCl
     public boolean onOptionsItemSelected(MenuItem item) {
         int id = item.getItemId();
         if(id == R.id.action_map){
+            setMenuVisibility(false);
             ((BlocSpotActivity) getActivity()).showReturnedPlacesMarkers(places);
         }
         return super.onOptionsItemSelected(item);
@@ -209,16 +219,13 @@ public class PlacesListFragment extends Fragment implements AdapterView.OnItemCl
             places.clear();
 
             for (int i = 0; i < findPlaces.size(); i++) {
-
                 Place place = findPlaces.get(i);
                 //now try to create ArrayList of places
 
                 //returnedPlaces.add(placeDetail.getName());
                 places.add(place);
-
-
-                Log.i("result", "places : " + place.getName());
                 /*
+                Log.i("result", "places : " + place.getName());
                 Log.i(TAG, "vicinity : "+ placeDetail.getVicinity());
                 Log.i(TAG, "description : "+ placeDetail.getDescription());
                 Log.i(TAG, "icon : "+ placeDetail.getIcon());

@@ -27,7 +27,7 @@ public class BlocSpotHelper extends SQLiteOpenHelper {
             BaseContract.PlacesEntry.COLOR + TEXT_TYPE + COMMA_SEP +
             BaseContract.PlacesEntry.FAV_CATEGORY + TEXT_TYPE + COMMA_SEP +
             BaseContract.PlacesEntry.NAME + TEXT_TYPE + COMMA_SEP +
-            BaseContract.PlacesEntry.MARKER_ICON + INTEGER_TYPE + COMMA_SEP +
+            BaseContract.PlacesEntry.VISITED + INTEGER_TYPE + COMMA_SEP +
             BaseContract.PlacesEntry.ICON + TEXT_TYPE + COMMA_SEP +
             BaseContract.PlacesEntry.LATITUDE + TEXT_TYPE + COMMA_SEP +
             BaseContract.PlacesEntry.LONGITUDE + TEXT_TYPE + COMMA_SEP +

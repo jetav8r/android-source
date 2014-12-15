@@ -17,13 +17,16 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.FrameLayout;
+import android.widget.Toast;
 
 import com.bloc.blocspot.blocspot.R;
-import com.bloc.blocspot.blocspot.SearchFragment;
+import com.bloc.blocspot.fragments.AllFavoritePlacesListFragment;
+import com.bloc.blocspot.fragments.CategoryFragment;
 import com.bloc.blocspot.fragments.FavCategoryFragment;
 import com.bloc.blocspot.fragments.FavoritePlacesListFragment;
 import com.bloc.blocspot.fragments.MarkerDialogFragment;
 import com.bloc.blocspot.fragments.PlacesListFragment;
+import com.bloc.blocspot.fragments.SearchFragment;
 import com.bloc.blocspot.model.Place;
 import com.bloc.blocspot.model.PlacesDao;
 import com.bloc.blocspot.utilities.Message;
@@ -59,6 +62,8 @@ public class BlocSpotActivity extends Activity {
     private String mPlaceType;
     public static ArrayList<Place> returnedPlaces = new ArrayList<Place>();
     protected static ArrayList<Place> favResult = new ArrayList<Place>();
+    private long lastBackPressTime = 0;
+    private Toast toast;
 
     // ListItems data
     ArrayList<HashMap<String, String>> placesListItems = new ArrayList<HashMap<String,String>>();
@@ -76,53 +81,20 @@ public class BlocSpotActivity extends Activity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        invalidateOptionsMenu();
         setContentView(R.layout.activity_main);
         Utilities.createInitialDatabase(this);
-        //navigateFromListView();//test to see if intent/location works
         setUpMapIfNeeded();
         //loadMapsFragment();
         //Message.message(this, "TAG = " +TAG);
         container = (FrameLayout) findViewById(R.id.container);
         final ActionBar actionBar = getActionBar();
-
-        //actionBar.setNavigationMode(ActionBar.NAVIGATION_MODE_LIST);
-        /*actionBar.setListNavigationCallbacks(ArrayAdapter.createFromResource(
-                        this, R.array.places, android.R.layout.simple_list_item_1),
-                new ActionBar.OnNavigationListener() {
-
-                    @Override
-                    public boolean onNavigationItemSelected(int itemPosition,
-                                                            long itemId) {
-                        Log.e(TAG,
-                                places[itemPosition].toLowerCase().replace("-",
-                                        "_"));
-                        if (loc != null) {
-                            mMap.clear();
-                            new GetPlaces(BlocSpotActivity.this,
-                                    places[itemPosition].toLowerCase().replace(
-                                            "-", "_").replace(" ", "_")).execute();
-                        }
-                        return true;
-                    }
-
-                });
-                */
     }
 
 
     private void setUpMap() {
         mMap = ((MapFragment) getFragmentManager().findFragmentById(R.id.map))
                 .getMap();
-        // code below sets marker/position to San Diego
-        /*
-        Marker frameworkSystem = mMap.addMarker(new MarkerOptions()
-                .position(frameworkSystemLocation).title("Framework System"));
-        frameworkSystem.isVisible();
-        //Move the camera to zoom Framework System with 14
-        mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(frameworkSystemLocation, 14));
-        mMap.animateCamera(CameraUpdateFactory.zoomTo(14), 2000, null);
-        //Mark its position on the map
-        */
         mMap.getUiSettings().setMyLocationButtonEnabled(true);
         mMap.getUiSettings().setCompassEnabled(true);
         mMap.setMyLocationEnabled(true);
@@ -131,6 +103,7 @@ public class BlocSpotActivity extends Activity {
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
+        menu.clear();
         getMenuInflater().inflate(R.menu.main, menu);
         return true;
     }
@@ -147,15 +120,18 @@ public class BlocSpotActivity extends Activity {
         // automatically handle clicks on the Home/Up button, so long
         // as you specify a parent activity in AndroidManifest.xml.
         int id = item.getItemId();
+
         if (id == R.id.action_list) {
             //swap for list fragment
             loadPlacesListFragment();
+            //listAllFavPlaces();
             return true;
         }
         if (id == R.id.action_search) {
             //search Google Places API
             //placesSearch();
-            loadSearchFragment();
+            //loadSearchFragment();
+            loadCategoryFragment();
             return true;
         }
         if (id == R.id.action_favorites) {
@@ -163,12 +139,17 @@ public class BlocSpotActivity extends Activity {
             loadFavoritePlacesMap();
             //listFavCategories();
         }
+        if (id == R.id.action_fav_list) {
+            //loadFavoritePlacesListFragment();
+            listAllFavPlaces();
+            //listFavCategories();
+        }
         if (id == R.id.action_filter) {
             //filter by category...display categories
             listFavCategories();
         }
         if (id == R.id.action_clear_map) {
-            clearMap();
+            mMap.clear();
         }
         if (id == R.id.action_settings) {
             //showPrefs is the settings/preferences menu
@@ -197,11 +178,21 @@ public class BlocSpotActivity extends Activity {
                 .commit();
     }
 
+    public void listAllFavPlaces() {
+        FragmentManager manager = getFragmentManager();
+        FragmentTransaction fragmentTransaction = manager.beginTransaction();
+        fragmentTransaction.replace(R.id.container, AllFavoritePlacesListFragment.newInstance())
+                .addToBackStack("SearchFragment")
+                .commit();
+    }
+
+
+
     public void showReturnedPlacesMarkers(ArrayList<Place> result) {
+        returnedPlaces = result;
         mMap.clear();
         if (result.size() > 0) {
             for (int i = 0; i < result.size(); i++) {
-
                     mMap.addMarker(new MarkerOptions()
                             .title(result.get(i).getName())
                             .position(
@@ -226,8 +217,6 @@ public class BlocSpotActivity extends Activity {
                             args.putDouble("latitude", destLat);
                             args.putDouble("longitude", destLong);
                             args.putSerializable("vicinity", marker.getSnippet());
-
-
                             markerDialogFragment.setArguments(args);
                             markerDialogFragment.show(getFragmentManager(), "");
                         }
@@ -329,18 +318,19 @@ public class BlocSpotActivity extends Activity {
     private void loadFavoritePlacesMap() {
         PlacesDao placesDao = new PlacesDao(this);
         favResult = placesDao.getAllPlaces();
-        int icon = R.drawable.ic_favorite_default;
-        String imageName = "ic_favorite_yellow.png";
-        //int icon = getResources().getIdentifier("drawable/" + imageName, null, getPackageName());
+        mMap.clear();
         if (favResult.size() > 0) {
             for (int i = 0; i < favResult.size(); i++) {
+                int currentVisitedValue = favResult.get(i).getVisited();
+                //String currentColor = favResult.get(i).getColor();
                 mMap.addMarker(new MarkerOptions()
                         .title(favResult.get(i).getName())
                         .position(
                                 new LatLng(favResult.get(i).getLatitude(), favResult
                                         .get(i).getLongitude()))
-                        .icon(BitmapDescriptorFactory
-                                .fromResource(icon))
+                        .icon(BitmapDescriptorFactory.fromResource(Utilities.getIntColor(favResult.get(i).getColor(), currentVisitedValue)))
+                //.icon(BitmapDescriptorFactory
+                                //.fromResource(R.drawable.ic_favorite_default))
                         .snippet(favResult.get(i).getVicinity()));
                 mMap.setOnInfoWindowClickListener(new GoogleMap.OnInfoWindowClickListener() {
 
@@ -390,11 +380,13 @@ public class BlocSpotActivity extends Activity {
 
 
     private void loadPlacesListFragment() {
-        FragmentManager manager = getFragmentManager();
-        FragmentTransaction fragmentTransaction = manager.beginTransaction();
-        fragmentTransaction.replace(R.id.container, PlacesListFragment.newInstance(null))
-                .addToBackStack("ListFragment")
-                .commit();
+        if (!returnedPlaces.isEmpty()) {
+            FragmentManager manager = getFragmentManager();
+            FragmentTransaction fragmentTransaction = manager.beginTransaction();
+            fragmentTransaction.replace(R.id.container, PlacesListFragment.newInstance(null, returnedPlaces))
+                    .addToBackStack("ListFragment")
+                    .commit();
+        } else Message.message(this, "Search for some places first");
     }
 
     private void loadSearchFragment(){
@@ -416,7 +408,42 @@ public class BlocSpotActivity extends Activity {
         startActivity(Intent.createChooser(sharingIntent, "Share using"));
     }
 
+    private void loadCategoryFragment() {
+        FragmentManager manager = getFragmentManager();
+        FragmentTransaction fragmentTransaction = manager.beginTransaction();
+        fragmentTransaction.replace(R.id.container, CategoryFragment.newInstance(null))
+                .addToBackStack("CategoryFragment")
+                .commit();
+    }
+
+    public void loadPlacesResult(String google_name) {
+        FragmentManager manager = getFragmentManager();
+        FragmentTransaction fragmentTransaction = manager.beginTransaction();
+        fragmentTransaction.replace(R.id.container, PlacesListFragment.newInstance(google_name, new ArrayList<Place>()))
+                .addToBackStack("ListFragment")
+                .commit();
+    }
+
     public void removeFragments() {
         container.removeAllViews();
+    }
+
+    @Override
+    public void onBackPressed() {
+        FragmentManager fm = getFragmentManager();
+        if (fm.getBackStackEntryCount() > 0 ){
+             super.onBackPressed();
+        } else {
+              if (this.lastBackPressTime < System.currentTimeMillis() - 4000) {
+                toast = Toast.makeText(this, "Press back again to exit", Toast.LENGTH_LONG);
+                toast.show();
+                this.lastBackPressTime = System.currentTimeMillis();
+              } else {
+                if (toast != null) {
+                toast.cancel();
+              }
+              super.onBackPressed();
+             }
+        }
     }
 }

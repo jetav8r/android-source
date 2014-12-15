@@ -1,14 +1,8 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android" >
 
     <item android:id="@+id/action_list"
-          android:icon="@drawable/ic_action_action_list"
+          android:icon="@drawable/ic_action_list"
           android:title="@string/action_search"
-          android:showAsAction="always" />
-
-    <item android:id="@+id/action_favorites_map"
-          android:icon="@drawable/ic_action_maps_place"
-          android:title="@string/action_map"
-          android:visible="false"
           android:showAsAction="always" />
 
     <item android:id="@+id/action_search"
@@ -17,12 +11,17 @@
           android:showAsAction="always" />
 
     <item android:id="@+id/action_favorites"
-          android:icon="@drawable/ic_action_favorite"
+          android:icon="@drawable/ic_heart"
           android:title="@string/action_search"
           android:showAsAction="always" />
 
+    <item android:id="@+id/action_fav_list"
+          android:icon="@drawable/ic_red_list"
+          android:title="@string/action_fav_list"
+          android:showAsAction="always" />
+
     <item android:id="@+id/action_filter"
-          android:icon="@drawable/ic_filter"
+          android:icon="@drawable/ic_action_filter"
           android:title="@string/action_filter"
           android:showAsAction="ifRoom" />
 

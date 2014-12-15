@@ -74,7 +74,7 @@ public class FavCategoryFragment extends Fragment implements LoaderManager.Loade
     }
 
     @Override
-    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+         public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
         //menu.findItem(R.id.action_map).setVisible(true);
         //menu.findItem(R.id.action_list).setVisible(false);
     }

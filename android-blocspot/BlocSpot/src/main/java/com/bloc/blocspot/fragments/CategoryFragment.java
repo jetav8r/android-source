@@ -179,7 +179,8 @@ public class CategoryFragment extends Fragment implements LoaderManager.LoaderCa
         Category category = (Category)mAdapter.getItem(position);
         mCategoryName = category.getGoogle_name();
         Log.e("Test", "googleName = " + mCategoryName);
-        ((BlocSpotActivity)getActivity()).mSearchFragment.loadPlacesResult(mCategoryName);
+        //((BlocSpotActivity)getActivity()).mSearchFragment.loadPlacesResult(mCategoryName);
+        ((BlocSpotActivity)getActivity()).loadPlacesResult(mCategoryName);
         //((BlocSpotActivity)getActivity()).removeFragments();
     }
 }

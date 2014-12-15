@@ -20,7 +20,7 @@ public class Place implements Serializable{
     private String fav_category;
     private String color;
     private String googleId;
-    private int marker_icon;
+    private int visited;
     private String icon;
     private String name;
     private String vicinity;
@@ -68,12 +68,12 @@ public class Place implements Serializable{
         this.googleId = googleId;
     }
 
-    public int getMarkerIcon() {
-        return marker_icon;
+    public int getVisited() {
+        return visited;
     }
 
-    public void setMarkerIcon(int marker_icon) {
-        this.marker_icon = marker_icon;
+    public void setVisited(int visited) {
+        this.visited = visited;
     }
 
     public String getIcon() {

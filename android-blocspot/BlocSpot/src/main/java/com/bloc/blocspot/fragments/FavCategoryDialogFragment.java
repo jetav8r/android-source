@@ -22,6 +22,8 @@ public class FavCategoryDialogFragment extends DialogFragment implements View.On
     protected ArrayList<String> mFavoriteCategories;
 
     AlertDialog.Builder builder;
+    protected String currentColor = "#40c4ff";
+
     public void onClick(View view) {
         int id = view.getId();
 
@@ -30,14 +32,15 @@ public class FavCategoryDialogFragment extends DialogFragment implements View.On
 
     @Override
     public Dialog onCreateDialog(Bundle savedInstanceState) {
-        CategoriesDao categoriesDao = new CategoriesDao(getActivity());
-            final ArrayList<Category> categoryArrayList = categoriesDao.getAllFavCategories();
 
-            String[] mFavoriteCategories = new String[categoryArrayList.size()];
-            if(!categoryArrayList.isEmpty()){
-                for (int i = 0; i <  categoryArrayList.size(); i ++) {
-                    mFavoriteCategories[i] = categoryArrayList.get(i).getFriendly_name();
-                }
+        CategoriesDao categoriesDao = new CategoriesDao(getActivity());
+        final ArrayList<Category> categoryArrayList = categoriesDao.getAllFavCategories();
+
+        String[] mFavoriteCategories = new String[categoryArrayList.size()];
+        if(!categoryArrayList.isEmpty()){
+            for (int i = 0; i <  categoryArrayList.size(); i ++) {
+                mFavoriteCategories[i] = categoryArrayList.get(i).getFriendly_name();
+            }
         }
 
         builder = new AlertDialog.Builder(getActivity());
@@ -49,6 +52,9 @@ public class FavCategoryDialogFragment extends DialogFragment implements View.On
                 PlacesDao placesDao = new PlacesDao(getActivity());
                 Place place = (Place) getArguments().getSerializable("keyPlace");
                 String currentCategory = categoryArrayList.get(which).getGoogle_name();
+                currentColor = categoryArrayList.get(which).getColor();
+                place.setVisited(0);
+                place.setColor(currentColor);
                 place.setFav_Category(currentCategory);
                 placesDao.update(place);
             }

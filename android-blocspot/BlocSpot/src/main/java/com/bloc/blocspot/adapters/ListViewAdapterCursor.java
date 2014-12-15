@@ -36,9 +36,9 @@ public class ListViewAdapterCursor extends SimpleCursorAdapter implements View.O
     }
 
     @Override
-    public Object getItem(int position) {//this method returns a notebook
+    public Object getItem(int position) {//this method returns a place object
         getCursor().moveToPosition(position);//this cursor contains our data, moving this to selected position by user
-        //then gets data from this position
+                                             //then gets data from this position
         Place place = new Place();
         place.setId(getCursor().getString(getCursor().getColumnIndex(BaseContract.PlacesEntry._ID)));//this id is generated automatically,
         place.setName(getCursor().getString(getCursor().getColumnIndex(BaseContract.PlacesEntry.NAME)));

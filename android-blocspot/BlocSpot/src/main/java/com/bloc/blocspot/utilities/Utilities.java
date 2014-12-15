@@ -448,4 +448,44 @@ public class Utilities {
         //Message.message(context, "com.bloc.blocspot.database created");
 
     }
+
+    public static int getIntColor(String currentColor, int currentMarkerValue){
+        int icon = 0;
+        switch (currentColor) {
+            case "#e51c23":
+                if (currentMarkerValue == 0) {
+                    icon = R.drawable.ic_favorite_red;
+                } else icon = R.drawable.ic_maps_beenhere_red;
+                break;
+            case "#9c27b0":
+                if (currentMarkerValue == 0) {
+                icon = R.drawable.ic_favorite_purple;
+                } else icon = R.drawable.ic_maps_beenhere_purple;
+                break;
+            case "#5677fc":
+                if (currentMarkerValue == 0) {
+                icon = R.drawable.ic_favorite_blue;
+                } else icon = R.drawable.ic_maps_beenhere_blue;
+                break;
+            case "#259b24":
+                if (currentMarkerValue == 0) {
+                icon = R.drawable.ic_favorite_green;
+                } else icon = R.drawable.ic_maps_beenhere_green;
+            case "#ffeb3b":
+                if (currentMarkerValue == 0) {
+                icon = R.drawable.ic_favorite_yellow;
+                } else icon = R.drawable.ic_maps_beenhere_yellow;
+                break;
+            case "#ff9800":
+                if (currentMarkerValue == 0) {
+                icon = R.drawable.ic_favorite_orange;
+                } else icon = R.drawable.ic_maps_beenhere_orange;
+                break;
+            case "#40c4ff":
+                if (currentMarkerValue == 0) {
+                    icon = R.drawable.ic_favorite_default;
+                } else icon = R.drawable.ic_maps_beenhere_default;
+                break;
+        }return icon;
+    }
 }
