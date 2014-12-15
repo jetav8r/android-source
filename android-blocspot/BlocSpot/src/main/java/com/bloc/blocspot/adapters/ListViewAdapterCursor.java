@@ -12,12 +12,10 @@ import android.widget.PopupMenu;
 import android.widget.SimpleCursorAdapter;
 import android.widget.TextView;
 
-import com.bloc.blocspot.utilities.Message;
 import com.bloc.blocspot.blocspot.R;
-
-
 import com.bloc.blocspot.database.BaseContract;
 import com.bloc.blocspot.model.Place;
+import com.bloc.blocspot.utilities.Message;
 
 /**
  * Created by Wayne on 11/23/2014.
@@ -59,15 +57,22 @@ public class ListViewAdapterCursor extends SimpleCursorAdapter implements View.O
     //now we bind data to view
 
     @Override
-    public void bindView(View view, Context context, Cursor cursor) {//this view is returned for method newview
+    public void bindView(View view, final Context context, Cursor cursor) {//this view is returned for method newview
         super.bindView(view, context, cursor);
         //at this point cursor is in the position
         //then we can get the position here
-
+        final int mPosition = cursor.getPosition();
         final TextView textView = (TextView)view.findViewById(R.id.textViewPlaceName);
         final String text = cursor.getString(cursor.getColumnIndex(BaseContract.PlacesEntry.NAME));
         textView.setText(text);
-        final int mPosition = cursor.getPosition();
+        textView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Message.message(context, "Item clicked was "+ mPosition);
+
+            }
+        });
+
 
         ImageView imageView = (ImageView)view.findViewById(R.id.imageView_menu);
         imageView.setFocusable(false);
@@ -170,6 +175,5 @@ public class ListViewAdapterCursor extends SimpleCursorAdapter implements View.O
     @Override
     public void onClick(View view) {
         Message.message(context, "Menu item clicked");
-
     }
 }

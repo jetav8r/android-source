@@ -24,7 +24,6 @@ import com.bloc.blocspot.adapters.PlacesListViewAdapter;
 import com.bloc.blocspot.blocspot.R;
 import com.bloc.blocspot.model.Place;
 import com.bloc.blocspot.services.PlacesService;
-import com.bloc.blocspot.utilities.Message;
 
 import java.util.ArrayList;
 
@@ -127,8 +126,11 @@ public class PlacesListFragment extends Fragment implements AdapterView.OnItemCl
 
     @Override
     public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-        Message.message(getActivity(), "Put method to place marker here");
         int mId = view.getId();
+        Place selectedPlace = places.get(position);
+
+        //Message.message(getActivity(), "Selected place = "+selectedPlace);
+        ((BlocSpotActivity)getActivity()).moveCameraToMarker(selectedPlace);
     }
 
 

@@ -40,6 +40,7 @@ import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 
+import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.HashMap;
 
@@ -289,6 +290,34 @@ public class BlocSpotActivity extends Activity {
         }
     }
 
+    public String CalculationByDistance(double lat2, double lon2) {
+        locationManager =  (LocationManager) getSystemService(Context.LOCATION_SERVICE);
+        String provider = locationManager.getBestProvider(new Criteria(), true);
+        Location location = locationManager.getLastKnownLocation(provider);
+        double lat1 = location.getLatitude();
+        double lon1 = location.getLongitude();
+        int Radius=6371;//radius of earth in Km
+        double dLat = Math.toRadians(lat2-lat1);
+        double dLon = Math.toRadians(lon2-lon1);
+        double a = Math.sin(dLat/2) * Math.sin(dLat/2) +
+                Math.cos(Math.toRadians(lat1)) * Math.cos(Math.toRadians(lat2)) *
+                        Math.sin(dLon/2) * Math.sin(dLon/2);
+        double c = 2 * Math.asin(Math.sqrt(a));
+        double valueResult= Radius*c;
+        double km=valueResult/1;
+        DecimalFormat newFormat = new DecimalFormat("####");
+        int kmInDec =  Integer.valueOf(newFormat.format(km));
+        double meter=valueResult%1000;
+        int  meterInDec= Integer.valueOf(newFormat.format(meter));
+        Log.i("Radius Value", "" + valueResult + "   KM  " + kmInDec + " Meter   " + meterInDec);
+        double miles = valueResult*.621371;
+        DecimalFormat Mileage = new DecimalFormat("#0.00 miles");
+        String mileage = Mileage.format(miles);
+        Log.i("Distance in miles", "" + (valueResult*.621371));
+        //return Radius * c;
+        return mileage;
+    }
+
 
     private LocationListener listener = new LocationListener() {
 
@@ -316,6 +345,7 @@ public class BlocSpotActivity extends Activity {
     };
 
     private void loadFavoritePlacesMap() {
+        this.removeFragments();
         PlacesDao placesDao = new PlacesDao(this);
         favResult = placesDao.getAllPlaces();
         mMap.clear();
@@ -366,18 +396,49 @@ public class BlocSpotActivity extends Activity {
         } else {
             Message.message(getBaseContext(), "No places with that name found");
         }
-
     }
 
+    public void moveCameraToMarker(Place currentListItem) {
 
-    private void loadFavoritePlacesListFragment() {
-        FragmentManager manager = getFragmentManager();
-        FragmentTransaction fragmentTransaction = manager.beginTransaction();
-        fragmentTransaction.replace(R.id.container, FavoritePlacesListFragment.newInstance(null))
-                .addToBackStack("FavoriteCategoriesListFragment")
-                .commit();
+        removeFragments();
+        mMap.clear();
+        mMap.addMarker(new MarkerOptions()
+                .title(currentListItem.getName())
+                .position(
+                        new LatLng(currentListItem.getLatitude(), currentListItem.getLongitude()))
+                .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_GREEN))
+                        //.icon(BitmapDescriptorFactory
+                        //.fromResource(R.drawable.ic_favorite_default))
+                .snippet(currentListItem.getVicinity()));
+        mMap.setOnInfoWindowClickListener(new GoogleMap.OnInfoWindowClickListener() {
+
+            @Override
+            public void onInfoWindowClick(Marker marker) {
+
+                destPosition = marker.getPosition();
+                destLat = destPosition.latitude;
+                destLong= destPosition.longitude;
+
+                MarkerDialogFragment markerDialogFragment = new MarkerDialogFragment();
+                Bundle args = new Bundle();
+                args.putString("id", marker.getId());
+                args.putString("place", marker.getTitle());
+                args.putDouble("latitude", destLat);
+                args.putDouble("longitude", destLong);
+                args.putSerializable("vicinity", marker.getSnippet());
+                markerDialogFragment.setArguments(args);
+                markerDialogFragment.show(getFragmentManager(), "");
+            }
+        });
+        CameraPosition cameraPosition = new CameraPosition.Builder()
+                .target(new LatLng(currentListItem.getLatitude(), currentListItem.getLongitude()))
+                        // Sets the center of the map to selected Place
+                .zoom(12) // Sets the zoom
+                .tilt(30) // Sets the tilt of the camera to 30 degrees
+                .build(); // Creates a CameraPosition from the builder
+        mMap.animateCamera(CameraUpdateFactory
+                .newCameraPosition(cameraPosition));
     }
-
 
     private void loadPlacesListFragment() {
         if (!returnedPlaces.isEmpty()) {

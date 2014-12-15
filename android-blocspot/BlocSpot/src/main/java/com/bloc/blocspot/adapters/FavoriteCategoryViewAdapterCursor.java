@@ -82,10 +82,9 @@ public class FavoriteCategoryViewAdapterCursor extends SimpleCursorAdapter imple
         imageView.setFocusable(false);
         final PopupMenu popupMenu = new PopupMenu(context, imageView);
         popupMenu.getMenu().add(Menu.NONE, 0, Menu.NONE, "Assign color to favorite");
-        popupMenu.getMenu().add(Menu.NONE, 1, Menu.NONE, "Show on map");
-        popupMenu.getMenu().add(Menu.NONE, 2, Menu.NONE, "Remove category from favorites");
-        popupMenu.getMenu().add(Menu.NONE, 3, Menu.NONE, "Rename favorite category");
-        popupMenu.getMenu().add(Menu.NONE, 4, Menu.NONE, "Add favorite category");
+        popupMenu.getMenu().add(Menu.NONE, 1, Menu.NONE, "Remove category from favorites");
+        popupMenu.getMenu().add(Menu.NONE, 2, Menu.NONE, "Rename favorite category");
+        popupMenu.getMenu().add(Menu.NONE, 3, Menu.NONE, "Add favorite category");
 
         popupMenu.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
             @Override
@@ -94,17 +93,14 @@ public class FavoriteCategoryViewAdapterCursor extends SimpleCursorAdapter imple
                     case 0:
                         colorCategory(mPosition);
                         break;
-                    case 1:
-                        // show places in selected category on map
-                        break;
-                    case 2:
+                   case 1:
                         removeFavCategory(mPosition);
                         break;
-                    case 3:
+                    case 2:
                         // we put rename note here
                         renameFavCategory(mPosition);
                         break;
-                    case 4:
+                    case 3:
                         createFavCategory(mPosition);
                         break;
                 }
