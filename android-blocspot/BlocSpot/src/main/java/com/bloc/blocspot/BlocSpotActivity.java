@@ -311,7 +311,7 @@ public class BlocSpotActivity extends Activity {
         int  meterInDec= Integer.valueOf(newFormat.format(meter));
         Log.i("Radius Value", "" + valueResult + "   KM  " + kmInDec + " Meter   " + meterInDec);
         double miles = valueResult*.621371;
-        DecimalFormat Mileage = new DecimalFormat("#0.00 miles");
+        DecimalFormat Mileage = new DecimalFormat("#0.0 mi");
         String mileage = Mileage.format(miles);
         Log.i("Distance in miles", "" + (valueResult*.621371));
         //return Radius * c;

@@ -5,10 +5,8 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.database.Cursor;
 import android.graphics.Color;
-import android.location.LocationManager;
 import android.os.Bundle;
 import android.text.Editable;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -40,6 +38,7 @@ public class FavoritePlacesViewAdapterCursor extends SimpleCursorAdapter impleme
 
     LayoutInflater inflater;
     Context context;
+    String distance;
     private int layout = R.layout.custom_adapter_favorite_places ; //this is the view we use... can create our own view
     protected String mNewCategoryName;
     protected String mDescription;
@@ -47,7 +46,6 @@ public class FavoritePlacesViewAdapterCursor extends SimpleCursorAdapter impleme
     protected CheckBox checked;
     protected double destLat;
     protected double destLong;
-    private LocationManager locationManager;
     //private ImageLoader imgLoader;
 
     public FavoritePlacesViewAdapterCursor(Context context, int layout, Cursor c, String[] from, int[] to) {//cursor is now our data list
@@ -102,9 +100,9 @@ public class FavoritePlacesViewAdapterCursor extends SimpleCursorAdapter impleme
         final String text = cursor.getString(cursor.getColumnIndex(BaseContract.PlacesEntry.NAME));
         textView.setText(text);
 
-        //TextView textView2 = (TextView) view.findViewById(R.id.textView_fav_category);
-        //final String text2 = cursor.getString(cursor.getColumnIndex(BaseContract.PlacesEntry.FAV_CATEGORY));
-        //textView2.setText(text2);
+        TextView textView2 = (TextView) view.findViewById(R.id.textViewDistance);
+        final String text2 = ((BlocSpotActivity) context).CalculationByDistance(destLat, destLong);
+        textView2.setText(text2);
         TextView textView3 = (TextView) view.findViewById(R.id.textView_fav_notes);
         final String text3 = cursor.getString(cursor.getColumnIndex(BaseContract.PlacesEntry.DESCRIPTION));
         if (text3 == null) {
@@ -130,12 +128,6 @@ public class FavoritePlacesViewAdapterCursor extends SimpleCursorAdapter impleme
         textView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-
-
-                Log.e("Wayne", "selected text = " + text);
-                String distance = ((BlocSpotActivity) context).CalculationByDistance(destLat, destLong);
-
-                Log.e("Wayne", "distance to place = "+distance);
                 //((BlocSpotActivity) context).currentLocation(googleName);
                 ((BlocSpotActivity) context).moveCameraToMarker(currentPlace);
             }

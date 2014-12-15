@@ -26,6 +26,8 @@ public class PlacesListViewAdapter extends BaseAdapter{
     private Context context;
     private ArrayList<Place> values;
     private LayoutInflater inflater;
+    protected double destLat;
+    protected double destLong;
 
     public PlacesListViewAdapter(Context context, ArrayList<Place> values){
         this.context = context;
@@ -35,14 +37,15 @@ public class PlacesListViewAdapter extends BaseAdapter{
 
     @Override
     public View getView(final int position, View convertView, ViewGroup parent) {
+        destLat = values.get(position).getLatitude();
+        destLong = values.get(position).getLongitude();
         View rowView = inflater.inflate(R.layout.custom_adapter_places, parent, false);//inflating our view
         TextView textView = (TextView) rowView.findViewById(R.id.textViewPlaceName);//calling the fields fom our view
         textView.setText(values.get(position).getName()); //we get the contents of Place from arraylist
         TextView textView2 = (TextView) rowView.findViewById(R.id.textView_Vicinity);
         textView2.setText(values.get(position).getVicinity());
-
-        final double destLat = values.get(position).getLatitude();
-        final double destLong = values.get(position).getLongitude();
+        TextView textView1 = (TextView) rowView.findViewById(R.id.textView_mileage);
+        textView1.setText(((BlocSpotActivity) context).CalculationByDistance(destLat, destLong));
         ImageView imageView = (ImageView) rowView.findViewById(R.id.imageView_PlacesMenu);
         imageView.setFocusable(false);
 

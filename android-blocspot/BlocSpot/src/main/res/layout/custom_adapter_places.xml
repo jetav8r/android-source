@@ -9,27 +9,35 @@
         android:layout_height="wrap_content"
         android:layout_width="wrap_content"
         android:layout_toLeftOf="@+id/imageView_menu"
-        android:layout_centerVertical="true"
         android:id="@+id/textViewPlaceName"
         android:text="Place name"
-        android:textAppearance="?android:attr/textAppearanceMedium"/>
+        android:textAppearance="?android:attr/textAppearanceMedium"
+        android:layout_toRightOf="@+id/textView_mileage"/>
 
     <ImageView
         android:layout_height="wrap_content"
         android:layout_width="wrap_content"
-        android:layout_centerVertical="true"
         android:id="@+id/imageView_PlacesMenu"
         android:src="@drawable/ic_action_navigation_more_vert"
-        android:layout_alignParentEnd="true"
-        android:layout_alignParentRight="true"/>
+        android:layout_alignBottom="@+id/textView_Vicinity"
+        android:layout_alignParentEnd="true"/>
 
     <TextView
         android:layout_height="wrap_content"
         android:layout_width="wrap_content"
         android:id="@+id/textView_Vicinity"
         android:text="additional information"
-        android:layout_alignParentStart="true"
-        android:layout_alignParentLeft="true"
-        android:layout_below="@+id/imageView_PlacesMenu"/>
+        android:layout_below="@+id/textViewPlaceName"
+        android:layout_alignStart="@+id/textViewPlaceName"/>
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textAppearance="?android:attr/textAppearanceSmall"
+        android:text="Miles"
+        android:id="@+id/textView_mileage"
+        android:paddingRight="10dp"
+        android:layout_alignBottom="@+id/imageView_PlacesMenu"
+        android:layout_alignParentStart="true"/>
 
 </RelativeLayout>
