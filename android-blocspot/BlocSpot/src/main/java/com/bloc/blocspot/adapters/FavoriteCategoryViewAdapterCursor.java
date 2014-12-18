@@ -22,7 +22,11 @@ import com.bloc.blocspot.blocspot.R;
 import com.bloc.blocspot.database.BaseContract;
 import com.bloc.blocspot.model.CategoriesDao;
 import com.bloc.blocspot.model.Category;
+import com.bloc.blocspot.model.Place;
+import com.bloc.blocspot.model.PlacesDao;
 import com.bloc.blocspot.utilities.Message;
+
+import java.util.ArrayList;
 
 /**
  * Created by Wayne on 12/11/2014.
@@ -146,8 +150,8 @@ public class FavoriteCategoryViewAdapterCursor extends SimpleCursorAdapter imple
                         category.setColor(currentCatColor);
                         category.setMarker_icon(icon);
                         category.setFavorite("Y");
-                        //setFavCatColor(currentCatColor, icon);
                         categoriesDao.update(category);
+                        setFavPlacesCatColor(category.getGoogle_name(),currentCatColor);
                         break;
                     case 1:
                         currentCatColor = material_colors[1];
@@ -155,8 +159,8 @@ public class FavoriteCategoryViewAdapterCursor extends SimpleCursorAdapter imple
                         category.setColor(currentCatColor);
                         category.setMarker_icon(icon);
                         category.setFavorite("Y");
-                        //setFavCatColor(currentCatColor, icon);
                         categoriesDao.update(category);
+                        setFavPlacesCatColor(category.getGoogle_name(),currentCatColor);
                         break;
                     case 2:
                         currentCatColor = material_colors[2];
@@ -164,8 +168,8 @@ public class FavoriteCategoryViewAdapterCursor extends SimpleCursorAdapter imple
                         category.setColor(currentCatColor);
                         category.setMarker_icon(icon);
                         category.setFavorite("Y");
-                        //setFavCatColor(currentCatColor, icon);
                         categoriesDao.update(category);
+                        setFavPlacesCatColor(category.getGoogle_name(),currentCatColor);
                         break;
                     case 3:
                         currentCatColor = material_colors[3];
@@ -175,6 +179,7 @@ public class FavoriteCategoryViewAdapterCursor extends SimpleCursorAdapter imple
                         category.setFavorite("Y");
                         //setFavCatColor(currentCatColor, icon);
                         categoriesDao.update(category);
+                        setFavPlacesCatColor(category.getGoogle_name(),currentCatColor);
                         break;
                     case 4:
                         currentCatColor = material_colors[4];
@@ -182,8 +187,8 @@ public class FavoriteCategoryViewAdapterCursor extends SimpleCursorAdapter imple
                         category.setColor(currentCatColor);
                         category.setMarker_icon(icon);
                         category.setFavorite("Y");
-                        //setFavCatColor(currentCatColor, icon);
                         categoriesDao.update(category);
+                        setFavPlacesCatColor(category.getGoogle_name(),currentCatColor);
                         break;
                     case 5:
                         currentCatColor = material_colors[5];
@@ -191,8 +196,8 @@ public class FavoriteCategoryViewAdapterCursor extends SimpleCursorAdapter imple
                         category.setColor(currentCatColor);
                         category.setMarker_icon(icon);
                         category.setFavorite("Y");
-                        //setFavCatColor(currentCatColor, icon);
                         categoriesDao.update(category);
+                        setFavPlacesCatColor(category.getGoogle_name(),currentCatColor);
                         break;
                     default:
                         break;
@@ -201,6 +206,21 @@ public class FavoriteCategoryViewAdapterCursor extends SimpleCursorAdapter imple
         });
         builder.create();
         builder.show();
+    }
+
+    private void setFavPlacesCatColor(String currentCatName, String currentCatColor) {
+        PlacesDao placesDao = new PlacesDao(context);
+        Place place = new Place();
+
+        ArrayList<Place> currentFilteredPlaces = placesDao.getPlacesInCategory(currentCatName);
+        for (int i = 0; i < currentFilteredPlaces.size(); i++) {
+            Place currentPlace = currentFilteredPlaces.get(i);
+            currentPlace.setColor(currentCatColor);
+            placesDao.update(currentPlace);
+            //Message.message(context, "method working");
+        }
+
+
     }
 
     /*

@@ -97,6 +97,31 @@ public class PlacesDao {
         return list;
     }
 
+    public ArrayList<Place> getPlacesInCategory(String category_name){
+        String selection = BaseContract.PlacesEntry.FAV_CATEGORY + " = ?";
+        String[] selectionArgs = new String[]{category_name};
+        Cursor cursor = context.getContentResolver().query(BaseContract.PlacesEntry.URI,
+                null,
+                selection,//all
+                selectionArgs,//all
+                null);//no sort
+
+        ArrayList<Place> placesInCatList = new ArrayList<Place>();
+
+        if (cursor.moveToFirst()) {
+            do {
+                Place place = new Place();
+                place.setId(cursor.getString(cursor.getColumnIndex(BaseContract.PlacesEntry._ID)));//this id is generated automatically,
+                place.setName(cursor.getString(cursor.getColumnIndex(BaseContract.PlacesEntry.NAME)));
+                place.setFav_Category(cursor.getString(cursor.getColumnIndex(BaseContract.PlacesEntry.FAV_CATEGORY)));
+                place.setColor(cursor.getString(cursor.getColumnIndex(BaseContract.PlacesEntry.COLOR)));
+                placesInCatList.add(place);
+            } while (cursor.moveToNext());
+        }
+        cursor.close();
+        return placesInCatList;
+    }
+
     public Place getPlace(long id){
         String selection = BaseContract.PlacesEntry._ID + " = ?";
         String[] selectionArgs = new String[]{String.valueOf(id)};
