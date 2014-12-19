@@ -24,6 +24,8 @@ import com.bloc.blocspot.adapters.PlacesListViewAdapter;
 import com.bloc.blocspot.blocspot.R;
 import com.bloc.blocspot.model.Place;
 import com.bloc.blocspot.services.PlacesService;
+import com.bloc.blocspot.utilities.ConnectionDetector;
+import com.bloc.blocspot.utilities.Message;
 
 import java.util.ArrayList;
 
@@ -78,8 +80,14 @@ public class PlacesListFragment extends Fragment implements AdapterView.OnItemCl
             listView.setAdapter(adapter);
         }else{
             //call search here
-            String google_name = getArguments().getString(ARG_GOOGLE_NAME);
-            currentLocation(google_name);
+            if (ConnectionDetector.isConnectingToInternet(getActivity())) {
+                String google_name = getArguments().getString(ARG_GOOGLE_NAME);
+                currentLocation(google_name);
+            }
+            else {
+                Message.message(getActivity(), "Connect to the Internet before searching");
+
+            }
         }
 
 
