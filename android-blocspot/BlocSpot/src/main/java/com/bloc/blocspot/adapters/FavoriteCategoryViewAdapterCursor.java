@@ -219,6 +219,8 @@ public class FavoriteCategoryViewAdapterCursor extends SimpleCursorAdapter imple
             placesDao.update(currentPlace);
             //Message.message(context, "method working");
         }
+
+
     }
 
     /*

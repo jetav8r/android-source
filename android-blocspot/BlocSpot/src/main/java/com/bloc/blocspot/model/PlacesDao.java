@@ -51,21 +51,6 @@ public class PlacesDao {
         context.getContentResolver().update(BaseContract.PlacesEntry.URI, values, selection, selectionArgs);
     }
 
-    /*
-    public void updateColor(String category_name) {
-        ContentValues values = new ContentValues();
-        values.put(BaseContract.PlacesEntry.DESCRIPTION, place.getDescription());
-        values.put(BaseContract.PlacesEntry.FAV_CATEGORY, place.getFav_Category());
-        values.put(BaseContract.PlacesEntry.COLOR, place.getColor());
-        values.put(BaseContract.PlacesEntry.VISITED, place.getVisited());
-
-        //to update a note we use a where clause and _ID to find it in the com.bloc.blocspot.database
-        String selection = BaseContract.PlacesEntry._ID + " = ? ";
-        String[] selectionArgs = new String[]{ String.valueOf(place.getId())};
-        context.getContentResolver().update(BaseContract.PlacesEntry.URI, values, selection, selectionArgs);
-    }
-    */
-
     public void delete(Place place){
         context.getContentResolver().delete(BaseContract.PlacesEntry.URI, BaseContract.PlacesEntry._ID + " = " + place.getId(), null);
     }
