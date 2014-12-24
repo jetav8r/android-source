@@ -1,15 +1,18 @@
 package com.bloc.blocspot;
 
-import android.app.Activity;
 import android.app.FragmentManager;
 import android.app.FragmentTransaction;
+import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
+import android.content.IntentSender;
+import android.graphics.Color;
 import android.location.Criteria;
 import android.location.Location;
 import android.location.LocationManager;
 import android.net.Uri;
 import android.os.Bundle;
+import android.support.v4.app.FragmentActivity;
 import android.text.Html;
 import android.util.Log;
 import android.view.Menu;
@@ -24,13 +27,17 @@ import com.bloc.blocspot.fragments.FavCategoryFragment;
 import com.bloc.blocspot.fragments.FavoritePlacesListFragment;
 import com.bloc.blocspot.fragments.MarkerDialogFragment;
 import com.bloc.blocspot.fragments.PlacesListFragment;
-import com.bloc.blocspot.fragments.SearchFragment;
+import com.bloc.blocspot.geofence.SimpleGeofence;
+import com.bloc.blocspot.geofence.SimpleGeofenceStore;
 import com.bloc.blocspot.model.Place;
 import com.bloc.blocspot.model.PlacesDao;
+import com.bloc.blocspot.services.GeofenceTransitionsIntentService;
 import com.bloc.blocspot.utilities.Message;
 import com.bloc.blocspot.utilities.Utilities;
 import com.google.android.gms.common.ConnectionResult;
+import com.google.android.gms.common.GooglePlayServicesUtil;
 import com.google.android.gms.common.api.GoogleApiClient;
+import com.google.android.gms.location.Geofence;
 import com.google.android.gms.location.LocationListener;
 import com.google.android.gms.location.LocationRequest;
 import com.google.android.gms.location.LocationServices;
@@ -39,6 +46,8 @@ import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.MapFragment;
 import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.CameraPosition;
+import com.google.android.gms.maps.model.Circle;
+import com.google.android.gms.maps.model.CircleOptions;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
@@ -48,6 +57,16 @@ import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.List;
+
+import static com.bloc.blocspot.geofence.Constants.ANDROID_BUILDING_ID;
+import static com.bloc.blocspot.geofence.Constants.ANDROID_BUILDING_LATITUDE;
+import static com.bloc.blocspot.geofence.Constants.ANDROID_BUILDING_LONGITUDE;
+import static com.bloc.blocspot.geofence.Constants.ANDROID_BUILDING_RADIUS_METERS;
+import static com.bloc.blocspot.geofence.Constants.CONNECTION_FAILURE_RESOLUTION_REQUEST;
+import static com.bloc.blocspot.geofence.Constants.GEOFENCE_EXPIRATION_TIME;
+
+
 
 //import android.location.LocationListener;
 
@@ -58,7 +77,7 @@ import java.util.HashMap;
  * @Date   10/3/2013
  *
  */
-public class BlocSpotActivity extends Activity implements
+public class BlocSpotActivity extends FragmentActivity implements
         GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener, LocationListener {
 
     private final String TAG = getClass().getSimpleName();
@@ -83,7 +102,6 @@ public class BlocSpotActivity extends Activity implements
     private LatLng destPosition;
     protected double destLong;
     protected double destLat;
-    public SearchFragment mSearchFragment;
     public FavCategoryFragment mFavCategoryFragment;
     private GoogleApiClient mGoogleApiClient;
     private Location mLastLocation;
@@ -125,28 +143,101 @@ public class BlocSpotActivity extends Activity implements
      */
     protected Location mCurrentLocation;
 
+    // Internal List of Geofence objects. In a real app, these might be provided by an API based on
+    // locations within the user's proximity.
+    List<Geofence> mGeofenceList;
 
+    // These will store hard-coded geofences in this sample app.
+    private SimpleGeofence mAndroidBuildingGeofence;
+    private SimpleGeofence mYerbaBuenaGeofence;
+
+    // Persistent storage for geofences.
+    private SimpleGeofenceStore mGeofenceStorage;
+
+    private LocationServices mLocationService;
+    // Stores the PendingIntent used to request geofence monitoring.
+    private PendingIntent mGeofenceRequestIntent;
+    private SimpleGeofence mGeofence;
+    //private GoogleApiClient mApiClient;
+
+    // Defines the allowable request types (in this example, we only add geofences).
+    private enum REQUEST_TYPE {ADD}
+    private REQUEST_TYPE mRequestType;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        // Rather than displayng this activity, simply display a toast indicating that the geofence
+        // service is being created. This should happen in less than a second.
+        if (!isGooglePlayServicesAvailable()) {
+            Log.e(TAG, "Google Play services unavailable.");
+            finish();
+            return;
+        }
+
+        buildGoogleApiClient();
+
+
         invalidateOptionsMenu();
         setContentView(R.layout.activity_main);
         Utilities.createInitialDatabase(this);
         setUpMapIfNeeded();
-        //loadMapsFragment();
-        //Message.message(this, "TAG = " +TAG);
         container = (FrameLayout) findViewById(R.id.container);
         //final ActionBar actionBar = getActionBar();
-        buildGoogleApiClient();
+
+
+        // Instantiate a new geofence storage area.
+        mGeofenceStorage = new SimpleGeofenceStore(this);
+        // Instantiate the current List of geofences.
+        mGeofenceList = new ArrayList<Geofence>();
+        createGeofences();
+
         mRequestingLocationUpdates = true;
         mLastUpdateTime = "";
 
         // Update values using data stored in the Bundle.
         updateValuesFromBundle(savedInstanceState);
+
+    }
+
+    /**
+     * In this sample, the geofences are predetermined and are hard-coded here. A real app might
+     * dynamically create geofences based on the user's location.
+     */
+    public void createGeofences() {
+        // Create internal "flattened" objects containing the geofence data.
+        mAndroidBuildingGeofence = new SimpleGeofence(
+                ANDROID_BUILDING_ID,                // geofenceId.
+                ANDROID_BUILDING_LATITUDE,
+                ANDROID_BUILDING_LONGITUDE,
+                ANDROID_BUILDING_RADIUS_METERS,
+                GEOFENCE_EXPIRATION_TIME,
+                Geofence.GEOFENCE_TRANSITION_ENTER | Geofence.GEOFENCE_TRANSITION_EXIT
+        );
+        /*
+        mYerbaBuenaGeofence = new SimpleGeofence(
+                YERBA_BUENA_ID,                // geofenceId.
+                YERBA_BUENA_LATITUDE,
+                YERBA_BUENA_LONGITUDE,
+                YERBA_BUENA_RADIUS_METERS,
+                GEOFENCE_EXPIRATION_TIME,
+                Geofence.GEOFENCE_TRANSITION_ENTER | Geofence.GEOFENCE_TRANSITION_EXIT
+        );
+        */
+
+
+        // Store these flat versions in SharedPreferences and add them to the geofence list.
+        mGeofenceStorage.setGeofence(ANDROID_BUILDING_ID, mAndroidBuildingGeofence);
+        //mGeofenceStorage.setGeofence(YERBA_BUENA_ID, mYerbaBuenaGeofence);
+        mGeofenceList.add(mAndroidBuildingGeofence.toGeofence());
+        //mGeofenceList.add(mYerbaBuenaGeofence.toGeofence());
+        //addMarkerForFence(mAndroidBuildingGeofence);
+        //addMarkerForFence(mYerbaBuenaGeofence);
     }
 
     private void updateValuesFromBundle(Bundle savedInstanceState) {
+
         Log.i(TAG, "Updating values from bundle");
         if (savedInstanceState != null) {
             // Update the value of mRequestingLocationUpdates from the Bundle, and make sure that
@@ -174,14 +265,16 @@ public class BlocSpotActivity extends Activity implements
     }
 
 
+
     protected synchronized void buildGoogleApiClient() {
         mGoogleApiClient = new GoogleApiClient.Builder(this)
+                .addApi(LocationServices.API)
                 .addConnectionCallbacks(this)
                 .addOnConnectionFailedListener(this)
-                .addApi(LocationServices.API)
                 .build();
         createLocationRequest();
     }
+
 
     protected void createLocationRequest() {
         mLocationRequest = new LocationRequest();
@@ -200,7 +293,7 @@ public class BlocSpotActivity extends Activity implements
     }
 
     /**
-     * Requests location updates from the FusedLocationApi.
+     * Requests location updates from the FusedLocationApi
      */
     protected void startLocationUpdates() {
         // The final argument to {@code requestLocationUpdates()} is a LocationListener
@@ -227,6 +320,7 @@ public class BlocSpotActivity extends Activity implements
                 .getMap();
         mMap.getUiSettings().setMyLocationButtonEnabled(true);
         mMap.getUiSettings().setCompassEnabled(true);
+        mMap.getUiSettings().setZoomControlsEnabled(true);
         mMap.setMyLocationEnabled(true);
     }
 
@@ -241,7 +335,7 @@ public class BlocSpotActivity extends Activity implements
     @Override
     protected void onResume() {
         super.onResume();
-        setUpMapIfNeeded();
+        setUpMap();
         // Within {@code onPause()}, we pause location updates, but leave the
         // connection to GoogleApiClient intact.  Here, we resume receiving
         // location updates if the user has requested them.
@@ -307,7 +401,7 @@ public class BlocSpotActivity extends Activity implements
         FragmentManager manager = getFragmentManager();
         FragmentTransaction fragmentTransaction = manager.beginTransaction();
         fragmentTransaction.replace(R.id.container, FavCategoryFragment.newInstance())
-                .addToBackStack("SearchFragment")
+                .addToBackStack("FavCategories")
                 .commit();
 
         //FavCategoryDialogFragment favCategoryDialogFragment = new FavCategoryDialogFragment();
@@ -318,7 +412,7 @@ public class BlocSpotActivity extends Activity implements
         FragmentManager manager = getFragmentManager();
         FragmentTransaction fragmentTransaction = manager.beginTransaction();
         fragmentTransaction.replace(R.id.container, FavoritePlacesListFragment.newInstance(category_name))
-                .addToBackStack("SearchFragment")
+                .addToBackStack("FavPlaces")
                 .commit();
     }
 
@@ -326,7 +420,7 @@ public class BlocSpotActivity extends Activity implements
         FragmentManager manager = getFragmentManager();
         FragmentTransaction fragmentTransaction = manager.beginTransaction();
         fragmentTransaction.replace(R.id.container, AllFavoritePlacesListFragment.newInstance())
-                .addToBackStack("SearchFragment")
+                .addToBackStack("AllFavPlaces")
                 .commit();
     }
 
@@ -593,14 +687,6 @@ public class BlocSpotActivity extends Activity implements
         } else Message.message(this, "Search for some places first");
     }
 
-    private void loadSearchFragment(){
-            FragmentManager manager = getFragmentManager();
-            FragmentTransaction fragmentTransaction = manager.beginTransaction();
-            fragmentTransaction.replace(R.id.container, mSearchFragment = SearchFragment.newInstance())
-                .addToBackStack("SearchFragment")
-                .commit();
-    }
-
     public void share(String title, double destLat, double destLong){
         title=title.replace(" ","+");
         String request = "https://www.google.com/maps/place/"+title+"/@"+destLat+","+destLong;
@@ -690,6 +776,16 @@ public class BlocSpotActivity extends Activity implements
         // the value of mRequestingLocationUpdates and if it is true, we start location updates.
         if (mRequestingLocationUpdates) {
             startLocationUpdates();
+
+            // Get the PendingIntent for the geofence monitoring request.
+            // Send a request to add the current geofences.
+
+            mGeofenceRequestIntent = getGeofenceTransitionPendingIntent();
+            LocationServices.GeofencingApi.addGeofences(mGoogleApiClient, mGeofenceList,
+                    mGeofenceRequestIntent);
+
+            //Toast.makeText(this, getString(R.string.start_geofence_service), Toast.LENGTH_SHORT).show();
+            //finish();
         }
     }
 
@@ -712,14 +808,26 @@ public class BlocSpotActivity extends Activity implements
         // attempt to re-establish the connection.
         Log.i(TAG, "Connection suspended");
         mGoogleApiClient.connect();
+        if (null != mGeofenceRequestIntent) {
+            LocationServices.GeofencingApi.removeGeofences(mGoogleApiClient, mGeofenceRequestIntent);
+        }
 
     }
 
     @Override
-    public void onConnectionFailed(ConnectionResult result) {
-        // Refer to the javadoc for ConnectionResult to see what error codes might be returned in
-        // onConnectionFailed.
-        Log.i(TAG, "Connection failed: ConnectionResult.getErrorCode() = " + result.getErrorCode());
+    public void onConnectionFailed(ConnectionResult connectionResult) {
+        // If the error has a resolution, start a Google Play services activity to resolve it.
+        if (connectionResult.hasResolution()) {
+            try {
+                connectionResult.startResolutionForResult(this,
+                        CONNECTION_FAILURE_RESOLUTION_REQUEST);
+            } catch (IntentSender.SendIntentException e) {
+                Log.e(TAG, "Exception while resolving connection error.", e);
+            }
+        } else {
+            int errorCode = connectionResult.getErrorCode();
+            Log.e(TAG, "Connection to Google Play services failed with error code " + errorCode);
+        }
     }
 
     /*
@@ -738,5 +846,73 @@ public class BlocSpotActivity extends Activity implements
         savedInstanceState.putParcelable(LOCATION_KEY, mCurrentLocation);
         savedInstanceState.putString(LAST_UPDATED_TIME_STRING_KEY, mLastUpdateTime);
         super.onSaveInstanceState(savedInstanceState);
+    }
+
+    /**
+     * Checks if Google Play services is available.
+     * @return true if it is.
+     */
+    private boolean isGooglePlayServicesAvailable() {
+        int resultCode = GooglePlayServicesUtil.isGooglePlayServicesAvailable(this);
+        if (ConnectionResult.SUCCESS == resultCode) {
+            if (Log.isLoggable(TAG, Log.DEBUG)) {
+                Log.d(TAG, "Google Play services is available.");
+            }
+            return true;
+        } else {
+            Log.e(TAG, "Google Play services is unavailable.");
+            return false;
+        }
+    }
+
+    /**
+     * Create a PendingIntent that triggers GeofenceTransitionIntentService when a geofence
+     * transition occurs.
+     */
+    private PendingIntent getGeofenceTransitionPendingIntent() {
+        Intent intent = new Intent(this, GeofenceTransitionsIntentService.class);
+        return PendingIntent.getService(this, 0, intent, PendingIntent.FLAG_UPDATE_CURRENT);
+    }
+
+    //public void setGeofence(Place currentPlace) {
+    public void setGeofence(String id, double lat, double lon) {
+        mGeofence = new SimpleGeofence(
+                id,
+                lat,
+                lon,
+                //currentPlace.getName(),                // geofenceId.
+                //currentPlace.getLatitude(),
+                //currentPlace.getLongitude(),
+                500f,
+                Geofence.NEVER_EXPIRE,
+                Geofence.GEOFENCE_TRANSITION_ENTER | Geofence.GEOFENCE_TRANSITION_EXIT
+        );
+
+        mGeofenceList.add(mGeofence.toGeofence());
+        addMarkerForFence(mGeofence);
+    }
+
+    public static void addMarkerForFence(SimpleGeofence fence){
+        if(fence == null){
+            // display en error message and return
+            return;
+        }
+        mMap.addMarker( new MarkerOptions()
+                .position( new LatLng(fence.getLatitude(), fence.getLongitude()) )
+                .title(fence.getId())
+                .icon(BitmapDescriptorFactory
+                        .fromResource(R.drawable.ic_action_maps_place))
+                //.snippet("Radius: " + fence.getRadius())
+                ).showInfoWindow();
+
+        //Instantiates a new CircleOptions object +  center/radius
+        CircleOptions circleOptions = new CircleOptions()
+                .center( new LatLng(fence.getLatitude(), fence.getLongitude()) )
+                .radius( fence.getRadius() )
+                .fillColor(0x40ff0000)
+                .strokeColor(Color.TRANSPARENT)
+                .strokeWidth(2);
+        // Get back the mutable Circle
+        Circle circle = mMap.addCircle(circleOptions);
     }
 }

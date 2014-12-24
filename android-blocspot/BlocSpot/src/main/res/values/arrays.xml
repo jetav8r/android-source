@@ -4,6 +4,7 @@
         <item>Add To Favorites</item>
         <item>Navigate To</item>
         <item>Share</item>
+        <item>Alert Me When Nearby</item>
         </string-array>
 
     <string-array name="color_list">
@@ -22,6 +23,11 @@
         <item>#259b24</item>
         <item>#ffeb3b</item>
         <item>#ff9800</item>
-
     </string-array>
+
+    <string-array name="geofence_menu">
+        <item>Alert Me When Nearby</item>
+        <item>Remove Alert</item>
+    </string-array>
+
 </resources>

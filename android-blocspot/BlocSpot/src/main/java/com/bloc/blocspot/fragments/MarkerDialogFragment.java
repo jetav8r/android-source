@@ -52,6 +52,9 @@ public class MarkerDialogFragment extends DialogFragment implements View.OnClick
                             case 2:
                                 share(title, destLat, destLong);
                                 break;
+                            case 3:
+                                ((BlocSpotActivity) getActivity()).setGeofence(title, destLat, destLong);
+                                break;
                             default:
                                 break;
                         }

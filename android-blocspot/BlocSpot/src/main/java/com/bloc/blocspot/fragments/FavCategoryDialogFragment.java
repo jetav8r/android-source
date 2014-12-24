@@ -28,8 +28,6 @@ public class FavCategoryDialogFragment extends DialogFragment implements View.On
         int id = view.getId();
 
     }
-
-
     @Override
     public Dialog onCreateDialog(Bundle savedInstanceState) {
 

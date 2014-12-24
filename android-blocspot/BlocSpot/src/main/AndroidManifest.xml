@@ -32,6 +32,12 @@
             </intent-filter>
         </activity>
 
+        <!-- GEOFENCE SERVICE -->
+        <service
+            android:name="com.bloc.blocspot.services.GeofenceTransitionsIntentService"
+            android:exported="true">
+        </service>
+
         <!-- PROVIDERS -->
         <provider
             android:name="com.bloc.blocspot.database.BaseProvider"

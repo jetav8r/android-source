@@ -46,6 +46,7 @@ public class FavoritePlacesViewAdapterCursor extends SimpleCursorAdapter impleme
     protected CheckBox checked;
     protected double destLat;
     protected double destLong;
+    private String name;
     //private ImageLoader imgLoader;
 
     public FavoritePlacesViewAdapterCursor(Context context, int layout, Cursor c, String[] from, int[] to) {//cursor is now our data list
@@ -113,6 +114,7 @@ public class FavoritePlacesViewAdapterCursor extends SimpleCursorAdapter impleme
 
         final int mPosition = cursor.getPosition();
         final Place currentPlace = (Place)getItem(mPosition);
+        name = currentPlace.getName();
         destLat = currentPlace.getLatitude();
         destLong = currentPlace.getLongitude();
 
@@ -156,7 +158,6 @@ public class FavoritePlacesViewAdapterCursor extends SimpleCursorAdapter impleme
                         break;
                     case 4:
                         //share place
-                        String name = currentPlace.getName();
                         ((BlocSpotActivity) context).share(name, destLat, destLong);
                         break;
                 }
@@ -191,6 +192,8 @@ public class FavoritePlacesViewAdapterCursor extends SimpleCursorAdapter impleme
         });
 
     }
+
+
 
     private void deleteCategory(int mPosition) {
         final PlacesDao placesDao = new PlacesDao(context);
