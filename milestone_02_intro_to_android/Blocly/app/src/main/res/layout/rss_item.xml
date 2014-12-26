@@ -10,7 +10,11 @@
         android:layout_height="wrap_content"
         android:text="New York Attacked By Giant Squid"
         android:textSize="18sp"
-        android:textColor="@color/text_primary"/>
+        android:textColor="@color/text_primary"
+        android:layout_marginTop="5dp"
+        android:layout_centerHorizontal="true"
+        android:textAlignment="center"
+        android:textStyle="bold|italic"/>
 
     <TextView
         android:id="@+id/tv_rss_item_feed_title"
@@ -21,7 +25,10 @@
         android:text="New York Times"
         android:singleLine="true"
         android:textSize="14sp"
-        android:textColor="@color/text_secondary"/>
+        android:textColor="@color/text_secondary"
+        android:layout_centerHorizontal="true"
+        android:autoText="false"
+        android:textStyle="italic"/>
 
     <TextView
         android:id="@+id/tv_rss_item_content"
