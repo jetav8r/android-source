@@ -32,6 +32,7 @@ import com.bloc.blocspot.geofence.SimpleGeofenceStore;
 import com.bloc.blocspot.model.Place;
 import com.bloc.blocspot.model.PlacesDao;
 import com.bloc.blocspot.services.GeofenceTransitionsIntentService;
+import com.bloc.blocspot.utilities.ConnectionDetector;
 import com.bloc.blocspot.utilities.Message;
 import com.bloc.blocspot.utilities.Utilities;
 import com.google.android.gms.common.ConnectionResult;
@@ -699,11 +700,16 @@ public class BlocSpotActivity extends FragmentActivity implements
     }
 
     private void loadCategoryFragment() {
-        FragmentManager manager = getFragmentManager();
-        FragmentTransaction fragmentTransaction = manager.beginTransaction();
-        fragmentTransaction.replace(R.id.container, CategoryFragment.newInstance(null))
-                .addToBackStack("CategoryFragment")
-                .commit();
+        ConnectionDetector connectionDetector = new ConnectionDetector(this);
+        if (connectionDetector.isConnectingToInternet()) {
+            FragmentManager manager = getFragmentManager();
+            FragmentTransaction fragmentTransaction = manager.beginTransaction();
+            fragmentTransaction.replace(R.id.container, CategoryFragment.newInstance(null))
+                    .addToBackStack("CategoryFragment")
+                    .commit();
+        }else {
+            Message.message(this, "Please connect to internet before searching");
+        }
     }
 
     public void loadPlacesResult(String google_name) {
