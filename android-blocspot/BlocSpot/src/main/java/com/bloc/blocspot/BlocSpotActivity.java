@@ -3,11 +3,9 @@ package com.bloc.blocspot;
 import android.app.FragmentManager;
 import android.app.FragmentTransaction;
 import android.app.PendingIntent;
-import android.content.Context;
 import android.content.Intent;
 import android.content.IntentSender;
 import android.graphics.Color;
-import android.location.Criteria;
 import android.location.Location;
 import android.location.LocationManager;
 import android.net.Uri;
@@ -528,31 +526,39 @@ public class BlocSpotActivity extends FragmentActivity implements
     }
 
     public String CalculationByDistance(double lat2, double lon2) {
-        locationManager =  (LocationManager) getSystemService(Context.LOCATION_SERVICE);
-        String provider = locationManager.getBestProvider(new Criteria(), true);
-        Location location = locationManager.getLastKnownLocation(provider);
-        double lat1 = location.getLatitude();
-        double lon1 = location.getLongitude();
-        int Radius=6371;//radius of earth in Km
-        double dLat = Math.toRadians(lat2-lat1);
-        double dLon = Math.toRadians(lon2-lon1);
-        double a = Math.sin(dLat/2) * Math.sin(dLat/2) +
-                Math.cos(Math.toRadians(lat1)) * Math.cos(Math.toRadians(lat2)) *
-                        Math.sin(dLon/2) * Math.sin(dLon/2);
-        double c = 2 * Math.asin(Math.sqrt(a));
-        double valueResult= Radius*c;
-        double km=valueResult/1;
-        DecimalFormat newFormat = new DecimalFormat("####");
-        int kmInDec =  Integer.valueOf(newFormat.format(km));
-        double meter=valueResult%1000;
-        int  meterInDec= Integer.valueOf(newFormat.format(meter));
-        Log.i("Radius Value", "" + valueResult + "   KM  " + kmInDec + " Meter   " + meterInDec);
-        double miles = valueResult*.621371;
-        DecimalFormat Mileage = new DecimalFormat("#0.0 mi");
-        String mileage = Mileage.format(miles);
-        Log.i("Distance in miles", "" + (valueResult*.621371));
-        //return Radius * c;
-        return mileage;
+        //locationManager =  (LocationManager) getSystemService(Context.LOCATION_SERVICE);
+        //String provider = locationManager.getBestProvider(new Criteria(), true);
+        //Location location = locationManager.getLastKnownLocation(provider);
+        if (mCurrentLocation == null) {
+            mCurrentLocation = LocationServices.FusedLocationApi.getLastLocation(mGoogleApiClient);
+            mLastUpdateTime = DateFormat.getTimeInstance().format(new Date());
+            return null;
+            //updateUI();
+        } else {
+            loc = mCurrentLocation;
+            double lat1 = loc.getLatitude();
+            double lon1 = loc.getLongitude();
+            int Radius = 6371;//radius of earth in Km
+            double dLat = Math.toRadians(lat2 - lat1);
+            double dLon = Math.toRadians(lon2 - lon1);
+            double a = Math.sin(dLat / 2) * Math.sin(dLat / 2) +
+                    Math.cos(Math.toRadians(lat1)) * Math.cos(Math.toRadians(lat2)) *
+                            Math.sin(dLon / 2) * Math.sin(dLon / 2);
+            double c = 2 * Math.asin(Math.sqrt(a));
+            double valueResult = Radius * c;
+            double km = valueResult / 1;
+            DecimalFormat newFormat = new DecimalFormat("####");
+            int kmInDec = Integer.valueOf(newFormat.format(km));
+            double meter = valueResult % 1000;
+            int meterInDec = Integer.valueOf(newFormat.format(meter));
+            Log.i("Radius Value", "" + valueResult + "   KM  " + kmInDec + " Meter   " + meterInDec);
+            double miles = valueResult * .621371;
+            DecimalFormat Mileage = new DecimalFormat("#0.0 mi");
+            String mileage = Mileage.format(miles);
+            Log.i("Distance in miles", "" + (valueResult * .621371));
+            //return Radius * c;
+            return mileage;
+        }
     }
 
 /*
@@ -683,7 +689,7 @@ public class BlocSpotActivity extends FragmentActivity implements
             FragmentManager manager = getFragmentManager();
             FragmentTransaction fragmentTransaction = manager.beginTransaction();
             fragmentTransaction.replace(R.id.container, PlacesListFragment.newInstance(null, returnedPlaces))
-                    .addToBackStack("ListFragment")
+                    .addToBackStack("")
                     .commit();
         } else Message.message(this, "Search for some places first");
     }
@@ -705,7 +711,7 @@ public class BlocSpotActivity extends FragmentActivity implements
             FragmentManager manager = getFragmentManager();
             FragmentTransaction fragmentTransaction = manager.beginTransaction();
             fragmentTransaction.replace(R.id.container, CategoryFragment.newInstance(null))
-                    .addToBackStack("CategoryFragment")
+                    .addToBackStack("")
                     .commit();
         }else {
             Message.message(this, "Please connect to internet before searching");
@@ -716,7 +722,7 @@ public class BlocSpotActivity extends FragmentActivity implements
         FragmentManager manager = getFragmentManager();
         FragmentTransaction fragmentTransaction = manager.beginTransaction();
         fragmentTransaction.replace(R.id.container, PlacesListFragment.newInstance(google_name, new ArrayList<Place>()))
-                .addToBackStack("ListFragment")
+                .addToBackStack("")
                 .commit();
     }
 
@@ -727,8 +733,10 @@ public class BlocSpotActivity extends FragmentActivity implements
     @Override
     public void onBackPressed() {
         FragmentManager fm = getFragmentManager();
-        if (fm.getBackStackEntryCount() > 0 ){
-             super.onBackPressed();
+        int count = fm.getBackStackEntryCount();
+        if (count > 0 ){
+             //super.onBackPressed();
+            getFragmentManager().popBackStack();
         } else {
               if (this.lastBackPressTime < System.currentTimeMillis() - 4000) {
                 toast = Toast.makeText(this, "Press back again to exit", Toast.LENGTH_LONG);
