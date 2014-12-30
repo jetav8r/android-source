@@ -20,6 +20,14 @@
         <item name="robotoFont">Bold</item>
     </style>
 
+
+    <style name="Button">
+        <item name="android:textColor">@drawable/btn_text_drawable</item>
+        <item name="android:textSize">14sp</item>
+        <item name="android:textAllCaps">true</item>
+        <item name="robotoFont">Medium</item>
+    </style>
+
     <style name="Caption">
         <item name="android:textColor">@color/text_secondary</item>
         <item name="android:textSize">12sp</item>
@@ -31,7 +39,7 @@
     <style name="Body1">
         <item name="android:textColor">@color/text_secondary</item>
         <item name="android:textSize">14sp</item>
-        <item name="robotoFont">CondensedRegular</item>
+        <item name="robotoFont">Regular</item>
     </style>
 
     <style name="CodeFont" parent="@android:style/TextAppearance.Medium">

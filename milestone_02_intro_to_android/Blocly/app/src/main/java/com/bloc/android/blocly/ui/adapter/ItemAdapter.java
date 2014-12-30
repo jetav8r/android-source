@@ -1,5 +1,6 @@
 package com.bloc.android.blocly.ui.adapter;
 
+import android.animation.ValueAnimator;
 import android.graphics.Bitmap;
 import android.graphics.Color;
 import android.support.v7.widget.RecyclerView;
@@ -7,6 +8,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.animation.AccelerateDecelerateInterpolator;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
 import android.widget.ImageView;
@@ -46,7 +48,8 @@ public class ItemAdapter extends RecyclerView.Adapter<ItemAdapter.ItemAdapterVie
         return BloclyApplication.getSharedDataSource().getItems().size();
     }
 
-    class ItemAdapterViewHolder extends RecyclerView.ViewHolder implements ImageLoadingListener, View.OnClickListener, CompoundButton.OnCheckedChangeListener {
+    class ItemAdapterViewHolder extends RecyclerView.ViewHolder implements ImageLoadingListener, View.OnClickListener,
+            CompoundButton.OnCheckedChangeListener {
 
         private final ImageView headerImage;
         private final View headerWrapper;
@@ -101,7 +104,6 @@ public class ItemAdapter extends RecyclerView.Adapter<ItemAdapter.ItemAdapterVie
                         headerWrapper.setVisibility(View.GONE);
                     }
                 }
-
         }
 
         /*
@@ -140,9 +142,11 @@ public class ItemAdapter extends RecyclerView.Adapter<ItemAdapter.ItemAdapterVie
             view.setBackgroundColor(Color.parseColor("#ffeb3b"));
             Message.message(view.getContext(), rssItem.getTitle());
             if (view == itemView) {
-                contentExpanded = !contentExpanded;
-                expandedContentWrapper.setVisibility(contentExpanded ? View.VISIBLE : View.GONE);
-                content.setVisibility(contentExpanded ? View.GONE : View.VISIBLE);
+                //contentExpanded = !contentExpanded;
+                //expandedContentWrapper.setVisibility(contentExpanded ? View.VISIBLE : View.GONE);
+                //content.setVisibility(contentExpanded ? View.GONE : View.VISIBLE);
+                //replace the 3 lines above with an animated transition using code below
+                animateContent(!contentExpanded);
             } else {
                 Message.message(view.getContext(), "Visit " + rssItem.getUrl());
             }
@@ -152,6 +156,73 @@ public class ItemAdapter extends RecyclerView.Adapter<ItemAdapter.ItemAdapterVie
         public void onCheckedChanged(CompoundButton compoundButton, boolean isChecked) {
             Log.v(TAG, "Checkbox " + compoundButton + " changed to: " + isChecked);
         }
+
+        /*
+        * Private Methods
+        */
+
+    private void animateContent(final boolean expand) {
+        // If the RSS item is already in the desired state, we simply return
+        if ((expand && contentExpanded) || (!expand && !contentExpanded)) {
+            return;
+        }
+        // If we must animate to a new state, we create initial and final height variables to animate between
+        int startingHeight = expandedContentWrapper.getMeasuredHeight();
+        int finalHeight = content.getMeasuredHeight();
+        if (expand) {
+        //  set the starting height to that of the preview content
+            startingHeight = finalHeight;
+            expandedContentWrapper.setAlpha(0f);
+            expandedContentWrapper.setVisibility(View.VISIBLE);
+        // determine the target height of expansion, measure itself given the constraints provided. We
+        // constrain it to the width of content but leave its height unlimited. getMeasuredHeight() then
+        // provides us with the height (in pixels) that expandedContentWrapper wishes to be.
+            expandedContentWrapper.measure(
+                    View.MeasureSpec.makeMeasureSpec(content.getWidth(), View.MeasureSpec.EXACTLY),
+                    ViewGroup.LayoutParams.WRAP_CONTENT
+            );
+            finalHeight = expandedContentWrapper.getMeasuredHeight();
+        } else {
+            content.setVisibility(View.VISIBLE);
+        }
+        startAnimator(startingHeight, finalHeight, new ValueAnimator.AnimatorUpdateListener() {
+                @Override
+                public void onAnimationUpdate(ValueAnimator valueAnimator) {
+        // recover the animation's progress as a float value, set the opacity level for both content
+        // and expandedContentWrapper. This performs a cross-fade from one View to the other
+                    float animatedFraction = valueAnimator.getAnimatedFraction();
+                    float wrapperAlpha = expand ? animatedFraction : 1f - animatedFraction;
+                    float contentAlpha = 1f - wrapperAlpha;
+
+                    expandedContentWrapper.setAlpha(wrapperAlpha);
+                    content.setAlpha(contentAlpha);
+        // set the height of expandedContentWrapper. As we animate, we do so from startingHeight to
+        // finalHeight, the current integer value is recovered by invoking getAnimatedValue().
+                    expandedContentWrapper.getLayoutParams().height = animatedFraction == 1f ?
+                            ViewGroup.LayoutParams.WRAP_CONTENT :
+                            (Integer) valueAnimator.getAnimatedValue();
+        // asks the View to redraw itself
+                    expandedContentWrapper.requestLayout();
+                    if (animatedFraction == 1f) {
+                        if (expand) {
+                            content.setVisibility(View.GONE);
+                        } else {
+                            expandedContentWrapper.setVisibility(View.GONE);
+                        }
+                    }
+                }
+        });
+        contentExpanded = expand;
     }
+        private void startAnimator(int start, int end, ValueAnimator.AnimatorUpdateListener animatorUpdateListener) {
+            ValueAnimator valueAnimator = ValueAnimator.ofInt(start, end);
+            valueAnimator.addUpdateListener(animatorUpdateListener);
+            // set the duration of the animation
+            valueAnimator.setDuration(itemView.getResources().getInteger(android.R.integer.config_mediumAnimTime));
+            // This interpolator accelerates to a constant speed, then decelerates to stop at the end
+            valueAnimator.setInterpolator(new AccelerateDecelerateInterpolator());
+            valueAnimator.start();
+        }
+   }
 }
 
