@@ -2,7 +2,6 @@ package com.bloc.android.blocly.ui.adapter;
 
 import android.animation.ValueAnimator;
 import android.graphics.Bitmap;
-import android.graphics.Color;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -86,6 +85,9 @@ public class ItemAdapter extends RecyclerView.Adapter<ItemAdapter.ItemAdapterVie
             favoriteCheckbox.setOnCheckedChangeListener(this);
         }
 
+
+        /*
+        //commented below was working for background color change and content expansion
         void update(RssFeed rssFeed, RssItem rssItem) {
                 this.rssItem = rssItem;
                 feed.setText(rssFeed.getTitle());
@@ -106,9 +108,9 @@ public class ItemAdapter extends RecyclerView.Adapter<ItemAdapter.ItemAdapterVie
                 }
         }
 
-        /*
-          * ImageLoadingListener
-          */
+        //
+          //ImageLoadingListener
+
         @Override
         public void onLoadingStarted(String imageUri, View view) {}
 
@@ -157,9 +159,220 @@ public class ItemAdapter extends RecyclerView.Adapter<ItemAdapter.ItemAdapterVie
             Log.v(TAG, "Checkbox " + compoundButton + " changed to: " + isChecked);
         }
 
-        /*
-        * Private Methods
+        //replaced with new methods to get image and wrapper animations
+
         */
+        void update(RssFeed rssFeed, RssItem rssItem) {
+            this.rssItem = rssItem;
+            feed.setText(rssFeed.getTitle());
+            title.setText(rssItem.getTitle());
+            content.setText(rssItem.getDescription());
+            expandedContent.setText(rssItem.getDescription());
+            imageURL = rssItem.getImageUrl();
+            if (imageURL != null) {
+                //  If the RssItem has an image URL, we will make visible our FrameLayout
+                // However, if it does not, we hide our FrameLayout
+                headerWrapper.setVisibility(View.VISIBLE);
+                headerImage.setVisibility(View.INVISIBLE);
+                ImageLoader.getInstance().loadImage(imageURL, this);
+
+            } else {
+                //we let the animator fade from visible to invisible instead of doing it here
+                animateCollapseWrapper(!contentExpanded);
+
+
+            }
+        }
+
+
+          //ImageLoadingListener
+
+        @Override
+        public void onLoadingStarted(String imageUri, View view) {
+        }
+
+        @Override
+        public void onLoadingFailed(String imageUri, View view, FailReason failReason) {
+            try {
+                Log.e(TAG, "onLoadingFailed: " + failReason.toString() + " for URL: " + imageUri);
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
+
+        @Override
+        public void onLoadingComplete(String imageUri, View view, Bitmap loadedImage) {
+            // make sure that the image recovered was found at the URL of our most recent request
+            // before we associate the Bitmap as our ImageView's content
+            if (imageUri.equals(rssItem.getImageUrl())) {
+                headerImage.setImageBitmap(loadedImage);
+                // after image loads, we let animator fade from 0 alpha to fully visible
+                headerImage.setVisibility(View.VISIBLE);
+                animateImage(!contentExpanded);
+
+            }
+        }
+
+        @Override
+        public void onLoadingCancelled(String imageUri, View view) {
+            // Attempt a retry
+            ImageLoader.getInstance().loadImage(imageUri, this);
+        }
+
+        @Override
+        public void onClick(View view) {
+            //view.setBackgroundColor(Color.parseColor("#ffeb3b"));
+            //Message.message(view.getContext(), rssItem.getTitle());
+            if (view == itemView) {
+                //contentExpanded = !contentExpanded;
+                //expandedContentWrapper.setVisibility(contentExpanded ? View.VISIBLE : View.GONE);
+                //content.setVisibility(contentExpanded ? View.GONE : View.VISIBLE);
+                //replace the 3 lines above with an animated transition using code below
+                animateContent(!contentExpanded);
+            } else {
+                Message.message(view.getContext(), "Visit " + rssItem.getUrl());
+            }
+        }
+
+        @Override
+        public void onCheckedChanged(CompoundButton compoundButton, boolean isChecked) {
+            Log.v(TAG, "Checkbox " + compoundButton + " changed to: " + isChecked);
+        }
+
+
+        //Private Methods
+
+
+
+        private void animateImage(final boolean expand) {
+            boolean mExpand = expand;
+            // If the image is already in the desired state, we simply return
+            if ((expand && contentExpanded) || (!expand && !contentExpanded)) {
+                return;
+            }
+            // If we must animate to a new state, we create initial and final height variables to animate between
+            //int startingHeight = expandedContentWrapper.getMeasuredHeight();
+            int startingHeight = 0;
+            int finalHeight = headerImage.getMeasuredHeight();
+            if (expand) {
+                //  set the starting height to that of the preview content
+                startingHeight = 0;
+                headerImage.setAlpha(0f);
+                headerImage.setVisibility(View.VISIBLE);
+                // determine the target height of expansion, measure itself given the constraints provided. We
+                // constrain it to the width of content but leave its height unlimited. getMeasuredHeight() then
+                // provides us with the height (in pixels) that expandedContentWrapper wishes to be.
+                headerImage.measure(
+                        View.MeasureSpec.makeMeasureSpec(content.getWidth(), View.MeasureSpec.EXACTLY),
+                        ViewGroup.LayoutParams.WRAP_CONTENT
+                );
+                finalHeight = headerImage.getMeasuredHeight();
+            } else {
+                headerImage.setVisibility(View.INVISIBLE);
+            }
+            startAnimator(startingHeight, finalHeight, new ValueAnimator.AnimatorUpdateListener() {
+                @Override
+                public void onAnimationUpdate(ValueAnimator valueAnimator) {
+                    // recover the animation's progress as a float value, set the opacity level for both content
+                    // and expandedContentWrapper. This performs a cross-fade from one View to the other
+                    float animatedFraction = valueAnimator.getAnimatedFraction();
+                    float imageAlpha = expand ? animatedFraction : 1f - animatedFraction;
+                    //float wrapperAlpha = 1f - imageAlpha;
+
+                    //headerWrapper.setAlpha(wrapperAlpha);
+                    headerImage.setAlpha(imageAlpha);
+                    // set the height of expandedContentWrapper. As we animate, we do so from startingHeight to
+                    // finalHeight, the current integer value is recovered by invoking getAnimatedValue().
+                    headerImage.getLayoutParams().height = animatedFraction == 1f ?
+                            ViewGroup.LayoutParams.WRAP_CONTENT :
+                            (Integer) valueAnimator.getAnimatedValue();
+                    // asks the View to redraw itself
+                    headerImage.requestLayout();
+                    /*
+                    if (animatedFraction == 1f) {
+                        if (expand) {
+                            headerImage.setVisibility(View.VISIBLE);
+                        } else {
+                            headerWrapper.setVisibility(View.GONE);
+                        }
+                    }
+                    */
+
+                }
+            });
+            //contentExpanded = expand;
+        }
+
+
+
+
+        private void animateCollapseWrapper(final boolean expand) {
+            boolean mExpand = expand;
+            // If the image is already in the desired state, we simply return
+            if ((expand && contentExpanded) || (!expand && !contentExpanded)) {
+                return;
+            }
+            // If we must animate to a new state, we create initial and final height variables to animate between
+            //int startingHeight = expandedContentWrapper.getMeasuredHeight();
+            int startingHeight = 140;
+            int finalHeight = 0;
+            if (expand) {
+
+                headerWrapper.setAlpha(1f);
+                headerWrapper.setVisibility(View.VISIBLE);
+                // determine the target height of expansion, measure itself given the constraints provided. We
+                // constrain it to the width of content but leave its height unlimited. getMeasuredHeight() then
+                // provides us with the height (in pixels) that expandedContentWrapper wishes to be.
+                //headerWrapper.measure(
+                //View.MeasureSpec.makeMeasureSpec(content.getWidth(), View.MeasureSpec.EXACTLY),
+                //ViewGroup.LayoutParams.WRAP_CONTENT
+                //);
+                //startingHeight = headerImage.getMeasuredHeight();
+            } else {
+                headerWrapper.setVisibility(View.GONE);
+            }
+            startAnimator(startingHeight, finalHeight, new ValueAnimator.AnimatorUpdateListener() {
+                @Override
+                public void onAnimationUpdate(ValueAnimator valueAnimator) {
+                    // recover the animation's progress as a float value, set the opacity level for both content
+                    // and expandedContentWrapper. This performs a cross-fade from one View to the other
+                    float animatedFraction = valueAnimator.getAnimatedFraction();
+                    float imageAlpha = expand ? animatedFraction : 1f - animatedFraction;
+                    float wrapperAlpha = 1f - imageAlpha;
+
+                    headerWrapper.setAlpha(wrapperAlpha);
+                    //headerWrapper.setAlpha(imageAlpha);
+
+                    headerWrapper.getLayoutParams().height = animatedFraction == 1f ?
+                            ViewGroup.LayoutParams.WRAP_CONTENT :
+                            (Integer) valueAnimator.getAnimatedValue();
+                    // asks the View to redraw itself unless animation complete
+                    headerWrapper.requestLayout();
+
+
+
+                    if (animatedFraction == 1f) {
+                        headerWrapper.setVisibility(View.GONE);
+
+                        /*
+                        if (expand) {
+                            headerImage.setVisibility(View.VISIBLE);
+                        } else {
+                            headerWrapper.setVisibility(View.GONE);
+                        }
+                        */
+                    }
+
+
+                }
+            });
+            //contentExpanded = expand;
+        }
+
+
+
+        //Private Methods
+
 
     private void animateContent(final boolean expand) {
         // If the RSS item is already in the desired state, we simply return
@@ -217,8 +430,9 @@ public class ItemAdapter extends RecyclerView.Adapter<ItemAdapter.ItemAdapterVie
         private void startAnimator(int start, int end, ValueAnimator.AnimatorUpdateListener animatorUpdateListener) {
             ValueAnimator valueAnimator = ValueAnimator.ofInt(start, end);
             valueAnimator.addUpdateListener(animatorUpdateListener);
-            // set the duration of the animation
-            valueAnimator.setDuration(itemView.getResources().getInteger(android.R.integer.config_mediumAnimTime));
+            // set the duration of the animation ..for testing, I'll use 3.5 secs
+            valueAnimator.setDuration(3500);
+            //valueAnimator.setDuration(itemView.getResources().getInteger(android.R.integer.config_mediumAnimTime));
             // This interpolator accelerates to a constant speed, then decelerates to stop at the end
             valueAnimator.setInterpolator(new AccelerateDecelerateInterpolator());
             valueAnimator.start();
