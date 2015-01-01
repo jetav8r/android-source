@@ -253,12 +253,13 @@ public class ItemAdapter extends RecyclerView.Adapter<ItemAdapter.ItemAdapterVie
             // If we must animate to a new state, we create initial and final height variables to animate between
             //int startingHeight = expandedContentWrapper.getMeasuredHeight();
             int startingHeight = 0;
-            int finalHeight = headerImage.getMeasuredHeight();
+            //int finalHeight = headerImage.getMeasuredHeight();
+            int finalHeight = 140;
+
             if (expand) {
-                //  set the starting height to that of the preview content
                 startingHeight = 0;
                 headerImage.setAlpha(0f);
-                headerImage.setVisibility(View.VISIBLE);
+                headerWrapper.setVisibility(View.VISIBLE);
                 // determine the target height of expansion, measure itself given the constraints provided. We
                 // constrain it to the width of content but leave its height unlimited. getMeasuredHeight() then
                 // provides us with the height (in pixels) that expandedContentWrapper wishes to be.
@@ -266,9 +267,9 @@ public class ItemAdapter extends RecyclerView.Adapter<ItemAdapter.ItemAdapterVie
                         View.MeasureSpec.makeMeasureSpec(content.getWidth(), View.MeasureSpec.EXACTLY),
                         ViewGroup.LayoutParams.WRAP_CONTENT
                 );
-                finalHeight = headerImage.getMeasuredHeight();
+                //finalHeight = headerImage.getMeasuredHeight();
             } else {
-                headerImage.setVisibility(View.INVISIBLE);
+                headerWrapper.setVisibility(View.INVISIBLE);
             }
             startAnimator(startingHeight, finalHeight, new ValueAnimator.AnimatorUpdateListener() {
                 @Override
@@ -277,17 +278,17 @@ public class ItemAdapter extends RecyclerView.Adapter<ItemAdapter.ItemAdapterVie
                     // and expandedContentWrapper. This performs a cross-fade from one View to the other
                     float animatedFraction = valueAnimator.getAnimatedFraction();
                     float imageAlpha = expand ? animatedFraction : 1f - animatedFraction;
-                    //float wrapperAlpha = 1f - imageAlpha;
+                    float wrapperAlpha = 1f - imageAlpha;
 
-                    //headerWrapper.setAlpha(wrapperAlpha);
+                    headerWrapper.setAlpha(imageAlpha);
                     headerImage.setAlpha(imageAlpha);
-                    // set the height of expandedContentWrapper. As we animate, we do so from startingHeight to
+                    // set the height of headerWrapper. As we animate, we do so from startingHeight to
                     // finalHeight, the current integer value is recovered by invoking getAnimatedValue().
-                    headerImage.getLayoutParams().height = animatedFraction == 1f ?
+                    headerWrapper.getLayoutParams().height = animatedFraction == 1f ?
                             ViewGroup.LayoutParams.WRAP_CONTENT :
                             (Integer) valueAnimator.getAnimatedValue();
                     // asks the View to redraw itself
-                    headerImage.requestLayout();
+                    headerWrapper.requestLayout();
                     /*
                     if (animatedFraction == 1f) {
                         if (expand) {
@@ -430,9 +431,9 @@ public class ItemAdapter extends RecyclerView.Adapter<ItemAdapter.ItemAdapterVie
         private void startAnimator(int start, int end, ValueAnimator.AnimatorUpdateListener animatorUpdateListener) {
             ValueAnimator valueAnimator = ValueAnimator.ofInt(start, end);
             valueAnimator.addUpdateListener(animatorUpdateListener);
-            // set the duration of the animation ..for testing, I'll use 3.5 secs
-            valueAnimator.setDuration(3500);
-            //valueAnimator.setDuration(itemView.getResources().getInteger(android.R.integer.config_mediumAnimTime));
+            // set the duration of the animation ..for testing, I'll use 2 secs
+            //valueAnimator.setDuration(2000);
+            valueAnimator.setDuration(itemView.getResources().getInteger(android.R.integer.config_mediumAnimTime));
             // This interpolator accelerates to a constant speed, then decelerates to stop at the end
             valueAnimator.setInterpolator(new AccelerateDecelerateInterpolator());
             valueAnimator.start();
