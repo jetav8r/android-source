@@ -175,7 +175,13 @@ public class BlocSpotActivity extends FragmentActivity implements
             return;
         }
 
-        buildGoogleApiClient();
+        try {
+            buildGoogleApiClient();
+        } catch (Exception e) {
+            e.printStackTrace();
+            Message.message(this, "Google API not connected");
+            return;
+        }
 
 
         invalidateOptionsMenu();
