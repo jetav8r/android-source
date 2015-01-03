@@ -5,6 +5,27 @@
         <!-- Customize your theme here. -->
         <!-- Window Background -->
         <item name="android:windowBackground">@color/windowBackground</item>
+        <!-- DrawerArrowStyle -->
+        <item name="drawerArrowStyle">@style/DrawerArrow</item>
+    </style>
+
+    <style name="DrawerArrow" parent="Base.Widget.AppCompat.DrawerArrowToggle">
+        <item name="color">?android:attr/colorAccent</item>
+        <item name="thickness">4dp</item>
+        <item name="barSize">24dp</item>
+        <item name="gapBetweenBars">6dp</item>
+        <item name="topBottomBarArrowSize">14dp</item>
+        <item name="middleBarArrowSize">24dp</item>
+        <item name="drawableSize">24dp</item>
+        <item name="spinBars">true</item>
+    </style>
+
+    <style name="NavigationItem">
+        <item name="android:textSize">14sp</item>
+        <item name="android:textColor">@drawable/navigation_item_text</item>
+        <item name="android:singleLine">true</item>
+        <item name="android:gravity">center_vertical</item>
+        <item name="robotoFont">Medium</item>
     </style>
 
     <style name="Headline">
