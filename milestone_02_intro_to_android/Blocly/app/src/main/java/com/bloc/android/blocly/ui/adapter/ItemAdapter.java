@@ -23,12 +23,41 @@ import com.nostra13.universalimageloader.core.ImageLoader;
 import com.nostra13.universalimageloader.core.assist.FailReason;
 import com.nostra13.universalimageloader.core.listener.ImageLoadingListener;
 
+import java.lang.ref.WeakReference;
+
 /**
  * Created by Wayne on 12/25/2014.
  */
 public class ItemAdapter extends RecyclerView.Adapter<ItemAdapter.ItemAdapterViewHolder> {
 
     private static String TAG = ItemAdapter.class.getSimpleName();// for logging purposes
+
+    public static interface ItemAdapterDelegate {
+        public void didSelectExpandItem();
+        public void didSelectContractItem();
+        public void didSelectVisit();
+        public void didSelectFavorite();
+        public void didSelectUnfavorite();
+        public void didSelectArchive();
+    }
+
+    // WeakReference object to store our delegate. A WeakReference allows us to use an object
+    // as long as a strong reference to it exists somewhere
+    WeakReference<ItemAdapterDelegate> delegate;
+
+    //getter and setter for delegate
+    //Use WeakReference.get() to recover the object within, but remember, if the original reference
+    // has been removed, this method will return null.
+    public ItemAdapterDelegate getDelegate() {
+        if (delegate == null) {
+            return null;
+        }
+        return delegate.get();
+    }
+
+    public void setDelegate(ItemAdapterDelegate delegate) {
+        this.delegate = new WeakReference<ItemAdapterDelegate>(delegate);
+    }
 
     @Override
     public ItemAdapterViewHolder onCreateViewHolder(ViewGroup viewGroup, int index) {
@@ -221,22 +250,42 @@ public class ItemAdapter extends RecyclerView.Adapter<ItemAdapter.ItemAdapterVie
 
         @Override
         public void onClick(View view) {
+
             //view.setBackgroundColor(Color.parseColor("#ffeb3b"));
             //Message.message(view.getContext(), rssItem.getTitle());
             if (view == itemView) {
+                if (contentExpanded == false) {
+                    getDelegate().didSelectExpandItem();
+                }
+                else {
+                    getDelegate().didSelectContractItem();
+                }
                 //contentExpanded = !contentExpanded;
                 //expandedContentWrapper.setVisibility(contentExpanded ? View.VISIBLE : View.GONE);
                 //content.setVisibility(contentExpanded ? View.GONE : View.VISIBLE);
                 //replace the 3 lines above with an animated transition using code below
                 animateContent(!contentExpanded);
             } else {
+                getDelegate().didSelectVisit();
                 Message.message(view.getContext(), "Visit " + rssItem.getUrl());
             }
         }
 
         @Override
         public void onCheckedChanged(CompoundButton compoundButton, boolean isChecked) {
-            Log.v(TAG, "Checkbox " + compoundButton + " changed to: " + isChecked);
+            if (compoundButton == favoriteCheckbox) {
+                if (isChecked) {
+                    getDelegate().didSelectFavorite();
+                } else {
+                    getDelegate().didSelectUnfavorite();
+                }
+            }
+            if (compoundButton == archiveCheckbox) {
+                if (isChecked) {
+                    getDelegate().didSelectArchive();
+                }
+            }
+            Log.v(TAG, "Checkbox " + compoundButton.getId() + " changed to: " + isChecked);
         }
 
 
@@ -257,6 +306,7 @@ public class ItemAdapter extends RecyclerView.Adapter<ItemAdapter.ItemAdapterVie
             int finalHeight = 140;
 
             if (expand) {
+
                 startingHeight = 0;
                 headerImage.setAlpha(0f);
                 headerWrapper.setVisibility(View.VISIBLE);
@@ -384,6 +434,7 @@ public class ItemAdapter extends RecyclerView.Adapter<ItemAdapter.ItemAdapterVie
         int startingHeight = expandedContentWrapper.getMeasuredHeight();
         int finalHeight = content.getMeasuredHeight();
         if (expand) {
+
         //  set the starting height to that of the preview content
             startingHeight = finalHeight;
             expandedContentWrapper.setAlpha(0f);
