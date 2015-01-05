@@ -148,10 +148,26 @@ public class BloclyActivity extends Activity implements NavigationDrawerAdapter.
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
+        int id = item.getItemId();
         if (drawerToggle.onOptionsItemSelected(item)) {
+        }
+        if (id == R.id.action_search) {
+            Message.message(this, "Searching is fun!");
             return true;
         }
-        Message.message(this, (String) item.getTitle());
+        if (id == R.id.action_share) {
+            Message.message(this, "I love to share!");
+            return true;
+        }
+        if (id == R.id.action_refresh) {
+            Message.message(this, "Refresh it up...");
+            return true;
+        }
+        if (id == R.id.action_mark_as_read) {
+            Message.message(this, "Mark 'em all!");
+            return true;
+        }
+        //Message.message(this, "Item ID = " + id);
         return super.onOptionsItemSelected(item);
     }
 
