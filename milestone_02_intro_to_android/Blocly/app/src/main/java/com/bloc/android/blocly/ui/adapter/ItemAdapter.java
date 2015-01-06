@@ -95,6 +95,8 @@ public class ItemAdapter extends RecyclerView.Adapter<ItemAdapter.ItemAdapterVie
         itemAdapterViewHolder.update(rssFeed, rssItem);
     }
 
+
+
     @Override
     public int getItemCount() {
         return BloclyApplication.getSharedDataSource().getItems().size();
@@ -294,9 +296,8 @@ public class ItemAdapter extends RecyclerView.Adapter<ItemAdapter.ItemAdapterVie
                 headerImage.setImageBitmap(loadedImage);
                 // after image loads, we let animator fade from 0 alpha to fully visible
                 headerImage.setVisibility(View.VISIBLE);
-                animateImage(!contentExpanded);
-
-            }
+                //animateImage(!contentExpanded);
+                }
         }
 
         @Override
@@ -307,22 +308,22 @@ public class ItemAdapter extends RecyclerView.Adapter<ItemAdapter.ItemAdapterVie
 
         @Override
         public void onClick(View view) {
-
             //view.setBackgroundColor(Color.parseColor("#ffeb3b"));
             //Message.message(view.getContext(), rssItem.getTitle());
             if (view == itemView) {
                 if (getDelegate() != null) {
                     getDelegate().onItemClicked(ItemAdapter.this, rssItem);
                 }
-                /*
-                if (contentExpanded == false) {
+
+                //Message.message(view.getContext(),"content expanded = " +contentExpanded);
+                /*if (contentExpanded == false) {
                     getItemAdapterDelegate().didSelectExpandItem();
                 }
                 else {
                     getItemAdapterDelegate().didSelectContractItem();
-                }
+                }*/
 
-                */
+
                 //contentExpanded = !contentExpanded;
                 //expandedContentWrapper.setVisibility(contentExpanded ? View.VISIBLE : View.GONE);
                 //content.setVisibility(contentExpanded ? View.GONE : View.VISIBLE);
@@ -356,19 +357,20 @@ public class ItemAdapter extends RecyclerView.Adapter<ItemAdapter.ItemAdapterVie
 
 
 
-        private void animateImage(final boolean expand) {
-            boolean mExpand = expand;
+        //private void animateImage(final boolean expand) {
+        private void animateImage() {
+            /*boolean mExpand = expand;
             // If the image is already in the desired state, we simply return
             if ((expand && contentExpanded) || (!expand && !contentExpanded)) {
                 return;
-            }
+            }*/
             // If we must animate to a new state, we create initial and final height variables to animate between
             //int startingHeight = expandedContentWrapper.getMeasuredHeight();
             int startingHeight = 0;
             //int finalHeight = headerImage.getMeasuredHeight();
             int finalHeight = 140;
 
-            if (expand) {
+            //if (expand) {
 
                 startingHeight = 0;
                 headerImage.setAlpha(0f);
@@ -381,16 +383,17 @@ public class ItemAdapter extends RecyclerView.Adapter<ItemAdapter.ItemAdapterVie
                         ViewGroup.LayoutParams.WRAP_CONTENT
                 );
                 //finalHeight = headerImage.getMeasuredHeight();
-            } else {
-                headerWrapper.setVisibility(View.INVISIBLE);
-            }
+            //} else {
+                //headerWrapper.setVisibility(View.INVISIBLE);
+            //}
             startAnimator(startingHeight, finalHeight, new ValueAnimator.AnimatorUpdateListener() {
                 @Override
                 public void onAnimationUpdate(ValueAnimator valueAnimator) {
                     // recover the animation's progress as a float value, set the opacity level for both content
                     // and expandedContentWrapper. This performs a cross-fade from one View to the other
                     float animatedFraction = valueAnimator.getAnimatedFraction();
-                    float imageAlpha = expand ? animatedFraction : 1f - animatedFraction;
+                    //float imageAlpha = expand ? animatedFraction : 1f - animatedFraction;
+                    float imageAlpha = animatedFraction;
                     float wrapperAlpha = 1f - imageAlpha;
 
                     headerWrapper.setAlpha(imageAlpha);

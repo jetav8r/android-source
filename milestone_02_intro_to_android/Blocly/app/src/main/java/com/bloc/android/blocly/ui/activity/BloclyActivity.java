@@ -37,6 +37,7 @@ public class BloclyActivity extends Activity implements
     private NavigationDrawerAdapter navigationDrawerAdapter;
     private Menu menu;
     private View overflowButton;
+    RecyclerView recyclerView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -48,11 +49,12 @@ public class BloclyActivity extends Activity implements
         itemAdapter.setDelegate(this);
 
 
-        RecyclerView recyclerView = (RecyclerView) findViewById(R.id.rv_activity_blocly);
 
+        recyclerView = (RecyclerView) findViewById(R.id.rv_activity_blocly);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
         recyclerView.setItemAnimator(new DefaultItemAnimator());
         recyclerView.setAdapter(itemAdapter);
+
 
         // recover the instance of ActionBar and invoke setDisplayHomeAsUpEnabled(boolean) to allow this behavior.
         getActionBar().setDisplayHomeAsUpEnabled(true);
@@ -231,15 +233,20 @@ public class BloclyActivity extends Activity implements
     public void onItemClicked(ItemAdapter itemAdapter, RssItem rssItem) {
         int positionToExpand = -1;
         int positionToContract = -1;
+        //recyclerView.smoothScrollToPosition(itemAdapter.getItemCount()-1);  This moves to bottom of lists
+
+
         // check if ItemAdapter has an expanded item
         if (itemAdapter.getExpandedItem() != null) {
             positionToContract = BloclyApplication.getSharedDataSource().getItems().indexOf(itemAdapter.getExpandedItem());
+            recyclerView.smoothScrollToPosition(positionToContract);
         }
         // When a new item is clicked, we recover its position within the list and set it as the expanded item, unless item is
         // expanded, in which case, we set expanded item to null
         // indexOf(), found in List, retrieves the integer position of the given object if found in the list, otherwise, -1.
         if (itemAdapter.getExpandedItem() != rssItem) {
             positionToExpand = BloclyApplication.getSharedDataSource().getItems().indexOf(rssItem);
+            recyclerView.smoothScrollToPosition(positionToExpand);
             itemAdapter.setExpandedItem(rssItem);
         } else {
             itemAdapter.setExpandedItem(null);
