@@ -28,11 +28,11 @@ public class NavigationDrawerAdapter extends RecyclerView.Adapter<NavigationDraw
         public void didSelectFeed(NavigationDrawerAdapter adapter, RssFeed rssFeed);
     }
 
-    // WeakReference object to store our delegate. A WeakReference allows us to use an object
+    // WeakReference object to store our itemAdapterDelegate. A WeakReference allows us to use an object
     // as long as a strong reference to it exists somewhere
     WeakReference<NavigationDrawerAdapterDelegate> delegate;
 
-    //getter and setter for delegate
+    //getter and setter for itemAdapterDelegate
     //Use WeakReference.get() to recover the object within, but remember, if the original reference
     // has been removed, this method will return null.
     public NavigationDrawerAdapterDelegate getDelegate() {

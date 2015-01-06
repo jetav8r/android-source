@@ -14,7 +14,6 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.bloc.android.blocly.BloclyApplication;
-import com.bloc.android.blocly.api.DataSource;
 import com.bloc.android.blocly.api.model.RssFeed;
 import com.bloc.android.blocly.api.model.RssItem;
 import com.bloc.android.blocly.utilities.Message;
@@ -30,7 +29,23 @@ import java.lang.ref.WeakReference;
  */
 public class ItemAdapter extends RecyclerView.Adapter<ItemAdapter.ItemAdapterViewHolder> {
 
+    public static interface DataSource {
+        // The DataSource interface (#1) will supply the ItemAdapter with information. This pattern de-couples ItemAdapter from the DataSource class, and allows any controller to use ItemAdapter for its own purposes. E.g. favorites list, archived list, feed list. etc.
+        public RssItem getRssItem(ItemAdapter itemAdapter, int position);
+        public RssFeed getRssFeed(ItemAdapter itemAdapter, int position);
+        public int getItemCount(ItemAdapter itemAdapter);
+    }
+
+    public static interface Delegate {
+        public void onItemClicked(ItemAdapter itemAdapter, RssItem rssItem);
+    }
+
+    private WeakReference<Delegate> delegate;
+    private WeakReference<DataSource> dataSource;
+
     private static String TAG = ItemAdapter.class.getSimpleName();// for logging purposes
+
+    private RssItem expandedItem = null; // used for tracking state of view expansion
 
     public static interface ItemAdapterDelegate {
         public void didSelectExpandItem();
@@ -41,23 +56,25 @@ public class ItemAdapter extends RecyclerView.Adapter<ItemAdapter.ItemAdapterVie
         public void didSelectArchive();
     }
 
-    // WeakReference object to store our delegate. A WeakReference allows us to use an object
+    /*
+    // WeakReference object to store our itemAdapterDelegate. A WeakReference allows us to use an object
     // as long as a strong reference to it exists somewhere
-    WeakReference<ItemAdapterDelegate> delegate;
+    WeakReference<ItemAdapterDelegate> itemAdapterDelegate;
 
-    //getter and setter for delegate
+    //getter and setter for itemAdapterDelegate
     //Use WeakReference.get() to recover the object within, but remember, if the original reference
     // has been removed, this method will return null.
-    public ItemAdapterDelegate getDelegate() {
-        if (delegate == null) {
+    public ItemAdapterDelegate getItemAdapterDelegate() {
+        if (itemAdapterDelegate == null) {
             return null;
         }
-        return delegate.get();
+        return itemAdapterDelegate.get();
     }
 
-    public void setDelegate(ItemAdapterDelegate delegate) {
-        this.delegate = new WeakReference<ItemAdapterDelegate>(delegate);
+    public void setItemAdapterDelegate(ItemAdapterDelegate itemAdapterDelegate) {
+        this.itemAdapterDelegate = new WeakReference<ItemAdapterDelegate>(itemAdapterDelegate);
     }
+    */
 
     @Override
     public ItemAdapterViewHolder onCreateViewHolder(ViewGroup viewGroup, int index) {
@@ -67,13 +84,51 @@ public class ItemAdapter extends RecyclerView.Adapter<ItemAdapter.ItemAdapterVie
 
     @Override
     public void onBindViewHolder(ItemAdapterViewHolder itemAdapterViewHolder, int index) {
-        DataSource sharedDataSource = BloclyApplication.getSharedDataSource();
-        itemAdapterViewHolder.update(sharedDataSource.getFeeds().get(0), sharedDataSource.getItems().get(index));
+        //DataSource sharedDataSource = BloclyApplication.getSharedDataSource();
+        //itemAdapterViewHolder.update(sharedDataSource.getFeeds().get(0), sharedDataSource.getItems().get(index));
+        if (getDataSource() == null) {
+            return;
+        }
+        // Deciding which RSS items to display is no longer ItemAdapter's responsibility, it now behaves strictly as a view (with respect to the Model-View-Controller paradigm). It will be a controller's responsibility (BloclyActivity) to specify which models to display.
+        RssItem rssItem = getDataSource().getRssItem(this, index);
+        RssFeed rssFeed = getDataSource().getRssFeed(this, index);
+        itemAdapterViewHolder.update(rssFeed, rssItem);
     }
 
     @Override
     public int getItemCount() {
         return BloclyApplication.getSharedDataSource().getItems().size();
+    }
+
+    public DataSource getDataSource() {
+        if (dataSource == null) {
+            return null;
+        }
+        return dataSource.get();
+    }
+
+    public void setDataSource(DataSource dataSource) {
+        this.dataSource = new WeakReference<DataSource>(dataSource);
+    }
+
+    public Delegate getDelegate() {
+        if (delegate == null) {
+            return null;
+        }
+        return delegate.get();
+    }
+
+    public void setDelegate(Delegate delegate) {
+        this.delegate = new WeakReference<Delegate>(delegate);
+    }
+
+    //An expandedItem field to represent the RssItem.
+    public RssItem getExpandedItem() {
+        return expandedItem;
+    }
+
+    public void setExpandedItem(RssItem expandedItem) {
+        this.expandedItem = expandedItem;
     }
 
     class ItemAdapterViewHolder extends RecyclerView.ViewHolder implements ImageLoadingListener, View.OnClickListener,
@@ -208,9 +263,11 @@ public class ItemAdapter extends RecyclerView.Adapter<ItemAdapter.ItemAdapterVie
             } else {
                 //we let the animator fade from visible to invisible instead of doing it here
                 animateCollapseWrapper(!contentExpanded);
-
-
             }
+            //guarantee that the View associated with the expanded RSS item is the only View which expands
+            //If the ItemAdapterViewHolder's RssItem matches ItemAdapter's expanded RssItem, it
+            // will expand its View, otherwise it will contract it.
+            animateContent(getExpandedItem() == rssItem);
         }
 
 
@@ -254,37 +311,43 @@ public class ItemAdapter extends RecyclerView.Adapter<ItemAdapter.ItemAdapterVie
             //view.setBackgroundColor(Color.parseColor("#ffeb3b"));
             //Message.message(view.getContext(), rssItem.getTitle());
             if (view == itemView) {
+                if (getDelegate() != null) {
+                    getDelegate().onItemClicked(ItemAdapter.this, rssItem);
+                }
+                /*
                 if (contentExpanded == false) {
-                    getDelegate().didSelectExpandItem();
+                    getItemAdapterDelegate().didSelectExpandItem();
                 }
                 else {
-                    getDelegate().didSelectContractItem();
+                    getItemAdapterDelegate().didSelectContractItem();
                 }
+
+                */
                 //contentExpanded = !contentExpanded;
                 //expandedContentWrapper.setVisibility(contentExpanded ? View.VISIBLE : View.GONE);
                 //content.setVisibility(contentExpanded ? View.GONE : View.VISIBLE);
                 //replace the 3 lines above with an animated transition using code below
-                animateContent(!contentExpanded);
+                //animateContent(!contentExpanded);
             } else {
-                getDelegate().didSelectVisit();
+                //getItemAdapterDelegate().didSelectVisit();
                 Message.message(view.getContext(), "Visit " + rssItem.getUrl());
             }
         }
 
         @Override
         public void onCheckedChanged(CompoundButton compoundButton, boolean isChecked) {
-            if (compoundButton == favoriteCheckbox) {
+            /*if (compoundButton == favoriteCheckbox) {
                 if (isChecked) {
-                    getDelegate().didSelectFavorite();
+                    getItemAdapterDelegate().didSelectFavorite();
                 } else {
-                    getDelegate().didSelectUnfavorite();
+                    getItemAdapterDelegate().didSelectUnfavorite();
                 }
             }
             if (compoundButton == archiveCheckbox) {
                 if (isChecked) {
-                    getDelegate().didSelectArchive();
+                    getItemAdapterDelegate().didSelectArchive();
                 }
-            }
+            }*/
             Log.v(TAG, "Checkbox " + compoundButton.getId() + " changed to: " + isChecked);
         }
 

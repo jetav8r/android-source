@@ -9,12 +9,13 @@ import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.view.Gravity;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 
+import com.bloc.android.blocly.BloclyApplication;
 import com.bloc.android.blocly.api.model.RssFeed;
+import com.bloc.android.blocly.api.model.RssItem;
 import com.bloc.android.blocly.ui.adapter.ItemAdapter;
 import com.bloc.android.blocly.ui.adapter.NavigationDrawerAdapter;
 import com.bloc.android.blocly.utilities.Message;
@@ -25,7 +26,10 @@ import java.util.ArrayList;
 /**
  * Created by Wayne on 12/23/2014.
  */
-public class BloclyActivity extends Activity implements NavigationDrawerAdapter.NavigationDrawerAdapterDelegate, ItemAdapter.ItemAdapterDelegate {
+public class BloclyActivity extends Activity implements
+        NavigationDrawerAdapter.NavigationDrawerAdapterDelegate,
+        ItemAdapter.DataSource,
+        ItemAdapter.Delegate {
 
     private ItemAdapter itemAdapter;
     private ActionBarDrawerToggle drawerToggle;
@@ -39,7 +43,10 @@ public class BloclyActivity extends Activity implements NavigationDrawerAdapter.
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_blocly);
         itemAdapter = new ItemAdapter();
+        //itemAdapter.setItemAdapterDelegate(this);
+        itemAdapter.setDataSource(this);
         itemAdapter.setDelegate(this);
+
 
         RecyclerView recyclerView = (RecyclerView) findViewById(R.id.rv_activity_blocly);
 
@@ -122,7 +129,7 @@ public class BloclyActivity extends Activity implements NavigationDrawerAdapter.
             }
         };
         drawerLayout.setDrawerListener(drawerToggle);
-        drawerLayout.openDrawer(Gravity.LEFT);
+        //drawerLayout.openDrawer(Gravity.LEFT);
 
         navigationDrawerAdapter = new NavigationDrawerAdapter();
         navigationDrawerAdapter.setDelegate(this);
@@ -148,10 +155,26 @@ public class BloclyActivity extends Activity implements NavigationDrawerAdapter.
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
+        int id = item.getItemId();
         if (drawerToggle.onOptionsItemSelected(item)) {
+        }
+        if (id == R.id.action_search) {
+            Message.message(this, "Searching is fun!");
             return true;
         }
-        Message.message(this, (String) item.getTitle());
+        if (id == R.id.action_share) {
+            Message.message(this, "I love to share!");
+            return true;
+        }
+        if (id == R.id.action_refresh) {
+            Message.message(this, "Refresh it up...");
+            return true;
+        }
+        if (id == R.id.action_mark_as_read) {
+            Message.message(this, "Mark 'em all!");
+            return true;
+        }
+        //Message.message(this, "Item ID = " + id);
         return super.onOptionsItemSelected(item);
     }
 
@@ -180,7 +203,58 @@ public class BloclyActivity extends Activity implements NavigationDrawerAdapter.
         Message.message(this, "Show RSS items from " + rssFeed.getTitle());
     }
 
+    //Set BloclyActivity as ItemAdapter's delegate and data source.
+    /*
+      * ItemAdapter.DataSource
+      */
+
     @Override
+    public RssItem getRssItem(ItemAdapter itemAdapter, int position) {
+        return BloclyApplication.getSharedDataSource().getItems().get(position);
+    }
+
+    @Override
+    public RssFeed getRssFeed(ItemAdapter itemAdapter, int position) {
+        return BloclyApplication.getSharedDataSource().getFeeds().get(0);
+    }
+
+    @Override
+    public int getItemCount(ItemAdapter itemAdapter) {
+        return BloclyApplication.getSharedDataSource().getItems().size();
+    }
+
+     /*
+      * ItemAdapter.Delegate
+      */
+
+    @Override
+    public void onItemClicked(ItemAdapter itemAdapter, RssItem rssItem) {
+        int positionToExpand = -1;
+        int positionToContract = -1;
+        // check if ItemAdapter has an expanded item
+        if (itemAdapter.getExpandedItem() != null) {
+            positionToContract = BloclyApplication.getSharedDataSource().getItems().indexOf(itemAdapter.getExpandedItem());
+        }
+        // When a new item is clicked, we recover its position within the list and set it as the expanded item, unless item is
+        // expanded, in which case, we set expanded item to null
+        // indexOf(), found in List, retrieves the integer position of the given object if found in the list, otherwise, -1.
+        if (itemAdapter.getExpandedItem() != rssItem) {
+            positionToExpand = BloclyApplication.getSharedDataSource().getItems().indexOf(rssItem);
+            itemAdapter.setExpandedItem(rssItem);
+        } else {
+            itemAdapter.setExpandedItem(null);
+        }
+        if (positionToContract > -1) {
+        // notify the ItemAdapter of a change
+            itemAdapter.notifyItemChanged(positionToContract);
+        }
+        if (positionToExpand > -1) {
+        // notify the ItemAdapter of a change
+            itemAdapter.notifyItemChanged(positionToExpand);
+        }
+    }
+
+    /*@Override
     public void didSelectExpandItem() {
         Message.message(this, "Item was expanded");
     }
@@ -208,5 +282,5 @@ public class BloclyActivity extends Activity implements NavigationDrawerAdapter.
     @Override
     public void didSelectArchive() {
         Message.message(this, "Item was archived");
-    }
+    }*/
 }
