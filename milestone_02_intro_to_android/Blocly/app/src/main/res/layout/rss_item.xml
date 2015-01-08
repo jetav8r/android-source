@@ -127,6 +127,18 @@
         android:paddingRight="8dp"
         android:paddingBottom="8dp"/>
 
+    <ImageButton
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/action_share"
+        android:background="@drawable/ic_share_selector"
+        android:layout_marginTop="8dp"
+        android:paddingTop="8dp"
+        android:paddingRight="8dp"
+        android:paddingBottom="8dp"/>
+
     </LinearLayout>
+
+
 
 </RelativeLayout>

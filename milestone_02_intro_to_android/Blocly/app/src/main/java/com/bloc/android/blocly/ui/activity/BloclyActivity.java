@@ -1,6 +1,7 @@
 package com.bloc.android.blocly.ui.activity;
 
 import android.app.Activity;
+import android.content.Intent;
 import android.content.res.Configuration;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
@@ -9,6 +10,7 @@ import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.text.Html;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -37,22 +39,27 @@ public class BloclyActivity extends Activity implements
     private NavigationDrawerAdapter navigationDrawerAdapter;
     private Menu menu;
     private View overflowButton;
+    RecyclerView recyclerView;
+    Boolean show;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        invalidateOptionsMenu();
         setContentView(R.layout.activity_blocly);
         itemAdapter = new ItemAdapter();
         //itemAdapter.setItemAdapterDelegate(this);
         itemAdapter.setDataSource(this);
         itemAdapter.setDelegate(this);
+        show = false;
 
 
-        RecyclerView recyclerView = (RecyclerView) findViewById(R.id.rv_activity_blocly);
 
+        recyclerView = (RecyclerView) findViewById(R.id.rv_activity_blocly);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
         recyclerView.setItemAnimator(new DefaultItemAnimator());
         recyclerView.setAdapter(itemAdapter);
+
 
         // recover the instance of ActionBar and invoke setDisplayHomeAsUpEnabled(boolean) to allow this behavior.
         getActionBar().setDisplayHomeAsUpEnabled(true);
@@ -180,7 +187,10 @@ public class BloclyActivity extends Activity implements
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
+        menu.clear();
         getMenuInflater().inflate(R.menu.blocly, menu);
+        MenuItem share = menu.findItem(R.id.action_share);
+        share.setVisible(show);
         this.menu = menu;
         return super.onCreateOptionsMenu(menu);
     }
@@ -231,17 +241,29 @@ public class BloclyActivity extends Activity implements
     public void onItemClicked(ItemAdapter itemAdapter, RssItem rssItem) {
         int positionToExpand = -1;
         int positionToContract = -1;
+        //recyclerView.smoothScrollToPosition(itemAdapter.getItemCount()-1);  This moves to bottom of lists
+
+
         // check if ItemAdapter has an expanded item
         if (itemAdapter.getExpandedItem() != null) {
             positionToContract = BloclyApplication.getSharedDataSource().getItems().indexOf(itemAdapter.getExpandedItem());
+            recyclerView.smoothScrollToPosition(positionToContract + 1);
         }
         // When a new item is clicked, we recover its position within the list and set it as the expanded item, unless item is
         // expanded, in which case, we set expanded item to null
         // indexOf(), found in List, retrieves the integer position of the given object if found in the list, otherwise, -1.
         if (itemAdapter.getExpandedItem() != rssItem) {
+            menu.clear();
+            show=true;
+            invalidateOptionsMenu();
             positionToExpand = BloclyApplication.getSharedDataSource().getItems().indexOf(rssItem);
+            recyclerView.smoothScrollToPosition(positionToExpand + 1);
             itemAdapter.setExpandedItem(rssItem);
+
         } else {
+            menu.clear();
+            show=false;
+            invalidateOptionsMenu();
             itemAdapter.setExpandedItem(null);
         }
         if (positionToContract > -1) {
@@ -254,6 +276,35 @@ public class BloclyActivity extends Activity implements
         }
     }
 
+    public void shareRss(RssItem rssItem){
+        String request = rssItem.getTitle() + " :  "+rssItem;
+        Intent sharingIntent = new Intent(Intent.ACTION_SEND);
+        sharingIntent.setType("text/plain");
+        sharingIntent.setType("text/html");
+        sharingIntent.putExtra(Intent.EXTRA_SUBJECT, "Check out this story!");
+        sharingIntent.putExtra(Intent.EXTRA_TEXT, Html.fromHtml(request));
+        sharingIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+        startActivity(Intent.createChooser(sharingIntent, "Share using"));
+    }
+
+
+    @Override
+    public void didSelectVisit(RssItem rssItem) {
+        Message.message(this, "Visit " + rssItem.getUrl());
+    }
+
+    @Override
+    public void didSelectShare(RssItem rssItem) {
+        String request = rssItem.getTitle() + " :  " +rssItem.getUrl();
+        Intent sharingIntent = new Intent(Intent.ACTION_SEND);
+        sharingIntent.setType("text/plain");
+        sharingIntent.setType("text/html");
+        sharingIntent.putExtra(Intent.EXTRA_SUBJECT, "Check out this story!");
+        sharingIntent.putExtra(Intent.EXTRA_TEXT, Html.fromHtml(request));
+        sharingIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+        startActivity(Intent.createChooser(sharingIntent, "Share using"));
+    }
+
     /*@Override
     public void didSelectExpandItem() {
         Message.message(this, "Item was expanded");
@@ -264,10 +315,6 @@ public class BloclyActivity extends Activity implements
         Message.message(this, "Item was contracted");
     }
 
-    @Override
-    public void didSelectVisit() {
-        Message.message(this, "Visit site was selected");
-    }
 
     @Override
     public void didSelectFavorite() {
