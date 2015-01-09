@@ -10,13 +10,13 @@ import android.view.ViewGroup;
 import android.view.animation.AccelerateDecelerateInterpolator;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
+import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.bloc.android.blocly.BloclyApplication;
 import com.bloc.android.blocly.api.model.RssFeed;
 import com.bloc.android.blocly.api.model.RssItem;
-import com.bloc.android.blocly.utilities.Message;
 import com.bloc.blocly.R;
 import com.nostra13.universalimageloader.core.ImageLoader;
 import com.nostra13.universalimageloader.core.assist.FailReason;
@@ -38,6 +38,9 @@ public class ItemAdapter extends RecyclerView.Adapter<ItemAdapter.ItemAdapterVie
 
     public static interface Delegate {
         public void onItemClicked(ItemAdapter itemAdapter, RssItem rssItem);
+        public void onVisitClicked(ItemAdapter itemAdapter, RssItem rssItem);
+        public void didSelectVisit(RssItem rssItem);
+        public void didSelectShare(RssItem rssItem);
     }
 
     private WeakReference<Delegate> delegate;
@@ -47,16 +50,18 @@ public class ItemAdapter extends RecyclerView.Adapter<ItemAdapter.ItemAdapterVie
 
     private RssItem expandedItem = null; // used for tracking state of view expansion
 
+    /*
     public static interface ItemAdapterDelegate {
         public void didSelectExpandItem();
         public void didSelectContractItem();
-        public void didSelectVisit();
+        public void didSelectVisit(RssItem rssItem);
         public void didSelectFavorite();
         public void didSelectUnfavorite();
         public void didSelectArchive();
+        public void didSelectShare();
     }
 
-    /*
+
     // WeakReference object to store our itemAdapterDelegate. A WeakReference allows us to use an object
     // as long as a strong reference to it exists somewhere
     WeakReference<ItemAdapterDelegate> itemAdapterDelegate;
@@ -76,6 +81,7 @@ public class ItemAdapter extends RecyclerView.Adapter<ItemAdapter.ItemAdapterVie
     }
     */
 
+
     @Override
     public ItemAdapterViewHolder onCreateViewHolder(ViewGroup viewGroup, int index) {
         View inflate = LayoutInflater.from(viewGroup.getContext()).inflate(R.layout.rss_item, viewGroup, false);
@@ -94,6 +100,8 @@ public class ItemAdapter extends RecyclerView.Adapter<ItemAdapter.ItemAdapterVie
         RssFeed rssFeed = getDataSource().getRssFeed(this, index);
         itemAdapterViewHolder.update(rssFeed, rssItem);
     }
+
+
 
     @Override
     public int getItemCount() {
@@ -147,6 +155,7 @@ public class ItemAdapter extends RecyclerView.Adapter<ItemAdapter.ItemAdapterVie
         View expandedContentWrapper;
         TextView expandedContent;
         TextView visitSite;
+        ImageButton shareButton;
 
 
         public ItemAdapterViewHolder(View itemView) {
@@ -162,8 +171,10 @@ public class ItemAdapter extends RecyclerView.Adapter<ItemAdapter.ItemAdapterVie
             expandedContent = (TextView) expandedContentWrapper.findViewById(R.id.tv_rss_item_content_full);
             //visitSite = (TextView) expandedContentWrapper.findViewById(R.id.tv_rss_item_visit_site);
             visitSite = (TextView) expandedContentWrapper.findViewById(R.id.tv_roboto_button);
+            shareButton = (ImageButton) expandedContentWrapper.findViewById(R.id.action_share);
 
             visitSite.setOnClickListener(this);
+            shareButton.setOnClickListener(this);
             itemView.setOnClickListener(this);
             archiveCheckbox.setOnCheckedChangeListener(this);
             favoriteCheckbox.setOnCheckedChangeListener(this);
@@ -294,9 +305,8 @@ public class ItemAdapter extends RecyclerView.Adapter<ItemAdapter.ItemAdapterVie
                 headerImage.setImageBitmap(loadedImage);
                 // after image loads, we let animator fade from 0 alpha to fully visible
                 headerImage.setVisibility(View.VISIBLE);
-                animateImage(!contentExpanded);
-
-            }
+                //animateImage(!contentExpanded);
+                }
         }
 
         @Override
@@ -307,30 +317,41 @@ public class ItemAdapter extends RecyclerView.Adapter<ItemAdapter.ItemAdapterVie
 
         @Override
         public void onClick(View view) {
-
             //view.setBackgroundColor(Color.parseColor("#ffeb3b"));
             //Message.message(view.getContext(), rssItem.getTitle());
             if (view == itemView) {
                 if (getDelegate() != null) {
                     getDelegate().onItemClicked(ItemAdapter.this, rssItem);
                 }
-                /*
-                if (contentExpanded == false) {
+
+                //Message.message(view.getContext(),"content expanded = " +contentExpanded);
+                /*if (contentExpanded == false) {
                     getItemAdapterDelegate().didSelectExpandItem();
                 }
                 else {
                     getItemAdapterDelegate().didSelectContractItem();
-                }
+                }*/
 
-                */
+
                 //contentExpanded = !contentExpanded;
                 //expandedContentWrapper.setVisibility(contentExpanded ? View.VISIBLE : View.GONE);
                 //content.setVisibility(contentExpanded ? View.GONE : View.VISIBLE);
                 //replace the 3 lines above with an animated transition using code below
                 //animateContent(!contentExpanded);
             } else {
-                //getItemAdapterDelegate().didSelectVisit();
-                Message.message(view.getContext(), "Visit " + rssItem.getUrl());
+                if (view.getId() == R.id.action_share) {
+
+                    getDelegate().didSelectShare(rssItem);
+                    //Message.message(view.getContext(), "share was clicked");
+
+                } else {
+
+                    //getDelegate().didSelectVisit(rssItem);
+                    if (getDelegate() != null) {
+                        getDelegate().onVisitClicked(ItemAdapter.this, rssItem);
+                    }
+                    //Message.message(view.getContext(), "Visit " + rssItem.getUrl());
+                }
             }
         }
 
@@ -355,20 +376,20 @@ public class ItemAdapter extends RecyclerView.Adapter<ItemAdapter.ItemAdapterVie
         //Private Methods
 
 
-
-        private void animateImage(final boolean expand) {
-            boolean mExpand = expand;
+        //private void animateImage(final boolean expand) {
+        private void animateImage() {
+            /*boolean mExpand = expand;
             // If the image is already in the desired state, we simply return
             if ((expand && contentExpanded) || (!expand && !contentExpanded)) {
                 return;
-            }
+            }*/
             // If we must animate to a new state, we create initial and final height variables to animate between
             //int startingHeight = expandedContentWrapper.getMeasuredHeight();
             int startingHeight = 0;
             //int finalHeight = headerImage.getMeasuredHeight();
             int finalHeight = 140;
 
-            if (expand) {
+            //if (expand) {
 
                 startingHeight = 0;
                 headerImage.setAlpha(0f);
@@ -381,16 +402,17 @@ public class ItemAdapter extends RecyclerView.Adapter<ItemAdapter.ItemAdapterVie
                         ViewGroup.LayoutParams.WRAP_CONTENT
                 );
                 //finalHeight = headerImage.getMeasuredHeight();
-            } else {
-                headerWrapper.setVisibility(View.INVISIBLE);
-            }
+            //} else {
+                //headerWrapper.setVisibility(View.INVISIBLE);
+            //}
             startAnimator(startingHeight, finalHeight, new ValueAnimator.AnimatorUpdateListener() {
                 @Override
                 public void onAnimationUpdate(ValueAnimator valueAnimator) {
                     // recover the animation's progress as a float value, set the opacity level for both content
                     // and expandedContentWrapper. This performs a cross-fade from one View to the other
                     float animatedFraction = valueAnimator.getAnimatedFraction();
-                    float imageAlpha = expand ? animatedFraction : 1f - animatedFraction;
+                    //float imageAlpha = expand ? animatedFraction : 1f - animatedFraction;
+                    float imageAlpha = animatedFraction;
                     float wrapperAlpha = 1f - imageAlpha;
 
                     headerWrapper.setAlpha(imageAlpha);
@@ -499,6 +521,8 @@ public class ItemAdapter extends RecyclerView.Adapter<ItemAdapter.ItemAdapterVie
         if (expand) {
 
         //  set the starting height to that of the preview content
+
+            shareButton.setAlpha(0f);
             startingHeight = finalHeight;
             expandedContentWrapper.setAlpha(0f);
             expandedContentWrapper.setVisibility(View.VISIBLE);
@@ -524,6 +548,8 @@ public class ItemAdapter extends RecyclerView.Adapter<ItemAdapter.ItemAdapterVie
 
                     expandedContentWrapper.setAlpha(wrapperAlpha);
                     content.setAlpha(contentAlpha);
+                    shareButton.setAlpha(wrapperAlpha);
+
         // set the height of expandedContentWrapper. As we animate, we do so from startingHeight to
         // finalHeight, the current integer value is recovered by invoking getAnimatedValue().
                     expandedContentWrapper.getLayoutParams().height = animatedFraction == 1f ?
