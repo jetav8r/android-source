@@ -2,6 +2,8 @@ package com.bloc.android.blocly.ui.activity;
 
 import android.app.Activity;
 import android.content.Intent;
+import android.content.pm.PackageManager;
+import android.content.pm.ResolveInfo;
 import android.content.res.Configuration;
 import android.graphics.drawable.Drawable;
 import android.net.Uri;
@@ -12,6 +14,7 @@ import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.text.Html;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -25,6 +28,7 @@ import com.bloc.android.blocly.utilities.Message;
 import com.bloc.blocly.R;
 
 import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Created by Wayne on 12/23/2014.
@@ -42,10 +46,12 @@ public class BloclyActivity extends Activity implements
     private View overflowButton;
     RecyclerView recyclerView;
     Boolean show;
+    PackageManager packageManager;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        logIntents();
         invalidateOptionsMenu();
         setContentView(R.layout.activity_blocly);
         itemAdapter = new ItemAdapter();
@@ -146,6 +152,33 @@ public class BloclyActivity extends Activity implements
         navigationRecyclerView.setItemAnimator(new DefaultItemAnimator());
         navigationRecyclerView.setAdapter(navigationDrawerAdapter);
 
+    }
+
+    private void logIntents() {
+        packageManager = getPackageManager();
+        final Intent myIntent1 = new Intent(Intent.ACTION_SEND);
+        final Intent myIntent2 = new Intent(Intent.ACTION_VIEW);
+        final Intent myIntent3 = new Intent(Intent.ACTION_CALL);
+
+        List<ResolveInfo> resInfoList1 = getPackageManager().queryIntentActivities(myIntent1, 0);
+        for (int i = 0; i < resInfoList1.size(); i++) {
+            ResolveInfo ri = resInfoList1.get(i);
+            String packageName = ri.loadLabel(packageManager).toString();
+            Log.i("Activities capable of email: ", packageName);
+        }
+
+        List<ResolveInfo> resInfoList2 = getPackageManager().queryIntentActivities(myIntent2, 0);
+        for (int i = 0; i < resInfoList2.size(); i++) {
+            ResolveInfo ri = resInfoList2.get(i);
+            String packageName = ri.loadLabel(packageManager).toString();
+            Log.i("Activities capable of browsing: ",packageName);
+        }
+        List<ResolveInfo> resInfoList3 = getPackageManager().queryIntentActivities(myIntent3, 0);
+        for (int i = 0; i < resInfoList3.size(); i++) {
+            ResolveInfo ri = resInfoList3.get(i);
+            String packageName = ri.loadLabel(packageManager).toString();
+            Log.i("Activities capable of calling: ",packageName);
+        }
     }
 
     //  override and invoke required drawer updates
