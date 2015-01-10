@@ -24,7 +24,8 @@ public class DataSource {
         new Thread(new Runnable() {
             @Override
             public void run() {
-                new GetFeedsNetworkRequest("http://feeds.feedburner.com/androidcentral?format=xml").performRequest();
+                //new GetFeedsNetworkRequest("http://feeds.feedburner.com/androidcentral?format=xml").performRequest();
+                new GetFeedsNetworkRequest("http://thebestmobile.com.br/feed/").performRequest();
             }
         }).start();
     }
