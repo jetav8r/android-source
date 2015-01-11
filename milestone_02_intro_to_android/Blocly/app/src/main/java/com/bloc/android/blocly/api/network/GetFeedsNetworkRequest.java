@@ -2,6 +2,10 @@ package com.bloc.android.blocly.api.network;
 
 import android.util.Log;
 
+import com.bloc.android.blocly.api.model.CompleteFeed;
+import com.bloc.android.blocly.api.model.RssFeed;
+import com.bloc.android.blocly.api.model.RssItem;
+
 import org.w3c.dom.Document;
 import org.w3c.dom.NamedNodeMap;
 import org.w3c.dom.Node;
@@ -24,6 +28,9 @@ import javax.xml.parsers.ParserConfigurationException;
 public class GetFeedsNetworkRequest extends NetworkRequest<List<GetFeedsNetworkRequest.FeedResponse>> {
     // store each feed's address
     String [] feedUrls;
+    RssFeed [] mRssFeeds;
+    RssItem [] mRssItems;
+
     public static final int ERROR_PARSING = 3;
     private static final String XML_TAG_TITLE = "title";
     private static final String XML_TAG_DESCRIPTION = "description";
@@ -34,9 +41,25 @@ public class GetFeedsNetworkRequest extends NetworkRequest<List<GetFeedsNetworkR
     private static final String XML_TAG_ENCLOSURE = "enclosure";
     private static final String XML_ATTRIBUTE_URL = "url";
     private static final String XML_ATTRIBUTE_TYPE = "type";
+    private static final String XML_ATTIBUTE_TYPE = "image";
     private static final Pattern TITLE_TAG =
             Pattern.compile("<title>(.*)</title>", Pattern.CASE_INSENSITIVE| Pattern.DOTALL);
 
+    public RssFeed[] getRssFeeds() {
+        return mRssFeeds;
+    }
+
+    public void setRssFeeds(RssFeed[] rssFeeds) {
+        mRssFeeds = rssFeeds;
+    }
+
+    public RssItem[] getRssItems() {
+        return mRssItems;
+    }
+
+    public void setRssItems(RssItem[] rssItems) {
+        mRssItems = rssItems;
+    }
 
     public GetFeedsNetworkRequest(String... feedUrls) {
         this.feedUrls = feedUrls;
@@ -44,16 +67,18 @@ public class GetFeedsNetworkRequest extends NetworkRequest<List<GetFeedsNetworkR
 
     // override the mandatory abstract method declared in NetworkRequest
     @Override
-    public List<FeedResponse> performRequest() {
+      public List<FeedResponse> performRequest(){
+        return null;
+    }
+
+    public CompleteFeed performRequest2() {
         Log.i ("# of items: ", "" +feedUrls.length);
+        CompleteFeed completeFeed = new CompleteFeed();
         List<FeedResponse> responseFeeds = new ArrayList<FeedResponse>(feedUrls.length);
+        List<RssFeed> rssFeeds = new ArrayList<>();
+        ArrayList<RssItem> rssItems = new ArrayList<>();
         for (String feedUrlString : feedUrls) {
             Log.i ("URL of feed: ", feedUrlString );
-            /*try {
-                //Log.i("Title of feed: ", title);
-            } catch (IOException e) {
-                e.printStackTrace();
-            }*/
             InputStream inputStream = openStream(feedUrlString);
             if (inputStream == null) {
                 return null;
@@ -66,9 +91,14 @@ public class GetFeedsNetworkRequest extends NetworkRequest<List<GetFeedsNetworkR
                     String channelTitle = optFirstTagFromDocument(xmlDocument, XML_TAG_TITLE);
                     String channelDescription = optFirstTagFromDocument(xmlDocument, XML_TAG_DESCRIPTION);
                     String channelURL = optFirstTagFromDocument(xmlDocument, XML_TAG_LINK);
+
+                    completeFeed.setRssFeed(new RssFeed(channelTitle, channelDescription, channelURL, feedUrlString));
+                    //setRssFeeds(rssFeeds);
+
                     // recover a NodeList of each item tag found in the feed
                     NodeList allItemNodes = xmlDocument.getElementsByTagName(XML_TAG_ITEM);
                     List<ItemResponse> responseItems = new ArrayList<ItemResponse>(allItemNodes.getLength());
+
                     for (int itemIndex = 0; itemIndex < allItemNodes.getLength(); itemIndex++) {
                     // prepare a temporary variable for each field we hope to recover
                         String itemURL = null;
@@ -102,9 +132,13 @@ public class GetFeedsNetworkRequest extends NetworkRequest<List<GetFeedsNetworkR
                                 itemGUID = tagNode.getTextContent();
                             }
                         }
-                        responseItems.add(new ItemResponse(itemURL, itemTitle, itemDescription,
-                                itemGUID, itemPubDate, itemEnclosureURL, itemEnclosureMIMEType));
+                        //RssItem rssItem = new RssItem(itemGUID, itemTitle, itemDescription, itemURL, null, itemPubDate, false, false, false);
+                        /*responseItems.add(new ItemResponse(itemURL, itemTitle, itemDescription,
+                                itemGUID, itemPubDate, itemEnclosureURL, itemEnclosureMIMEType));*/
+                        rssItems.add(new RssItem(itemGUID, itemTitle, itemDescription, itemURL, null, itemPubDate, false, false, false));
+
                     }
+                    completeFeed.setRssItems(rssItems);
                 /*BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(inputStream));
                 // After we open a connection to the feed, we begin reading it
                 String line = bufferedReader.readLine();
@@ -141,7 +175,8 @@ public class GetFeedsNetworkRequest extends NetworkRequest<List<GetFeedsNetworkR
                 e.printStackTrace();
             }
         }
-        return responseFeeds;
+        return completeFeed;
+
     }
 
     private String optFirstTagFromDocument(Document document, String tagName) {
@@ -170,7 +205,7 @@ public class GetFeedsNetworkRequest extends NetworkRequest<List<GetFeedsNetworkR
         }
     }
 
-    // #4
+    // ItemResponse objects are Java representations of the tag information specified earlier.
     public static class ItemResponse {
         public final String itemURL;
         public final String itemTitle;

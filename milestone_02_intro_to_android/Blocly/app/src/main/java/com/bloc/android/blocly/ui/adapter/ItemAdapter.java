@@ -3,6 +3,7 @@ package com.bloc.android.blocly.ui.adapter;
 import android.animation.ValueAnimator;
 import android.graphics.Bitmap;
 import android.support.v7.widget.RecyclerView;
+import android.text.Html;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -261,8 +262,8 @@ public class ItemAdapter extends RecyclerView.Adapter<ItemAdapter.ItemAdapterVie
             this.rssItem = rssItem;
             feed.setText(rssFeed.getTitle());
             title.setText(rssItem.getTitle());
-            content.setText(rssItem.getDescription());
-            expandedContent.setText(rssItem.getDescription());
+            content.setText(Html.fromHtml(rssItem.getDescription()));
+            expandedContent.setText(Html.fromHtml(rssItem.getDescription()));
             imageURL = rssItem.getImageUrl();
             if (imageURL != null) {
                 //  If the RssItem has an image URL, we will make visible our FrameLayout
