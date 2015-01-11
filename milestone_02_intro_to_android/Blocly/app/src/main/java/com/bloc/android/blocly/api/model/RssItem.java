@@ -6,7 +6,7 @@ package com.bloc.android.blocly.api.model;
 public class RssItem {
     private String guid;
 
-    public RssItem(String guid, String title, String description, String url, String imageUrl, long datePublished, boolean read, boolean favorite, boolean archived) {
+    public RssItem(String guid, String title, String description, String url, String imageUrl, String datePublished, boolean read, boolean favorite, boolean archived) {
         this.guid = guid;
         this.title = title;
         this.description = description;
@@ -22,7 +22,7 @@ public class RssItem {
     private String description;
     private String url;
     private String imageUrl;
-    private long datePublished;
+    private String datePublished;
     private boolean read;
     private boolean favorite;
     private boolean archived;
@@ -67,11 +67,11 @@ public class RssItem {
         this.imageUrl = imageUrl;
     }
 
-    public long getDatePublished() {
+    public String getDatePublished() {
         return datePublished;
     }
 
-    public void setDatePublished(long datePublished) {
+    public void setDatePublished(String datePublished) {
         this.datePublished = datePublished;
     }
 
