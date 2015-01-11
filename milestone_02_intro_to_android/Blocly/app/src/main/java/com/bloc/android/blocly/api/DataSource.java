@@ -1,9 +1,16 @@
 package com.bloc.android.blocly.api;
 
+import android.database.sqlite.SQLiteDatabase;
+
+import com.bloc.android.blocly.BloclyApplication;
 import com.bloc.android.blocly.api.model.CompleteFeed;
 import com.bloc.android.blocly.api.model.RssFeed;
 import com.bloc.android.blocly.api.model.RssItem;
 import com.bloc.android.blocly.api.network.GetFeedsNetworkRequest;
+import com.bloc.android.blocly.database.DatabaseOpenHelper;
+import com.bloc.android.blocly.database.RssFeedTable;
+import com.bloc.android.blocly.database.RssItemTable;
+import com.bloc.blocly.BuildConfig;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -14,8 +21,16 @@ import java.util.List;
 public class DataSource {
     private List<RssFeed> feeds;
     private List<RssItem> items;
+    private DatabaseOpenHelper databaseOpenHelper;
+    private RssFeedTable rssFeedTable;
+    private RssItemTable rssItemTable;
 
     public DataSource() {
+        rssFeedTable = new RssFeedTable();
+        rssItemTable = new RssItemTable();
+        // #6
+        databaseOpenHelper = new DatabaseOpenHelper(BloclyApplication.getSharedInstance(),
+                rssFeedTable, rssItemTable);
         feeds = new ArrayList<RssFeed>();
         items = new ArrayList<RssItem>();
         //final String currentFeedURL = feeds.get(0).getFeedUrl();
@@ -23,6 +38,12 @@ public class DataSource {
         new Thread(new Runnable() {
             @Override
             public void run() {
+                // We use the DEBUG property at #7 to decide whether or not to delete the existing database
+                if (BuildConfig.DEBUG && false) {
+                    BloclyApplication.getSharedInstance().deleteDatabase("blocly_db");
+                }
+                // open the database as a writable version of the database
+                SQLiteDatabase writableDatabase = databaseOpenHelper.getWritableDatabase();
                 CompleteFeed completeFeed = new GetFeedsNetworkRequest("http://feeds.feedburner.com/androidcentral?format=xml").performRequest2();
                 //new GetFeedsNetworkRequest("http://thebestmobile.com.br/feed/").performRequest();
                 //new GetFeedsNetworkRequest(currentFeedURL).performRequest();

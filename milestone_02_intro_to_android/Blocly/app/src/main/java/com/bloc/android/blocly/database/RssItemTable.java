@@ -18,7 +18,7 @@ public class RssItemTable extends Table {
 
     @Override
     public String getName() {
-        return "rss_items";
+        return "RSS_ITEMS";
     }
 
     @Override

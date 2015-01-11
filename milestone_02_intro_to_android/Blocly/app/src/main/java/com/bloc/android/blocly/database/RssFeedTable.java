@@ -12,7 +12,7 @@ public class RssFeedTable extends Table {
 
     @Override
     public String getName() {
-        return "rss_feeds";
+        return "RSS_FEEDS";
     }
 
     @Override
