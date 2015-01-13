@@ -21,6 +21,7 @@ import android.view.View;
 
 import com.bloc.android.blocly.BloclyApplication;
 import com.bloc.android.blocly.api.model.RssFeed;
+import com.bloc.android.blocly.api.model.RssFeedDao;
 import com.bloc.android.blocly.api.model.RssItem;
 import com.bloc.android.blocly.ui.adapter.ItemAdapter;
 import com.bloc.android.blocly.ui.adapter.NavigationDrawerAdapter;
@@ -60,7 +61,8 @@ public class BloclyActivity extends Activity implements
         itemAdapter.setDelegate(this);
         show = false;
 
-
+        RssFeedDao rssFeedDao = new RssFeedDao(this);
+        rssFeedDao.delete(new RssFeed("", "", "", ""));
 
         recyclerView = (RecyclerView) findViewById(R.id.rv_activity_blocly);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));

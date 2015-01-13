@@ -29,7 +29,7 @@ public class BloclyApplication extends Application {
     public void onCreate() {
         super.onCreate();
         sharedInstance = this;
-        dataSource = new DataSource();
+        dataSource = new DataSource(this);
 
 
         // create a default instance of these options
@@ -50,6 +50,8 @@ public class BloclyApplication extends Application {
                 .build();
 
         ImageLoader.getInstance().init(configuration);
+
+
 
     }
 

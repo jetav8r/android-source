@@ -21,6 +21,13 @@
             </intent-filter>
         </activity>
 
+        <!-- PROVIDERS -->
+        <provider
+            android:name="com.bloc.android.blocly.database.BaseProvider"
+            android:authorities="com.bloc.android.blocly.database.BaseProvider"
+            android:exported="false" >
+        </provider>
+
     </application>
 
 </manifest>
