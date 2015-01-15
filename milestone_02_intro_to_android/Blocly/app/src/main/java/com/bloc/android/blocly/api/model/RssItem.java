@@ -4,7 +4,19 @@ package com.bloc.android.blocly.api.model;
  * Created by Wayne on 12/24/2014.
  */
 public class RssItem {
+    private String id;
     private String guid;
+    private String title;
+    private String description;
+    private String url;
+    private String imageUrl;
+    private String datePublished;
+    private String enclosure;
+    private String mimeType;
+    private int rssFeed;
+    private boolean read;
+    private boolean favorite;
+    private boolean archived;
 
     public RssItem(String guid, String title, String description, String url, String imageUrl, String datePublished, boolean read, boolean favorite, boolean archived) {
         this.guid = guid;
@@ -18,14 +30,17 @@ public class RssItem {
         this.archived = archived;
     }
 
-    private String title;
-    private String description;
-    private String url;
-    private String imageUrl;
-    private String datePublished;
-    private boolean read;
-    private boolean favorite;
-    private boolean archived;
+    public RssItem() {
+
+    }
+
+    public String getId() {
+        return id;
+    }
+
+    public void setId(String id) {
+        this.id = id;
+    }
 
     public String getGuid() {
         return guid;
@@ -98,4 +113,29 @@ public class RssItem {
     public void setArchived(boolean archived) {
         this.archived = archived;
     }
+
+    public String getEnclosure() {
+        return enclosure;
+    }
+
+    public void setEnclosure(String enclosure) {
+        this.enclosure = enclosure;
+    }
+
+    public String getMimeType() {
+        return mimeType;
+    }
+
+    public void setMimeType(String mimeType) {
+        this.mimeType = mimeType;
+    }
+
+    public int getRssFeed() {
+        return rssFeed;
+    }
+
+    public void setRssFeed(int rssFeed) {
+        this.rssFeed = rssFeed;
+    }
+
 }

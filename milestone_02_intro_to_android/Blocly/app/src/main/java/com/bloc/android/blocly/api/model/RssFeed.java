@@ -4,6 +4,7 @@ package com.bloc.android.blocly.api.model;
  * Created by Wayne on 12/24/2014.
  */
 public class RssFeed {
+    private String id;
     private String title;
     private String description;
     private String siteUrl;
@@ -14,6 +15,14 @@ public class RssFeed {
         this.description = description;
         this.siteUrl = siteUrl;
         this.feedUrl = feedUrl;
+    }
+
+    public String getId() {
+        return id;
+    }
+
+    public void setId(String id) {
+        this.id = id;
     }
 
     public String getTitle() {
